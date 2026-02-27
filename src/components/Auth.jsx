@@ -25,19 +25,19 @@ export const Auth = () => {
   return (
     <div className="min-h-screen bg-cream flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        <div className="text-center mb-8">
+        <div className="text-center mb-6 md:mb-8">
           <h1 
             onClick={() => setCurrentView('b2b-platform')}
-            className="text-4xl font-bold bg-gradient-to-r from-teal-400 to-teal-600 bg-clip-text text-transparent mb-2 cursor-pointer hover:opacity-80 transition-opacity"
+            className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-teal-400 to-teal-600 bg-clip-text text-transparent mb-2 cursor-pointer hover:opacity-80 transition-opacity"
           >
             Mezzanine
           </h1>
-          <p className="text-darkslate">B2B Construction Platform</p>
+          <p className="text-darkslate text-sm md:text-base">B2B Construction Platform</p>
         </div>
 
-        <div className="bg-white/70 backdrop-blur-md rounded-2xl shadow-lg p-6">
+        <div className="bg-white/70 backdrop-blur-md rounded-2xl shadow-lg p-4 md:p-6">
           {/* Tabs */}
-          <div className="flex gap-2 mb-6 bg-lightgray rounded-xl p-1">
+          <div className="flex flex-col sm:flex-row gap-2 mb-6 bg-lightgray rounded-xl p-1">
             <button
               onClick={() => setAuthTab('company')}
               className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all ${
@@ -93,7 +93,7 @@ export const Auth = () => {
               </div>
               <button
                 type="submit"
-                className="w-full py-3 bg-gradient-to-r from-teal-400 to-teal-600 text-white rounded-xl font-medium shadow-lg hover:shadow-xl transition-all"
+                className="w-full py-3 min-h-[48px] bg-gradient-to-r from-teal-400 to-teal-600 text-white rounded-xl font-medium shadow-lg hover:shadow-xl transition-all"
               >
                 Login
               </button>
@@ -189,7 +189,7 @@ export const Auth = () => {
               </div>
               <button
                 type="submit"
-                className="w-full py-3 bg-gradient-to-r from-teal-400 to-teal-600 text-white rounded-xl font-medium shadow-lg hover:shadow-xl transition-all"
+                className="w-full py-3 min-h-[48px] bg-gradient-to-r from-teal-400 to-teal-600 text-white rounded-xl font-medium shadow-lg hover:shadow-xl transition-all"
               >
                 Create Account
               </button>

@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { MessageCircle, Bot, MessageSquare, Mail, X, Send } from 'lucide-react';
+import { useApp } from '../context/AppContext';
 
 export const FloatingChatWidget = () => {
+  const { currentView } = useApp();
   const [isOpen, setIsOpen] = useState(false);
   const [showAIChat, setShowAIChat] = useState(false);
 
@@ -48,10 +50,12 @@ export const FloatingChatWidget = () => {
   ];
 
   return (
-    <div className="fixed bottom-6 right-6 z-50">
+    <div className={`fixed z-50 ${
+      currentView === 'crm-dashboard' ? 'bottom-20 md:bottom-6 right-4 md:right-6' : 'bottom-6 right-4 md:right-6'
+    }`}>
       {/* Popover */}
       {isOpen && (
-        <div className="absolute bottom-20 right-0 w-80 bg-white/90 backdrop-blur-md rounded-2xl shadow-2xl p-4 mb-2">
+        <div className="absolute bottom-16 md:bottom-20 right-0 w-80 max-w-[calc(100vw-2rem)] bg-white/90 backdrop-blur-md rounded-2xl shadow-2xl p-4 mb-2">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-slate-800 font-semibold text-lg">Chat with us</h3>
             <button
@@ -86,8 +90,8 @@ export const FloatingChatWidget = () => {
 
       {/* AI Chat Interface */}
       {showAIChat && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl h-[600px] flex flex-col">
+        <div className="fixed inset-0 bg-black/50 flex items-end md:items-center justify-center z-50 p-0 md:p-4">
+          <div className="bg-white rounded-t-2xl md:rounded-2xl shadow-2xl w-full md:max-w-2xl h-[90vh] md:h-[600px] flex flex-col">
             {/* Chat Header */}
             <div className="bg-gradient-to-r from-teal-400 to-teal-600 text-white p-4 rounded-t-2xl flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -111,14 +115,14 @@ export const FloatingChatWidget = () => {
             </div>
 
             {/* Chat Messages */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50">
+            <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4 bg-gray-50">
               {aiMessages.map((message, idx) => (
-                <div key={idx} className="flex gap-3">
+                <div key={idx} className="flex gap-2 md:gap-3">
                   <div className="w-8 h-8 rounded-full bg-gradient-to-r from-teal-400 to-teal-600 flex items-center justify-center flex-shrink-0">
                     <Bot className="text-white" size={16} />
                   </div>
-                  <div className="flex-1 bg-white rounded-2xl rounded-tl-none p-4 shadow-sm">
-                    <p className="text-sm text-slate-800 whitespace-pre-line">{message.text}</p>
+                  <div className="flex-1 bg-white rounded-2xl rounded-tl-none p-3 md:p-4 shadow-sm">
+                    <p className="text-xs md:text-sm text-slate-800 whitespace-pre-line">{message.text}</p>
                   </div>
                 </div>
               ))}
@@ -131,7 +135,7 @@ export const FloatingChatWidget = () => {
                   type="text"
                   placeholder="Type your question here... (MVP Demo)"
                   disabled
-                  className="flex-1 px-4 py-3 rounded-xl border border-gray-300 bg-gray-50 text-slate-400 cursor-not-allowed"
+                  className="flex-1 px-4 py-3 rounded-xl border border-gray-300 bg-gray-50 text-slate-400 cursor-not-allowed text-sm"
                 />
                 <button
                   disabled
@@ -148,9 +152,9 @@ export const FloatingChatWidget = () => {
       {/* FAB Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-14 h-14 rounded-full bg-gradient-to-r from-teal-400 to-teal-600 text-white shadow-lg hover:shadow-xl transition-all flex items-center justify-center animate-pulse hover:animate-none"
+        className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-gradient-to-r from-teal-400 to-teal-600 text-white shadow-lg hover:shadow-xl transition-all flex items-center justify-center animate-pulse hover:animate-none"
       >
-        <MessageCircle size={24} />
+        <MessageCircle size={20} className="md:w-6 md:h-6" />
       </button>
     </div>
   );
