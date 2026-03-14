@@ -9,6 +9,7 @@ import { FloatingChatWidget } from './components/FloatingChatWidget';
 import { InvestorReport } from './components/InvestorReport';
 import { AdminRiskPortal } from './components/AdminRiskPortal';
 import { CompanyProfile } from './components/CompanyProfile';
+import { KYBVerification } from './components/KYBVerification';
 
 const AppContent = () => {
   const { currentView, showCheckout, showTorbiona } = useApp();
@@ -22,6 +23,7 @@ const AppContent = () => {
       {currentView === 'investor-report' && <InvestorReport />}
       {currentView === 'admin-risk-portal' && <AdminRiskPortal />}
       {currentView === 'company-profile' && <CompanyProfile />}
+      {currentView === 'kyb-verification' && <KYBVerification />}
       {showCheckout && <CheckoutPanel />}
       {showTorbiona && <TorbionaModal />}
       <FloatingChatWidget />

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { Search, User, LayoutDashboard, LogIn, FileText, Building2, Star, ArrowRight, X, Menu, Lock, TrendingUp } from 'lucide-react';
+import { Search, User, LayoutDashboard, LogIn, FileText, Building2, Star, ArrowRight, X, Menu, Lock, TrendingUp, Send, MapPin, Calendar, Package } from 'lucide-react';
 
 export const B2BPlatform = () => {
   const { setCurrentView, openCheckout } = useApp();
@@ -25,6 +25,15 @@ export const B2BPlatform = () => {
     { id: 6, name: 'Safety Helmets', price: 1200, seller: 'Safety First Ltd.', stock: 45, image: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=300' },
     { id: 7, name: 'Power Tools', price: 5500, seller: 'Heavy Equipment Co.', stock: 30, image: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=300' },
     { id: 8, name: 'Cement Bags', price: 450, seller: 'BuildTech Construction', stock: 200, image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=300' },
+  ];
+
+  const liveRFQs = [
+    { id: 1, title: '500 Tons of Reinforcing Steel', company: 'BuildTech Construction', location: 'Riyadh', deadline: '2 Days', quantity: 'Bulk' },
+    { id: 2, title: '3 Heavy Excavators', company: 'Al-Noor Trading Co.', location: 'Jeddah', deadline: '5 Days', quantity: '3 Units' },
+    { id: 3, title: 'Safety Equipment Package', company: 'Qassim Heavy Metals', location: 'Dammam', deadline: '1 Day', quantity: '200+ Items' },
+    { id: 4, title: 'Concrete Mixers & Pumps', company: 'Modern Contracting Ltd.', location: 'Riyadh', deadline: '3 Days', quantity: '5 Units' },
+    { id: 5, title: 'Electrical Wiring Materials', company: 'Global Materials', location: 'Mecca', deadline: '4 Days', quantity: 'Bulk' },
+    { id: 6, title: 'Tower Crane Rental (6 Months)', company: 'Riyadh Steel Works', location: 'Riyadh', deadline: '7 Days', quantity: '2 Units' },
   ];
 
   return (
@@ -237,6 +246,47 @@ export const B2BPlatform = () => {
                     </button>
                   </div>
                 </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Live Public RFQs (Bidding Board) */}
+        <div className="mt-12">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
+            <div>
+              <h2 className="text-xl md:text-2xl font-bold text-slate-900 mb-1">Live Public RFQs (Bidding Board)</h2>
+              <p className="text-sm text-slate-600">Browse active requests from contractors and submit your quotes.</p>
+            </div>
+            <button className="text-teal-500 hover:text-teal-600 font-semibold text-sm mt-3 sm:mt-0 flex items-center gap-1">
+              View All RFQs <ArrowRight size={16} />
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {liveRFQs.map((rfq) => (
+              <div key={rfq.id} className="bg-white/90 border-l-4 border-teal-500 rounded-xl p-5 shadow-sm hover:shadow-md transition-all">
+                <h3 className="text-base md:text-lg font-bold text-slate-900 mb-2">{rfq.title}</h3>
+                <p className="text-xs text-slate-500 mb-4">Requested by: <span className="font-semibold text-slate-700">{rfq.company}</span></p>
+                
+                <div className="space-y-2 mb-4">
+                  <div className="flex items-center gap-2 text-sm text-slate-600">
+                    <MapPin size={14} className="text-teal-500 flex-shrink-0" />
+                    <span className="text-xs">Location: <span className="font-medium">{rfq.location}</span></span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-slate-600">
+                    <Calendar size={14} className="text-teal-500 flex-shrink-0" />
+                    <span className="text-xs">Deadline: <span className="font-medium">Closes in {rfq.deadline}</span></span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-slate-600">
+                    <Package size={14} className="text-teal-500 flex-shrink-0" />
+                    <span className="text-xs">Quantity: <span className="font-medium">{rfq.quantity}</span></span>
+                  </div>
+                </div>
+
+                <button className="w-full py-2.5 bg-gradient-to-r from-teal-400 to-teal-600 text-white rounded-xl text-sm font-semibold hover:shadow-lg transition-all">
+                  Submit Quote
+                </button>
               </div>
             ))}
           </div>
