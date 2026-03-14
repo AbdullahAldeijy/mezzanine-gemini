@@ -7,6 +7,8 @@ import { CheckoutPanel } from './components/CheckoutPanel';
 import { TorbionaModal } from './components/TorbionaModal';
 import { FloatingChatWidget } from './components/FloatingChatWidget';
 import { InvestorReport } from './components/InvestorReport';
+import { AdminRiskPortal } from './components/AdminRiskPortal';
+import { CompanyProfile } from './components/CompanyProfile';
 
 const AppContent = () => {
   const { currentView, showCheckout, showTorbiona } = useApp();
@@ -18,6 +20,8 @@ const AppContent = () => {
       {currentView === 'b2b-platform' && <B2BPlatform />}
       {currentView === 'crm-dashboard' && <CRMDashboardFull />}
       {currentView === 'investor-report' && <InvestorReport />}
+      {currentView === 'admin-risk-portal' && <AdminRiskPortal />}
+      {currentView === 'company-profile' && <CompanyProfile />}
       {showCheckout && <CheckoutPanel />}
       {showTorbiona && <TorbionaModal />}
       <FloatingChatWidget />

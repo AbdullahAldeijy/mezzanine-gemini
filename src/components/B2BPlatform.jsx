@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { Search, User, LayoutDashboard, LogIn, FileText, Building2, Star, ArrowRight, X, Menu } from 'lucide-react';
+import { Search, User, LayoutDashboard, LogIn, FileText, Building2, Star, ArrowRight, X, Menu, Lock, TrendingUp } from 'lucide-react';
 
 export const B2BPlatform = () => {
   const { setCurrentView, openCheckout } = useApp();
@@ -73,6 +73,21 @@ export const B2BPlatform = () => {
               >
                 <LayoutDashboard size={20} className="text-slate-600" />
               </button>
+              <button
+                onClick={() => setCurrentView('investor-report')}
+                title="View Mezzanine Predictive Credit Scaling Report"
+                className="flex items-center gap-2 px-3 py-2 bg-teal-50 text-teal-700 border border-teal-200 hover:bg-teal-100 rounded-xl font-medium text-sm transition-all"
+              >
+                <TrendingUp size={16} />
+                <span className="hidden lg:inline whitespace-nowrap">AI Growth Engine</span>
+              </button>
+              <button
+                onClick={() => setCurrentView('admin-risk-portal')}
+                title="Admin Risk Portal"
+                className="p-2 hover:bg-gray-100 rounded-xl transition-all"
+              >
+                <Lock size={16} className="text-slate-400 hover:text-slate-600" />
+              </button>
               <div className="w-10 h-10 rounded-full bg-gradient-to-r from-teal-400 to-teal-600 flex items-center justify-center text-white">
                 <User size={20} />
               </div>
@@ -124,6 +139,20 @@ export const B2BPlatform = () => {
               <LayoutDashboard size={18} />
               CRM Dashboard
             </button>
+            <button
+              onClick={() => { setCurrentView('investor-report'); setShowMobileMenu(false); }}
+              className="w-full py-2 px-4 bg-teal-50 text-teal-700 border border-teal-200 rounded-xl font-medium flex items-center justify-center gap-2"
+            >
+              <TrendingUp size={18} />
+              AI Growth Engine
+            </button>
+            <button
+              onClick={() => { setCurrentView('admin-risk-portal'); setShowMobileMenu(false); }}
+              className="w-full py-2 px-4 bg-gray-100 text-slate-500 rounded-xl font-medium flex items-center justify-center gap-2"
+            >
+              <Lock size={16} />
+              Admin Portal
+            </button>
           </div>
         )}
       </nav>
@@ -159,7 +188,10 @@ export const B2BPlatform = () => {
                     <Star size={12} className="fill-yellow-400 text-yellow-400" />
                     <span className="text-xs md:text-sm font-medium text-slate-700">{company.rating}</span>
                   </div>
-                  <button className="text-xs md:text-sm text-teal-500 hover:text-teal-600 font-medium flex items-center gap-1">
+                  <button 
+                    onClick={() => setCurrentView('company-profile')}
+                    className="text-xs md:text-sm text-teal-500 hover:text-teal-600 font-medium flex items-center gap-1"
+                  >
                     View Profile <ArrowRight size={12} />
                   </button>
                 </div>
