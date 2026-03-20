@@ -10,6 +10,7 @@ import { InvestorReport } from './components/InvestorReport';
 import { AdminRiskPortal } from './components/AdminRiskPortal';
 import { CompanyProfile } from './components/CompanyProfile';
 import { KYBVerification } from './components/KYBVerification';
+import { AccessControlManager } from './components/AccessControlManager';
 
 const AppContent = () => {
   const { currentView, showCheckout, showTorbiona } = useApp();
@@ -24,6 +25,7 @@ const AppContent = () => {
       {currentView === 'admin-risk-portal' && <AdminRiskPortal />}
       {currentView === 'company-profile' && <CompanyProfile />}
       {currentView === 'kyb-verification' && <KYBVerification />}
+      {currentView === 'access-control' && <AccessControlManager />}
       {showCheckout && <CheckoutPanel />}
       {showTorbiona && <TorbionaModal />}
       <FloatingChatWidget />

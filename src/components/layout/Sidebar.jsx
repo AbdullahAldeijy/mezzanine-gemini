@@ -1,19 +1,20 @@
-import { LayoutDashboard, Package, FileText, FileCheck, BarChart3, TrendingUp, ShoppingBag, Megaphone, Building2, CheckSquare, Briefcase } from 'lucide-react';
+import { LayoutDashboard, Package, FileText, FileCheck, BarChart3, TrendingUp, ShoppingBag, Megaphone, Building2, CheckSquare, Briefcase, ShieldCheck } from 'lucide-react';
 
-export const Sidebar = ({ activeItem = 'Marketplace' }) => {
+export const Sidebar = ({ activeItem = 'Marketplace', onNavigate }) => {
   const menuItems = [
-    { icon: LayoutDashboard, label: 'Dashboard' },
-    { icon: Package, label: 'My Products' },
-    { icon: FileText, label: 'Purchase Orders' },
-    { icon: FileCheck, label: 'Contracts' },
-    { icon: BarChart3, label: 'Supplier Performance' },
-    { icon: TrendingUp, label: 'Analytics' },
-    { icon: ShoppingBag, label: 'Marketplace' },
-    { icon: TrendingUp, label: 'Market Analytics' },
-    { icon: Megaphone, label: 'Advertising Packages' },
-    { icon: Building2, label: 'Manage Departments' },
-    { icon: CheckSquare, label: 'Tasks & Goals' },
-    { icon: Briefcase, label: 'Company Page' },
+    { icon: LayoutDashboard, label: 'Dashboard', view: 'dashboard' },
+    { icon: Package, label: 'My Products', view: 'products' },
+    { icon: FileText, label: 'Purchase Orders', view: 'orders' },
+    { icon: FileCheck, label: 'Contracts', view: 'contracts' },
+    { icon: BarChart3, label: 'Supplier Performance', view: 'performance' },
+    { icon: TrendingUp, label: 'Analytics', view: 'analytics' },
+    { icon: ShoppingBag, label: 'Marketplace', view: 'marketplace' },
+    { icon: TrendingUp, label: 'Market Analytics', view: 'market-analytics' },
+    { icon: Megaphone, label: 'Advertising Packages', view: 'advertising' },
+    { icon: Building2, label: 'Manage Departments', view: 'departments' },
+    { icon: CheckSquare, label: 'Tasks & Goals', view: 'tasks' },
+    { icon: Briefcase, label: 'Company Page', view: 'company-page' },
+    { icon: ShieldCheck, label: 'Team & Access', view: 'access-control' },
   ];
 
   return (
@@ -29,6 +30,7 @@ export const Sidebar = ({ activeItem = 'Marketplace' }) => {
           return (
             <div
               key={idx}
+              onClick={() => onNavigate && onNavigate(item.view)}
               className={`flex items-center gap-3 px-4 py-3 rounded-xl mb-2 cursor-pointer transition-all ${
                 isActive ? 'bg-teal text-white' : 'text-slategray hover:bg-lightgray'
               }`}

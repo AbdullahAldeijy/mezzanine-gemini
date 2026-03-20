@@ -1,12 +1,428 @@
 import { useState } from 'react';
-import { LayoutDashboard, Package, FileText, BarChart3, TrendingUp, Search, Bell, Plus, Download, Star, AlertTriangle, DollarSign, Users, Clock, Edit, Trash2, X, Megaphone, Building2, CheckSquare, Briefcase, ArrowUp, Check, Twitter, Linkedin, Facebook, Upload, Award, MoreHorizontal } from 'lucide-react';
+import { LayoutDashboard, Package, FileText, BarChart3, TrendingUp, Search, Bell, Plus, Download, Star, AlertTriangle, DollarSign, Users, Clock, Edit, Trash2, X, Megaphone, Building2, CheckSquare, Briefcase, ArrowUp, Check, Twitter, Linkedin, Facebook, Upload, Award, MoreHorizontal, ShieldCheck, Shield } from 'lucide-react';
 import { useApp } from '../context/AppContext';
+
+const modules = [
+  { id: 'orders', name: 'Orders' },
+  { id: 'financing', name: 'Financing RFQs' },
+  { id: 'catalog', name: 'Product Catalog' },
+  { id: 'billing', name: 'Billing' },
+  { id: 'team', name: 'Team Management' },
+];
+
+const defaultRoles = [
+  {
+    id: 1,
+    name: 'Finance Admin',
+    color: 'emerald',
+    permissions: {
+      orders: { view: true, edit: true, delete: false, approve: true },
+      financing: { view: true, edit: true, delete: false, approve: true },
+      catalog: { view: true, edit: false, delete: false, approve: false },
+      billing: { view: true, edit: true, delete: true, approve: true },
+      team: { view: true, edit: false, delete: false, approve: false },
+    },
+  },
+  {
+    id: 2,
+    name: 'Procurement Officer',
+    color: 'blue',
+    permissions: {
+      orders: { view: true, edit: true, delete: false, approve: false },
+      financing: { view: true, edit: true, delete: false, approve: false },
+      catalog: { view: true, edit: true, delete: false, approve: false },
+      billing: { view: true, edit: false, delete: false, approve: false },
+      team: { view: false, edit: false, delete: false, approve: false },
+    },
+  },
+  {
+    id: 3,
+    name: 'Sales Rep',
+    color: 'purple',
+    permissions: {
+      orders: { view: true, edit: true, delete: false, approve: false },
+      financing: { view: true, edit: false, delete: false, approve: false },
+      catalog: { view: true, edit: false, delete: false, approve: false },
+      billing: { view: true, edit: false, delete: false, approve: false },
+      team: { view: false, edit: false, delete: false, approve: false },
+    },
+  },
+];
+
+const mockTeamMembers = [
+  { id: 1, name: 'Ahmed Al-Rashid', email: 'ahmed@buildtech.sa', roleId: 1, status: 'Active', approvalLimit: 500000 },
+  { id: 2, name: 'Fatima Hassan', email: 'fatima@buildtech.sa', roleId: 2, status: 'Active', approvalLimit: 100000 },
+  { id: 3, name: 'Mohammed Ali', email: 'mohammed@buildtech.sa', roleId: 3, status: 'Active', approvalLimit: 50000 },
+  { id: 4, name: 'Sara Abdullah', email: 'sara@buildtech.sa', roleId: 2, status: 'Pending', approvalLimit: 75000 },
+];
+
+const PermissionMatrix = ({ permissions, onChange, readOnly = false }) => {
+  return (
+    <div className="overflow-x-auto">
+      <table className="w-full min-w-[600px] border-collapse">
+        <thead>
+          <tr className="bg-slate-100 border-b-2 border-slate-200">
+            <th className="text-left p-3 text-xs font-bold text-slate-700 uppercase tracking-wider">Module</th>
+            <th className="text-center p-3 text-xs font-bold text-slate-700 uppercase tracking-wider">View</th>
+            <th className="text-center p-3 text-xs font-bold text-slate-700 uppercase tracking-wider">Edit</th>
+            <th className="text-center p-3 text-xs font-bold text-slate-700 uppercase tracking-wider">Delete</th>
+            <th className="text-center p-3 text-xs font-bold text-slate-700 uppercase tracking-wider">Approve</th>
+          </tr>
+        </thead>
+        <tbody>
+          {modules.map((module) => (
+            <tr key={module.id} className="border-b border-slate-200 hover:bg-slate-50">
+              <td className="p-3 text-sm font-medium text-slate-900">{module.name}</td>
+              {['view', 'edit', 'delete', 'approve'].map((action) => (
+                <td key={action} className="p-3 text-center">
+                  <label className="inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={permissions[module.id]?.[action] || false}
+                      onChange={(e) => !readOnly && onChange(module.id, action, e.target.checked)}
+                      disabled={readOnly}
+                      className="sr-only peer"
+                    />
+                    <div className={`relative w-11 h-6 bg-slate-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all ${
+                      !readOnly ? 'peer-checked:bg-[#56afb6]' : 'peer-checked:bg-slate-400'
+                    }`}></div>
+                  </label>
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
+const AccessControlContent = ({
+  roles,
+  setRoles,
+  selectedRole,
+  setSelectedRole,
+  teamMembers,
+  selectedMember,
+  setSelectedMember,
+  customPermissionsEnabled,
+  setCustomPermissionsEnabled,
+}) => {
+  const [accessTab, setAccessTab] = useState('roles');
+
+  const handlePermissionChange = (moduleId, action, value) => {
+    if (selectedRole) {
+      setRoles(roles.map(role => 
+        role.id === selectedRole.id
+          ? {
+              ...role,
+              permissions: {
+                ...role.permissions,
+                [moduleId]: {
+                  ...role.permissions[moduleId],
+                  [action]: value
+                }
+              }
+            }
+          : role
+      ));
+      setSelectedRole({
+        ...selectedRole,
+        permissions: {
+          ...selectedRole.permissions,
+          [moduleId]: {
+            ...selectedRole.permissions[moduleId],
+            [action]: value
+          }
+        }
+      });
+    }
+  };
+
+  const getRoleById = (roleId) => roles.find(r => r.id === roleId);
+
+  return (
+    <div>
+      {/* Access Tabs */}
+      <div className="flex gap-2 mb-6 bg-white/70 backdrop-blur-md rounded-xl p-1 shadow-sm">
+        <button
+          onClick={() => setAccessTab('roles')}
+          className={`flex-1 py-3 px-4 rounded-lg text-sm font-semibold transition-all flex items-center justify-center gap-2 ${
+            accessTab === 'roles'
+              ? 'bg-gradient-to-r from-[#56afb6] to-teal-500 text-white shadow-md'
+              : 'text-slate-600 hover:bg-slate-50'
+          }`}
+        >
+          <Shield size={16} />
+          Role Groups
+        </button>
+        <button
+          onClick={() => setAccessTab('members')}
+          className={`flex-1 py-3 px-4 rounded-lg text-sm font-semibold transition-all flex items-center justify-center gap-2 ${
+            accessTab === 'members'
+              ? 'bg-gradient-to-r from-[#56afb6] to-teal-500 text-white shadow-md'
+              : 'text-slate-600 hover:bg-slate-50'
+          }`}
+        >
+          <Users size={16} />
+          Team Members
+        </button>
+      </div>
+
+      {/* Role Groups Tab */}
+      {accessTab === 'roles' && (
+        <div>
+          {!selectedRole ? (
+            <div>
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-lg font-bold text-slate-900">Role Templates</h3>
+                <button className="px-4 py-2 bg-gradient-to-r from-[#56afb6] to-teal-500 text-white rounded-xl text-sm font-semibold shadow-md hover:shadow-lg transition-all flex items-center gap-2">
+                  <Plus size={16} />
+                  Create New Role
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {roles.map((role) => (
+                  <div
+                    key={role.id}
+                    onClick={() => setSelectedRole(role)}
+                    className="bg-white/80 backdrop-blur-md rounded-2xl p-5 shadow-sm hover:shadow-md transition-all cursor-pointer border-2 border-transparent hover:border-[#56afb6]/30"
+                  >
+                    <div className="flex items-center justify-between mb-4">
+                      <div className={`w-12 h-12 rounded-xl bg-${role.color}-100 flex items-center justify-center`}>
+                        <Shield size={24} className={`text-${role.color}-600`} />
+                      </div>
+                      <button className="p-2 hover:bg-slate-100 rounded-lg transition-all">
+                        <Edit size={16} className="text-slate-400" />
+                      </button>
+                    </div>
+                    <h4 className="text-lg font-bold text-slate-900 mb-2">{role.name}</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {Object.entries(role.permissions).filter(([_, perms]) => 
+                        Object.values(perms).some(v => v)
+                      ).slice(0, 3).map(([module]) => (
+                        <span key={module} className="px-2 py-1 bg-slate-100 text-slate-600 text-xs rounded-full">
+                          {modules.find(m => m.id === module)?.name}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div>
+              <div className="flex items-center justify-between mb-6">
+                <button
+                  onClick={() => setSelectedRole(null)}
+                  className="flex items-center gap-2 text-slate-600 hover:text-[#56afb6] transition-all"
+                >
+                  <ArrowUp size={18} className="rotate-[-90deg]" />
+                  <span className="font-medium">Back to Roles</span>
+                </button>
+                <button className="px-4 py-2 bg-gradient-to-r from-[#56afb6] to-teal-500 text-white rounded-xl text-sm font-semibold shadow-md hover:shadow-lg transition-all flex items-center gap-2">
+                  <Check size={16} />
+                  Save Changes
+                </button>
+              </div>
+
+              <div className="bg-white/80 backdrop-blur-md rounded-2xl p-6 shadow-sm">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className={`w-12 h-12 rounded-xl bg-${selectedRole.color}-100 flex items-center justify-center`}>
+                    <Shield size={24} className={`text-${selectedRole.color}-600`} />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-bold text-slate-900">{selectedRole.name}</h3>
+                    <p className="text-sm text-slate-500">Permission Matrix</p>
+                  </div>
+                </div>
+
+                <PermissionMatrix
+                  permissions={selectedRole.permissions}
+                  onChange={handlePermissionChange}
+                />
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Team Members Tab */}
+      {accessTab === 'members' && (
+        <div>
+          {!selectedMember ? (
+            <div>
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-lg font-bold text-slate-900">Team Members</h3>
+                <button className="px-4 py-2 bg-gradient-to-r from-[#56afb6] to-teal-500 text-white rounded-xl text-sm font-semibold shadow-md hover:shadow-lg transition-all flex items-center gap-2">
+                  <Plus size={16} />
+                  Invite Employee
+                </button>
+              </div>
+
+              <div className="bg-white/80 backdrop-blur-md rounded-2xl shadow-sm overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="w-full min-w-[600px]">
+                    <thead className="bg-slate-50 border-b-2 border-slate-200">
+                      <tr>
+                        <th className="text-left p-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Name</th>
+                        <th className="text-left p-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Email</th>
+                        <th className="text-left p-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Role</th>
+                        <th className="text-left p-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Status</th>
+                        <th className="text-center p-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {teamMembers.map((member) => {
+                        const role = getRoleById(member.roleId);
+                        return (
+                          <tr key={member.id} className="border-b border-slate-200 hover:bg-slate-50">
+                            <td className="p-4 text-sm font-medium text-slate-900">{member.name}</td>
+                            <td className="p-4 text-sm text-slate-600">{member.email}</td>
+                            <td className="p-4">
+                              <span className={`px-3 py-1 bg-${role?.color}-100 text-${role?.color}-700 text-xs font-semibold rounded-full`}>
+                                {role?.name}
+                              </span>
+                            </td>
+                            <td className="p-4">
+                              <span className={`px-3 py-1 text-xs font-semibold rounded-full ${
+                                member.status === 'Active'
+                                  ? 'bg-emerald-100 text-emerald-700'
+                                  : 'bg-amber-100 text-amber-700'
+                              }`}>
+                                {member.status}
+                              </span>
+                            </td>
+                            <td className="p-4 text-center">
+                              <button
+                                onClick={() => setSelectedMember(member)}
+                                className="p-2 hover:bg-slate-100 rounded-lg transition-all"
+                              >
+                                <Edit size={16} className="text-slate-600" />
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div>
+              <div className="flex items-center justify-between mb-6">
+                <button
+                  onClick={() => {
+                    setSelectedMember(null);
+                    setCustomPermissionsEnabled(false);
+                  }}
+                  className="flex items-center gap-2 text-slate-600 hover:text-[#56afb6] transition-all"
+                >
+                  <ArrowUp size={18} className="rotate-[-90deg]" />
+                  <span className="font-medium">Back to Team</span>
+                </button>
+                <button className="px-4 py-2 bg-gradient-to-r from-[#56afb6] to-teal-500 text-white rounded-xl text-sm font-semibold shadow-md hover:shadow-lg transition-all flex items-center gap-2">
+                  <Check size={16} />
+                  Save Changes
+                </button>
+              </div>
+
+              <div className="bg-white/80 backdrop-blur-md rounded-2xl p-6 shadow-sm space-y-6">
+                <div>
+                  <h3 className="text-2xl font-bold text-slate-900 mb-4">Edit Team Member</h3>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div>
+                      <label className="block text-sm font-semibold text-slate-700 mb-2">Full Name</label>
+                      <input
+                        type="text"
+                        value={selectedMember.name}
+                        className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:border-[#56afb6] focus:ring-2 focus:ring-[#56afb6]/20 outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-slate-700 mb-2">Email</label>
+                      <input
+                        type="email"
+                        value={selectedMember.email}
+                        className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:border-[#56afb6] focus:ring-2 focus:ring-[#56afb6]/20 outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="mb-6">
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">Assign Role Group</label>
+                    <select className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:border-[#56afb6] focus:ring-2 focus:ring-[#56afb6]/20 outline-none">
+                      {roles.map(role => (
+                        <option key={role.id} value={role.id} selected={role.id === selectedMember.roleId}>
+                          {role.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="mb-6">
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">Approval Limit (SAR)</label>
+                    <div className="relative">
+                      <DollarSign size={18} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400" />
+                      <input
+                        type="number"
+                        value={selectedMember.approvalLimit}
+                        className="w-full pl-12 pr-4 py-2.5 rounded-xl border border-slate-200 bg-white focus:border-[#56afb6] focus:ring-2 focus:ring-[#56afb6]/20 outline-none"
+                      />
+                    </div>
+                    <p className="text-xs text-slate-500 mt-1">Maximum amount this user can approve without escalation</p>
+                  </div>
+
+                  <div className="border-t border-slate-200 pt-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <div>
+                        <p className="text-sm font-semibold text-slate-900">Enable Custom Individual Permissions</p>
+                        <p className="text-xs text-slate-500">Override role group permissions for this user</p>
+                      </div>
+                      <label className="inline-flex items-center cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={customPermissionsEnabled}
+                          onChange={(e) => setCustomPermissionsEnabled(e.target.checked)}
+                          className="sr-only peer"
+                        />
+                        <div className="relative w-11 h-6 bg-slate-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#56afb6]"></div>
+                      </label>
+                    </div>
+
+                    {customPermissionsEnabled && (
+                      <div className="mt-4">
+                        <PermissionMatrix
+                          permissions={getRoleById(selectedMember.roleId)?.permissions || {}}
+                          onChange={() => {}}
+                        />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
 
 export const CRMDashboardFull = () => {
   const { setCurrentView } = useApp();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [showProductModal, setShowProductModal] = useState(false);
   const [showMoreMenu, setShowMoreMenu] = useState(false);
+  const [innerTab, setInnerTab] = useState('tasks');
+  const [roles, setRoles] = useState(defaultRoles);
+  const [selectedRole, setSelectedRole] = useState(null);
+  const [teamMembers, setTeamMembers] = useState(mockTeamMembers);
+  const [selectedMember, setSelectedMember] = useState(null);
+  const [customPermissionsEnabled, setCustomPermissionsEnabled] = useState(false);
 
   const mockProducts = [
     { id: 1, name: 'Heavy Duty Excavator', category: 'Heavy Machinery', stock: 8, minStock: 5, price: 450000, image: 'https://images.unsplash.com/photo-1581094271901-8022df4466f9?w=100' },
@@ -36,8 +452,9 @@ export const CRMDashboardFull = () => {
     { id: 'market', icon: TrendingUp, label: 'Market Analytics' },
     { id: 'advertising', icon: Megaphone, label: 'Advertising Packages' },
     { id: 'departments', icon: Building2, label: 'Department Management' },
-    { id: 'tasks', icon: CheckSquare, label: 'Tasks & Goals' },
+    { id: 'tasks', icon: CheckSquare, label: 'Workspace & Team' },
     { id: 'company', icon: Briefcase, label: 'Company Page' },
+    { id: 'access-control', icon: ShieldCheck, label: 'Team & Access' },
   ];
 
   const revenueData = [45, 52, 48, 61, 58, 67];
@@ -491,81 +908,129 @@ export const CRMDashboardFull = () => {
             </div>
           )}
 
-          {/* Tasks & Goals */}
+          {/* Workspace & Team */}
           {activeTab === 'tasks' && (
             <div>
-              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 md:mb-8">
-                <h2 className="text-2xl md:text-3xl font-bold text-slate-900">Tasks & Goals</h2>
-                <button className="w-full md:w-auto px-6 py-3 bg-teal-500 text-white rounded-xl font-medium hover:bg-teal-600 flex items-center justify-center gap-2">
-                  <Plus size={20} />
-                  Add New Task
+              <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-6 md:mb-8">Workspace & Team</h2>
+              
+              {/* Inner Tab Navigation */}
+              <div className="flex gap-2 mb-6 bg-white/70 backdrop-blur-md rounded-xl p-1 shadow-sm">
+                <button
+                  onClick={() => setInnerTab('tasks')}
+                  className={`flex-1 py-3 px-4 rounded-lg text-sm font-semibold transition-all flex items-center justify-center gap-2 ${
+                    innerTab === 'tasks'
+                      ? 'bg-gradient-to-r from-teal-400 to-teal-600 text-white shadow-md'
+                      : 'text-slate-600 hover:bg-slate-50'
+                  }`}
+                >
+                  <CheckSquare size={16} />
+                  Tasks & Goals
+                </button>
+                <button
+                  onClick={() => setInnerTab('access')}
+                  className={`flex-1 py-3 px-4 rounded-lg text-sm font-semibold transition-all flex items-center justify-center gap-2 ${
+                    innerTab === 'access'
+                      ? 'bg-gradient-to-r from-teal-400 to-teal-600 text-white shadow-md'
+                      : 'text-slate-600 hover:bg-slate-50'
+                  }`}
+                >
+                  <Shield size={16} />
+                  Access & Roles
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+              {/* Tasks & Goals Content */}
+              {innerTab === 'tasks' && (
                 <div>
-                  <h3 className="text-lg font-bold text-slate-900 mb-4">Pending</h3>
-                  <div className="space-y-4">
-                    <div className="bg-white/90 backdrop-blur rounded-2xl shadow-sm p-6">
-                      <h4 className="text-lg font-bold text-slate-900 mb-2">Increase Monthly Sales</h4>
-                      <p className="text-sm text-slate-600 mb-4">Achieve sales target of 50,000 SAR</p>
-                      <div className="flex items-center gap-3 mb-4">
-                        <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
-                          <Users className="text-purple-500" size={18} />
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium text-slate-900">فاطمة الأحمد</p>
-                          <p className="text-xs text-slate-500">Assigned to</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-between mb-4">
-                        <div>
-                          <p className="text-xs text-slate-500">Reward</p>
-                          <p className="text-lg font-bold text-teal-500">2,000 SAR</p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-slate-500">Due Date</p>
-                          <p className="text-sm font-medium text-slate-900">2024-12-31</p>
-                        </div>
-                      </div>
-                      <button className="w-full py-2 bg-teal-500 text-white rounded-xl text-sm font-medium hover:bg-teal-600">
-                        Mark Complete
-                      </button>
-                    </div>
+                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                    <h3 className="text-xl font-bold text-slate-900">Tasks & Goals</h3>
+                    <button className="w-full md:w-auto px-6 py-3 bg-teal-500 text-white rounded-xl font-medium hover:bg-teal-600 flex items-center justify-center gap-2">
+                      <Plus size={20} />
+                      Add New Task
+                    </button>
                   </div>
-                </div>
 
-                <div>
-                  <h3 className="text-lg font-bold text-slate-900 mb-4">Completed</h3>
-                  <div className="space-y-4">
-                    <div className="bg-white/90 backdrop-blur rounded-2xl shadow-sm p-6 border-2 border-green-200">
-                      <div className="flex items-start justify-between mb-2">
-                        <h4 className="text-lg font-bold text-slate-900">Improve Customer Service</h4>
-                        <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
-                          <Check className="text-green-600" size={18} />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                    <div>
+                      <h4 className="text-lg font-bold text-slate-900 mb-4">Pending</h4>
+                      <div className="space-y-4">
+                        <div className="bg-white/90 backdrop-blur rounded-2xl shadow-sm p-6">
+                          <h5 className="text-lg font-bold text-slate-900 mb-2">Increase Monthly Sales</h5>
+                          <p className="text-sm text-slate-600 mb-4">Achieve sales target of 50,000 SAR</p>
+                          <div className="flex items-center gap-3 mb-4">
+                            <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
+                              <Users className="text-purple-500" size={18} />
+                            </div>
+                            <div>
+                              <p className="text-sm font-medium text-slate-900">فاطمة الأحمد</p>
+                              <p className="text-xs text-slate-500">Assigned to</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center justify-between mb-4">
+                            <div>
+                              <p className="text-xs text-slate-500">Reward</p>
+                              <p className="text-lg font-bold text-teal-500">2,000 SAR</p>
+                            </div>
+                            <div>
+                              <p className="text-xs text-slate-500">Due Date</p>
+                              <p className="text-sm font-medium text-slate-900">2024-12-31</p>
+                            </div>
+                          </div>
+                          <button className="w-full py-2 bg-teal-500 text-white rounded-xl text-sm font-medium hover:bg-teal-600">
+                            Mark Complete
+                          </button>
                         </div>
                       </div>
-                      <p className="text-sm text-slate-600 mb-4">Respond within 24hrs</p>
-                      <div className="flex items-center gap-3 mb-4">
-                        <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
-                          <Users className="text-blue-500" size={18} />
+                    </div>
+
+                    <div>
+                      <h4 className="text-lg font-bold text-slate-900 mb-4">Completed</h4>
+                      <div className="space-y-4">
+                        <div className="bg-white/90 backdrop-blur rounded-2xl shadow-sm p-6 border-2 border-green-200">
+                          <div className="flex items-start justify-between mb-2">
+                            <h5 className="text-lg font-bold text-slate-900">Improve Customer Service</h5>
+                            <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
+                              <Check className="text-green-600" size={18} />
+                            </div>
+                          </div>
+                          <p className="text-sm text-slate-600 mb-4">Respond within 24hrs</p>
+                          <div className="flex items-center gap-3 mb-4">
+                            <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                              <Users className="text-blue-500" size={18} />
+                            </div>
+                            <div>
+                              <p className="text-sm font-medium text-slate-900">عمر الزهراني</p>
+                              <p className="text-xs text-slate-500">Completed by</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-xs text-slate-500">Reward Paid</p>
+                              <p className="text-lg font-bold text-green-600">1,500 SAR</p>
+                            </div>
+                            <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">✓ Completed</span>
+                          </div>
                         </div>
-                        <div>
-                          <p className="text-sm font-medium text-slate-900">عمر الزهراني</p>
-                          <p className="text-xs text-slate-500">Completed by</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-xs text-slate-500">Reward Paid</p>
-                          <p className="text-lg font-bold text-green-600">1,500 SAR</p>
-                        </div>
-                        <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">✓ Completed</span>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              )}
+
+              {/* Access & Roles Content */}
+              {innerTab === 'access' && (
+                <AccessControlContent
+                  roles={roles}
+                  setRoles={setRoles}
+                  selectedRole={selectedRole}
+                  setSelectedRole={setSelectedRole}
+                  teamMembers={teamMembers}
+                  selectedMember={selectedMember}
+                  setSelectedMember={setSelectedMember}
+                  customPermissionsEnabled={customPermissionsEnabled}
+                  setCustomPermissionsEnabled={setCustomPermissionsEnabled}
+                />
+              )}
             </div>
           )}
 
@@ -837,6 +1302,31 @@ export const CRMDashboardFull = () => {
                 </button>
                 <button className="px-6 py-3 bg-teal-500 text-white rounded-xl font-medium hover:bg-teal-600">
                   Save Changes
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Team & Access Control */}
+          {activeTab === 'access-control' && (
+            <div>
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl md:text-3xl font-bold text-slate-900">Team & Access Management</h2>
+                <button
+                  onClick={() => setCurrentView('access-control')}
+                  className="px-6 py-3 bg-gradient-to-r from-teal-400 to-teal-600 text-white rounded-xl font-medium hover:shadow-lg transition-all flex items-center gap-2"
+                >
+                  <ShieldCheck size={20} />
+                  Open Full View
+                </button>
+              </div>
+              <div className="bg-white/90 backdrop-blur rounded-2xl shadow-sm p-6">
+                <p className="text-slate-600 mb-4">Manage team members, roles, and permissions from the dedicated access control panel.</p>
+                <button
+                  onClick={() => setCurrentView('access-control')}
+                  className="w-full py-3 bg-teal-500 text-white rounded-xl font-medium hover:bg-teal-600"
+                >
+                  Go to Access Control Manager
                 </button>
               </div>
             </div>
