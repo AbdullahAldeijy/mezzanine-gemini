@@ -11,6 +11,7 @@ import { AdminRiskPortal } from './components/AdminRiskPortal';
 import { CompanyProfile } from './components/CompanyProfile';
 import { KYBVerification } from './components/KYBVerification';
 import { AccessControlManager } from './components/AccessControlManager';
+import { DataIntegrations } from './components/DataIntegrations';
 
 const AppContent = () => {
   const { currentView, showCheckout, showTorbiona } = useApp();
@@ -26,6 +27,7 @@ const AppContent = () => {
       {currentView === 'company-profile' && <CompanyProfile />}
       {currentView === 'kyb-verification' && <KYBVerification />}
       {currentView === 'access-control' && <AccessControlManager />}
+      {currentView === 'data-integrations' && <DataIntegrations />}
       {showCheckout && <CheckoutPanel />}
       {showTorbiona && <TorbionaModal />}
       <FloatingChatWidget />
