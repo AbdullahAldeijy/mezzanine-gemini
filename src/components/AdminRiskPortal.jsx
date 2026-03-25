@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import {
   ArrowLeft, Shield, CheckCircle2, AlertTriangle, Building2, 
-  Database, Activity, CreditCard, Download, Zap, Clock
+  Database, Activity, CreditCard, Download, Zap, Clock, TrendingUp, Users, Briefcase
 } from 'lucide-react';
 
 const manualReviewApps = [
@@ -77,9 +77,42 @@ const autoApprovedApps = [
 
 export const AdminRiskPortal = () => {
   const { setCurrentView } = useApp();
+  const [hubTab, setHubTab] = useState('credit-risk');
   const [activeTab, setActiveTab] = useState('manual');
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [creditLimit, setCreditLimit] = useState(0);
+  const [portfolios, setPortfolios] = useState([
+    {
+      id: 1,
+      name: 'Riyadh Construction Pool',
+      companies: 45,
+      value: 5000000,
+      ecl: 1.1,
+      status: 'ready',
+      investor: null,
+      issued: false,
+    },
+    {
+      id: 2,
+      name: 'Qassim Industrial Pool',
+      companies: 12,
+      value: 2400000,
+      ecl: 1.8,
+      status: 'active',
+      investor: 'Al Rajhi Bank',
+      issued: true,
+    },
+    {
+      id: 3,
+      name: 'Jeddah Trade Pool',
+      companies: 28,
+      value: 3800000,
+      ecl: 1.4,
+      status: 'ready',
+      investor: null,
+      issued: false,
+    },
+  ]);
 
   const currentList = activeTab === 'manual' ? manualReviewApps : autoApprovedApps;
   const isAutoApproved = selectedRequest?.type === 'auto';
@@ -104,15 +137,49 @@ export const AdminRiskPortal = () => {
           >
             <ArrowLeft size={18} />
           </button>
-          <div className="flex items-center gap-2">
-            <Shield size={16} className="text-[#56afb6]" />
-            <h1 className="text-white font-bold text-sm md:text-base">Risk Command Center</h1>
+          <div>
+            <div className="flex items-center gap-2">
+              <Shield size={16} className="text-[#56afb6]" />
+              <h1 className="text-white font-bold text-sm md:text-base">Mezzanine Capital & Risk Hub</h1>
+            </div>
+            <p className="text-xs text-slate-400 mt-0.5 ml-6">Manage AI Credit Underwriting & Institutional Sukuk Issuance</p>
           </div>
         </div>
       </header>
 
+      {/* Hub Tabs */}
+      <div className="px-4 py-3 bg-slate-800 border-b border-slate-700">
+        <div className="flex gap-2 bg-slate-900/50 rounded-xl p-1">
+          <button
+            onClick={() => setHubTab('credit-risk')}
+            className={`flex-1 py-2.5 px-4 rounded-lg text-xs md:text-sm font-semibold transition-all flex items-center justify-center gap-2 ${
+              hubTab === 'credit-risk'
+                ? 'bg-gradient-to-r from-[#56afb6] to-teal-500 text-white shadow-md'
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            <Shield size={16} />
+            <span className="hidden sm:inline">Credit Underwriting (Torbiona AI)</span>
+            <span className="sm:hidden">Credit Risk</span>
+          </button>
+          <button
+            onClick={() => setHubTab('investment-portfolios')}
+            className={`flex-1 py-2.5 px-4 rounded-lg text-xs md:text-sm font-semibold transition-all flex items-center justify-center gap-2 ${
+              hubTab === 'investment-portfolios'
+                ? 'bg-gradient-to-r from-[#56afb6] to-teal-500 text-white shadow-md'
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            <TrendingUp size={16} />
+            <span className="hidden sm:inline">Investment & Sukuk Portfolios</span>
+            <span className="sm:hidden">Portfolios</span>
+          </button>
+        </div>
+      </div>
+
       {/* KPI Cards */}
-      <div className="px-4 py-4 bg-slate-800 border-b border-slate-700">
+      {hubTab === 'credit-risk' && (
+        <div className="px-4 py-4 bg-slate-800 border-b border-slate-700">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <div className="bg-slate-900/50 rounded-xl p-3 border border-slate-700">
             <div className="flex items-center gap-2 mb-1">
@@ -136,9 +203,39 @@ export const AdminRiskPortal = () => {
             <p className="text-2xl font-bold text-amber-400">14</p>
           </div>
         </div>
-      </div>
+        </div>
+      )}
+
+      {hubTab === 'investment-portfolios' && (
+        <div className="px-4 py-4 bg-slate-800 border-b border-slate-700">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div className="bg-slate-900/50 rounded-xl p-3 border border-slate-700">
+              <div className="flex items-center gap-2 mb-1">
+                <Briefcase size={14} className="text-slate-400" />
+                <p className="text-xs text-slate-400 uppercase font-semibold">Total Securitized Assets</p>
+              </div>
+              <p className="text-2xl font-bold text-white">15.2M <span className="text-sm text-slate-400">SAR</span></p>
+            </div>
+            <div className="bg-[#56afb6]/10 rounded-xl p-3 border border-[#56afb6]/30">
+              <div className="flex items-center gap-2 mb-1">
+                <Users size={14} className="text-[#56afb6]" />
+                <p className="text-xs text-[#56afb6] uppercase font-semibold">Active Institutional Investors</p>
+              </div>
+              <p className="text-2xl font-bold text-[#56afb6]">8 <span className="text-sm text-slate-400">(Banks, Govt Funds)</span></p>
+            </div>
+            <div className="bg-emerald-500/10 rounded-xl p-3 border border-emerald-500/30">
+              <div className="flex items-center gap-2 mb-1">
+                <TrendingUp size={14} className="text-emerald-400" />
+                <p className="text-xs text-emerald-400 uppercase font-semibold">Average Yield</p>
+              </div>
+              <p className="text-2xl font-bold text-emerald-400">8.5%</p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Main Content - Master-Detail Pattern */}
+      {hubTab === 'credit-risk' && (
       <div className="flex-1 overflow-hidden">
         <div className="h-full grid grid-cols-1 md:grid-cols-3">
           {/* Queue List - Hidden on mobile when request selected */}
@@ -418,6 +515,121 @@ export const AdminRiskPortal = () => {
           </main>
         </div>
       </div>
+      )}
+
+      {/* Investment & Sukuk Portfolios Content */}
+      {hubTab === 'investment-portfolios' && (
+        <div className="flex-1 overflow-y-auto p-4 md:p-6">
+          <div className="max-w-7xl mx-auto">
+            <div className="mb-6">
+              <h2 className="text-xl md:text-2xl font-bold text-slate-900 mb-2">Regional Securitization Pools</h2>
+              <p className="text-sm text-slate-600">Bundle B2B credit portfolios by region into investable Sukuk instruments for institutional investors</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {portfolios.map((portfolio) => (
+                <div
+                  key={portfolio.id}
+                  className="bg-white/80 backdrop-blur-md border border-white/60 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all"
+                >
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#56afb6] to-teal-500 flex items-center justify-center">
+                        <Briefcase size={20} className="text-white" />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-bold text-slate-900">{portfolio.name}</h3>
+                        <p className="text-xs text-slate-500">{portfolio.companies} Active Companies</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3 mb-4">
+                    <div className="bg-slate-50 rounded-xl p-3">
+                      <p className="text-xs text-slate-500 uppercase font-semibold mb-1">Portfolio Value</p>
+                      <p className="text-2xl font-bold text-slate-900">{(portfolio.value / 1000000).toFixed(1)}M <span className="text-sm text-slate-500">SAR</span></p>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="bg-slate-50 rounded-xl p-3">
+                        <p className="text-xs text-slate-500 uppercase font-semibold mb-1">Avg ECL (Risk)</p>
+                        <p className={`text-lg font-bold ${
+                          portfolio.ecl < 1.5 ? 'text-emerald-600' : 'text-amber-600'
+                        }`}>{portfolio.ecl}%</p>
+                      </div>
+                      <div className="bg-slate-50 rounded-xl p-3">
+                        <p className="text-xs text-slate-500 uppercase font-semibold mb-1">Companies</p>
+                        <p className="text-lg font-bold text-[#56afb6]">{portfolio.companies}</p>
+                      </div>
+                    </div>
+
+                    {portfolio.status === 'active' && portfolio.investor && (
+                      <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3">
+                        <p className="text-xs text-emerald-700 font-semibold mb-1">✓ Active Investor</p>
+                        <p className="text-sm font-bold text-emerald-900">{portfolio.investor}</p>
+                      </div>
+                    )}
+
+                    {portfolio.status === 'ready' && (
+                      <div className="bg-[#56afb6]/10 border border-[#56afb6]/30 rounded-xl p-3">
+                        <p className="text-xs text-[#56afb6] font-semibold">⚡ Ready for Issuance</p>
+                      </div>
+                    )}
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      if (!portfolio.issued) {
+                        setPortfolios(portfolios.map(p => 
+                          p.id === portfolio.id 
+                            ? { ...p, issued: true, status: 'active', investor: 'Pending Settlement' }
+                            : p
+                        ));
+                      }
+                    }}
+                    disabled={portfolio.issued}
+                    className={`w-full py-3 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2 ${
+                      portfolio.issued
+                        ? 'bg-slate-200 text-slate-500 cursor-not-allowed'
+                        : 'bg-gradient-to-r from-[#56afb6] to-teal-500 text-white hover:shadow-lg'
+                    }`}
+                  >
+                    {portfolio.issued ? (
+                      <>
+                        <CheckCircle2 size={16} />
+                        ✅ Sukuk Issued & Listed
+                      </>
+                    ) : (
+                      <>
+                        <TrendingUp size={16} />
+                        Issue Sukuk (Securitize)
+                      </>
+                    )}
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            {/* Additional Info Panel */}
+            <div className="mt-8 bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-6 text-white">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-xl bg-[#56afb6]/20 border border-[#56afb6]/30 flex items-center justify-center flex-shrink-0">
+                  <Shield size={20} className="text-[#56afb6]" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold mb-2">How Mezzanine Securitization Works</h3>
+                  <p className="text-sm text-slate-300 leading-relaxed">
+                    Mezzanine bundles vetted B2B credit portfolios (approved by Torbiona AI) into regional pools. 
+                    These pools are then securitized into Sharia-compliant Sukuk instruments and offered to institutional investors 
+                    (banks, sovereign wealth funds, pension funds). This creates liquidity for SME lending while offering 
+                    institutional-grade fixed-income products with 8-9% yields backed by diversified trade receivables.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
