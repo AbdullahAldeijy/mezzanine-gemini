@@ -6,8 +6,15 @@ export const B2BPlatform = () => {
   const { setCurrentView, openCheckout } = useApp();
   const [showRFQModal, setShowRFQModal] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeCategory, setActiveCategory] = useState('All');
+  const [activeCity, setActiveCity] = useState('All');
+  const [activeType, setActiveType] = useState('All');
+  const [contactSeller, setContactSeller] = useState(null);
 
-  const categories = ['Heavy Machinery', 'Building Materials', 'Safety Equipment', 'Electrical & Plumbing', 'Logistics Services'];
+  const categories = ['All', 'Heavy Machinery', 'Building Materials', 'Safety Equipment', 'Electrical & Plumbing', 'Logistics Services'];
+  const cities = ['All', 'Riyadh', 'Jeddah', 'Dammam', 'Mecca'];
+  const opportunityTypes = ['All', 'Products', 'RFQs'];
 
   const companies = [
     { name: 'BuildTech', rating: 4.8, icon: Building2 },
@@ -17,24 +24,41 @@ export const B2BPlatform = () => {
   ];
 
   const products = [
-    { id: 1, name: 'Heavy Excavator', price: 450000, seller: 'BuildTech Construction', stock: 15, image: 'https://images.unsplash.com/photo-1581094271901-8022df4466f9?w=300' },
-    { id: 2, name: 'Tower Crane', price: 680000, seller: 'Global Materials', stock: 8, image: 'https://images.unsplash.com/photo-1590856029826-c7a73142bbf1?w=300' },
-    { id: 3, name: 'Concrete Mixer', price: 125000, seller: 'Heavy Equipment Co.', stock: 22, image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=300' },
-    { id: 4, name: 'Welding Equipment', price: 85000, seller: 'BuildTech Construction', stock: 12, image: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=300' },
-    { id: 5, name: 'Steel Bars', price: 850, seller: 'Global Materials', stock: 150, image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=300' },
-    { id: 6, name: 'Safety Helmets', price: 1200, seller: 'Safety First Ltd.', stock: 45, image: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=300' },
-    { id: 7, name: 'Power Tools', price: 5500, seller: 'Heavy Equipment Co.', stock: 30, image: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=300' },
-    { id: 8, name: 'Cement Bags', price: 450, seller: 'BuildTech Construction', stock: 200, image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=300' },
+    { id: 1, name: 'Heavy Excavator', price: 450000, seller: 'BuildTech Construction', stock: 15, category: 'Heavy Machinery', city: 'Riyadh', image: 'https://images.unsplash.com/photo-1581094271901-8022df4466f9?w=300' },
+    { id: 2, name: 'Tower Crane', price: 680000, seller: 'Global Materials', stock: 8, category: 'Heavy Machinery', city: 'Jeddah', image: 'https://images.unsplash.com/photo-1590856029826-c7a73142bbf1?w=300' },
+    { id: 3, name: 'Concrete Mixer', price: 125000, seller: 'Heavy Equipment Co.', stock: 22, category: 'Heavy Machinery', city: 'Dammam', image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=300' },
+    { id: 4, name: 'Welding Equipment', price: 85000, seller: 'BuildTech Construction', stock: 12, category: 'Heavy Machinery', city: 'Riyadh', image: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=300' },
+    { id: 5, name: 'Steel Bars', price: 850, seller: 'Global Materials', stock: 150, category: 'Building Materials', city: 'Riyadh', image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=300' },
+    { id: 6, name: 'Safety Helmets', price: 1200, seller: 'Safety First Ltd.', stock: 45, category: 'Safety Equipment', city: 'Mecca', image: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=300' },
+    { id: 7, name: 'Power Tools', price: 5500, seller: 'Heavy Equipment Co.', stock: 30, category: 'Electrical & Plumbing', city: 'Jeddah', image: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=300' },
+    { id: 8, name: 'Cement Bags', price: 450, seller: 'BuildTech Construction', stock: 200, category: 'Building Materials', city: 'Riyadh', image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=300' },
   ];
 
   const liveRFQs = [
-    { id: 1, title: '500 Tons of Reinforcing Steel', company: 'BuildTech Construction', location: 'Riyadh', deadline: '2 Days', quantity: 'Bulk' },
-    { id: 2, title: '3 Heavy Excavators', company: 'Al-Noor Trading Co.', location: 'Jeddah', deadline: '5 Days', quantity: '3 Units' },
-    { id: 3, title: 'Safety Equipment Package', company: 'Qassim Heavy Metals', location: 'Dammam', deadline: '1 Day', quantity: '200+ Items' },
-    { id: 4, title: 'Concrete Mixers & Pumps', company: 'Modern Contracting Ltd.', location: 'Riyadh', deadline: '3 Days', quantity: '5 Units' },
-    { id: 5, title: 'Electrical Wiring Materials', company: 'Global Materials', location: 'Mecca', deadline: '4 Days', quantity: 'Bulk' },
-    { id: 6, title: 'Tower Crane Rental (6 Months)', company: 'Riyadh Steel Works', location: 'Riyadh', deadline: '7 Days', quantity: '2 Units' },
+    { id: 1, title: '500 Tons of Reinforcing Steel', company: 'BuildTech Construction', location: 'Riyadh', deadline: '2 Days', quantity: 'Bulk', category: 'Building Materials' },
+    { id: 2, title: '3 Heavy Excavators', company: 'Al-Noor Trading Co.', location: 'Jeddah', deadline: '5 Days', quantity: '3 Units', category: 'Heavy Machinery' },
+    { id: 3, title: 'Safety Equipment Package', company: 'Qassim Heavy Metals', location: 'Dammam', deadline: '1 Day', quantity: '200+ Items', category: 'Safety Equipment' },
+    { id: 4, title: 'Concrete Mixers & Pumps', company: 'Modern Contracting Ltd.', location: 'Riyadh', deadline: '3 Days', quantity: '5 Units', category: 'Heavy Machinery' },
+    { id: 5, title: 'Electrical Wiring Materials', company: 'Global Materials', location: 'Mecca', deadline: '4 Days', quantity: 'Bulk', category: 'Electrical & Plumbing' },
+    { id: 6, title: 'Tower Crane Rental (6 Months)', company: 'Riyadh Steel Works', location: 'Riyadh', deadline: '7 Days', quantity: '2 Units', category: 'Heavy Machinery' },
   ];
+
+  const filteredProducts = products.filter(p => {
+    const matchSearch = !searchQuery || p.name.toLowerCase().includes(searchQuery.toLowerCase()) || p.seller.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchCat = activeCategory === 'All' || p.category === activeCategory;
+    const matchCity = activeCity === 'All' || p.city === activeCity;
+    return matchSearch && matchCat && matchCity;
+  });
+
+  const filteredRFQs = liveRFQs.filter(r => {
+    const matchSearch = !searchQuery || r.title.toLowerCase().includes(searchQuery.toLowerCase()) || r.company.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchCat = activeCategory === 'All' || r.category === activeCategory;
+    const matchCity = activeCity === 'All' || r.location === activeCity;
+    return matchSearch && matchCat && matchCity;
+  });
+
+  const showProducts = activeType === 'All' || activeType === 'Products';
+  const showRFQs = activeType === 'All' || activeType === 'RFQs';
 
   return (
     <div className="min-h-screen bg-cream">
@@ -56,6 +80,8 @@ export const B2BPlatform = () => {
                 <input
                   type="text"
                   placeholder="Search products, suppliers, materials..."
+                  value={searchQuery}
+                  onChange={e => setSearchQuery(e.target.value)}
                   className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none"
                 />
               </div>
@@ -118,6 +144,8 @@ export const B2BPlatform = () => {
               <input
                 type="text"
                 placeholder="Search products..."
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none text-sm"
               />
             </div>
@@ -166,15 +194,45 @@ export const B2BPlatform = () => {
         )}
       </nav>
 
-      {/* Categories */}
+      {/* Filters Bar */}
       <div className="bg-white/50 backdrop-blur-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 md:px-6 py-3 md:py-4">
-          <div className="flex gap-2 md:gap-3 overflow-x-auto hide-scrollbar">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 py-3 md:py-4 space-y-2">
+          {/* Sector */}
+          <div className="flex gap-2 overflow-x-auto hide-scrollbar">
             {categories.map((cat) => (
-              <button key={cat} className="px-3 md:px-4 py-2 bg-white/50 hover:bg-teal-100 rounded-full text-xs md:text-sm font-medium text-slate-700 whitespace-nowrap transition-all">
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                className={`px-3 md:px-4 py-1.5 rounded-full text-xs md:text-sm font-medium whitespace-nowrap transition-all ${activeCategory === cat ? 'bg-teal-500 text-white' : 'bg-white/50 hover:bg-teal-100 text-slate-700'}`}
+              >
                 {cat}
               </button>
             ))}
+          </div>
+          {/* City & Type */}
+          <div className="flex gap-2 flex-wrap">
+            <div className="flex gap-2 overflow-x-auto hide-scrollbar">
+              {cities.map(c => (
+                <button
+                  key={c}
+                  onClick={() => setActiveCity(c)}
+                  className={`px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap transition-all ${activeCity === c ? 'bg-slate-700 text-white' : 'bg-white border border-gray-200 text-slate-600 hover:bg-gray-100'}`}
+                >
+                  {c === 'All' ? 'All Cities' : c}
+                </button>
+              ))}
+            </div>
+            <div className="flex gap-2 ml-auto">
+              {opportunityTypes.map(t => (
+                <button
+                  key={t}
+                  onClick={() => setActiveType(t)}
+                  className={`px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap transition-all ${activeType === t ? 'bg-teal-600 text-white' : 'bg-white border border-teal-200 text-teal-600 hover:bg-teal-50'}`}
+                >
+                  {t === 'All' ? 'All Types' : t}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -210,10 +268,14 @@ export const B2BPlatform = () => {
         </div>
 
         {/* Products Grid */}
+        {showProducts && (
         <div>
-          <h2 className="text-xl md:text-2xl font-bold text-slate-900 mb-4 md:mb-6">Trending Products</h2>
+          <h2 className="text-xl md:text-2xl font-bold text-slate-900 mb-4 md:mb-6">Trending Products {filteredProducts.length < products.length && <span className="text-base text-slate-400 font-normal">({filteredProducts.length} results)</span>}</h2>
+          {filteredProducts.length === 0 ? (
+            <p className="text-slate-400 text-sm py-8 text-center">No products match your filters.</p>
+          ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
-            {products.map((product) => (
+            {filteredProducts.map((product) => (
               <div key={product.id} className="bg-white/70 backdrop-blur-md rounded-2xl shadow-sm overflow-hidden hover:shadow-lg transition-all">
                 <div className="h-40 md:h-40 bg-lightgray overflow-hidden">
                   <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
@@ -241,7 +303,7 @@ export const B2BPlatform = () => {
                         RFQ
                       </button>
                     </div>
-                    <button className="w-full text-xs text-teal-500 hover:text-teal-600 font-medium py-1">
+                    <button onClick={() => setContactSeller(product)} className="w-full text-xs text-teal-500 hover:text-teal-600 font-medium py-1">
                       Contact Seller
                     </button>
                   </div>
@@ -249,13 +311,16 @@ export const B2BPlatform = () => {
               </div>
             ))}
           </div>
+          )}
         </div>
+        )}
 
         {/* Live Public RFQs (Bidding Board) */}
+        {showRFQs && (
         <div className="mt-12">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
             <div>
-              <h2 className="text-xl md:text-2xl font-bold text-slate-900 mb-1">Live Public RFQs (Bidding Board)</h2>
+              <h2 className="text-xl md:text-2xl font-bold text-slate-900 mb-1">Live Public RFQs (Bidding Board) {filteredRFQs.length < liveRFQs.length && <span className="text-base text-slate-400 font-normal">({filteredRFQs.length} results)</span>}</h2>
               <p className="text-sm text-slate-600">Browse active requests from contractors and submit your quotes.</p>
             </div>
             <button className="text-teal-500 hover:text-teal-600 font-semibold text-sm mt-3 sm:mt-0 flex items-center gap-1">
@@ -263,8 +328,11 @@ export const B2BPlatform = () => {
             </button>
           </div>
 
+          {filteredRFQs.length === 0 ? (
+            <p className="text-slate-400 text-sm py-8 text-center">No RFQs match your filters.</p>
+          ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {liveRFQs.map((rfq) => (
+            {filteredRFQs.map((rfq) => (
               <div key={rfq.id} className="bg-white/90 border-l-4 border-teal-500 rounded-xl p-5 shadow-sm hover:shadow-md transition-all">
                 <h3 className="text-base md:text-lg font-bold text-slate-900 mb-2">{rfq.title}</h3>
                 <p className="text-xs text-slate-500 mb-4">Requested by: <span className="font-semibold text-slate-700">{rfq.company}</span></p>
@@ -290,7 +358,9 @@ export const B2BPlatform = () => {
               </div>
             ))}
           </div>
+          )}
         </div>
+        )}
       </div>
 
       {/* Footer */}
@@ -323,6 +393,33 @@ export const B2BPlatform = () => {
           </div>
         </div>
       </footer>
+
+      {/* Contact Seller Modal */}
+      {contactSeller && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-bold text-slate-900">Contact Seller</h3>
+              <button onClick={() => setContactSeller(null)} className="p-2 hover:bg-gray-100 rounded-lg"><X size={20} /></button>
+            </div>
+            <div className="flex items-center gap-3 mb-5 p-3 bg-teal-50 rounded-xl">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-teal-400 to-teal-600 flex items-center justify-center text-white font-bold">{contactSeller.seller[0]}</div>
+              <div>
+                <p className="font-semibold text-slate-900">{contactSeller.seller}</p>
+                <p className="text-xs text-slate-500">Regarding: {contactSeller.name}</p>
+              </div>
+            </div>
+            <div className="space-y-3">
+              <textarea rows={3} placeholder="Write your message..." className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none text-sm resize-none" />
+              <input type="text" placeholder="Your name" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-teal-500 outline-none text-sm" />
+              <input type="text" placeholder="Your phone / email" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-teal-500 outline-none text-sm" />
+              <button onClick={() => { alert('Message sent!'); setContactSeller(null); }} className="w-full py-3 bg-gradient-to-r from-teal-400 to-teal-600 text-white rounded-xl font-medium hover:shadow-lg transition-all">
+                Send Message
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* RFQ Modal */}
       {showRFQModal && (

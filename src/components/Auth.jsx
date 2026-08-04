@@ -21,6 +21,7 @@ export const Auth = () => {
   const [kybNationalId, setKybNationalId] = useState('');
   const [kybCrNumber, setKybCrNumber] = useState('');
   const [nafathNumber, setNafathNumber] = useState('');
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -305,10 +306,26 @@ export const Auth = () => {
                     </div>
                   </div>
 
+                  {/* Joint Operation Agreement */}
+                  <label className="flex items-start gap-3 p-3 bg-amber-50 border border-amber-200 rounded-xl cursor-pointer mb-3">
+                    <input
+                      type="checkbox"
+                      checked={agreedToTerms}
+                      onChange={e => setAgreedToTerms(e.target.checked)}
+                      className="mt-0.5 w-4 h-4 accent-teal-500 cursor-pointer flex-shrink-0"
+                    />
+                    <span className="text-xs text-slate-700">
+                      <span className="font-semibold text-slate-900">الموافقة على التشغيل المشترك</span>
+                      <br />
+                      I agree to the joint operation terms and authorize Mezzanine to access and process my company data for platform services.
+                    </span>
+                  </label>
+
                   {/* Continue Button */}
                   <button
                     onClick={handleContinueToDashboard}
-                    className="w-full py-3 bg-gradient-to-r from-[#56afb6] to-teal-500 text-white rounded-xl font-bold text-sm shadow-lg hover:shadow-xl transition-all"
+                    disabled={!agreedToTerms}
+                    className={`w-full py-3 rounded-xl font-bold text-sm shadow-lg transition-all ${agreedToTerms ? 'bg-gradient-to-r from-[#56afb6] to-teal-500 text-white hover:shadow-xl' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}
                   >
                     {authTab === 'register' ? 'Continue to Setup Wizard' : 'Continue to Dashboard'}
                   </button>

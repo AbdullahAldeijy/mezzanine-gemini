@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { LayoutDashboard, Package, FileText, BarChart3, TrendingUp, Search, Bell, Plus, Download, Star, AlertTriangle, DollarSign, Users, Clock, Edit, Trash2, X, Megaphone, Building2, CheckSquare, Briefcase, ArrowUp, Check, Twitter, Linkedin, Facebook, Upload, Award, MoreHorizontal, ShieldCheck, Shield } from 'lucide-react';
+import { LayoutDashboard, Package, FileText, BarChart3, TrendingUp, Search, Bell, Plus, Download, Star, AlertTriangle, DollarSign, Users, Clock, Edit, Trash2, X, Megaphone, Building2, CheckSquare, Briefcase, ArrowUp, Check, Twitter, Linkedin, Facebook, Upload, Award, MoreHorizontal, ShieldCheck, Shield, Zap, FileCheck } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 
 const modules = [
@@ -455,6 +455,7 @@ export const CRMDashboardFull = () => {
     { id: 'tasks', icon: CheckSquare, label: 'Workspace & Team' },
     { id: 'company', icon: Briefcase, label: 'Company Page' },
     { id: 'access-control', icon: ShieldCheck, label: 'Team & Access' },
+    { id: 'contracts-portal', icon: FileCheck, label: 'Digital Contracts', externalView: 'contracts-portal' },
   ];
 
   const revenueData = [45, 52, 48, 61, 58, 67];
@@ -478,10 +479,10 @@ export const CRMDashboardFull = () => {
             return (
               <div
                 key={item.id}
-                onClick={() => setActiveTab(item.id)}
+                onClick={() => item.externalView ? setCurrentView(item.externalView) : setActiveTab(item.id)}
                 className={`flex items-center gap-3 px-4 py-3 rounded-xl mb-2 cursor-pointer transition-all ${
                   activeTab === item.id ? 'bg-teal-500 text-white' : 'text-slate-600 hover:bg-gray-100'
-                }`}
+                } ${item.externalView ? 'border border-dashed border-blue-900/30 hover:border-blue-900/60 hover:text-blue-900 hover:bg-blue-900/5' : ''}`}
               >
                 <Icon size={20} />
                 <span className="text-sm font-medium">{item.label}</span>
@@ -1188,6 +1189,30 @@ export const CRMDashboardFull = () => {
                 </div>
               </div>
 
+              {/* Data Integrations Banner */}
+              <div className="bg-teal-50 border border-teal-200 rounded-xl p-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                <div className="flex items-start gap-3 flex-1">
+                  <div className="w-10 h-10 rounded-xl bg-teal-500/20 flex items-center justify-center flex-shrink-0">
+                    <Zap size={20} className="text-teal-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm md:text-base font-semibold text-slate-900 mb-1">
+                      🚀 Boost your credit limit up to 500,000 SAR by connecting your ERP, SIMAH, and Bank accounts.
+                    </p>
+                    <p className="text-xs text-slate-600">
+                      Connect 5 data sources to unlock maximum financing potential with Torbiona AI
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setCurrentView('data-integrations')}
+                  className="w-full md:w-auto px-6 py-3 bg-gradient-to-r from-teal-500 to-teal-600 text-white rounded-xl font-bold hover:shadow-lg transition-all flex items-center justify-center gap-2 whitespace-nowrap"
+                >
+                  <Zap size={18} />
+                  Go to Data & Integrations
+                </button>
+              </div>
+
               <div className="space-y-6">
                 {/* Branding */}
                 <div className="bg-white/90 backdrop-blur rounded-2xl shadow-sm p-4 md:p-6">
@@ -1383,7 +1408,7 @@ export const CRMDashboardFull = () => {
                 return (
                   <button
                     key={item.id}
-                    onClick={() => { setActiveTab(item.id); setShowMoreMenu(false); }}
+                    onClick={() => { item.externalView ? setCurrentView(item.externalView) : setActiveTab(item.id); setShowMoreMenu(false); }}
                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
                       activeTab === item.id ? 'bg-teal-500 text-white' : 'text-slate-600 hover:bg-gray-100'
                     }`}

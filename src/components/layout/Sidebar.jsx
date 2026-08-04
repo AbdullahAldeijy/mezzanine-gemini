@@ -1,11 +1,11 @@
-import { LayoutDashboard, Package, FileText, FileCheck, BarChart3, TrendingUp, ShoppingBag, Megaphone, Building2, CheckSquare, Briefcase, ShieldCheck, Database } from 'lucide-react';
+import { LayoutDashboard, Package, FileText, FileSignature, BarChart3, TrendingUp, ShoppingBag, Megaphone, Building2, CheckSquare, Briefcase, ShieldCheck, Database } from 'lucide-react';
 
 export const Sidebar = ({ activeItem = 'Marketplace', onNavigate }) => {
   const menuItems = [
     { icon: LayoutDashboard, label: 'Dashboard', view: 'dashboard' },
     { icon: Package, label: 'My Products', view: 'products' },
     { icon: FileText, label: 'Purchase Orders', view: 'orders' },
-    { icon: FileCheck, label: 'Contracts', view: 'contracts' },
+    { icon: FileSignature, label: 'Digital Contracts', view: 'contracts-portal' },
     { icon: BarChart3, label: 'Supplier Performance', view: 'performance' },
     { icon: TrendingUp, label: 'Analytics', view: 'analytics' },
     { icon: ShoppingBag, label: 'Marketplace', view: 'marketplace' },

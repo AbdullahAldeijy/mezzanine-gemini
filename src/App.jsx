@@ -12,6 +12,7 @@ import { CompanyProfile } from './components/CompanyProfile';
 import { KYBVerification } from './components/KYBVerification';
 import { AccessControlManager } from './components/AccessControlManager';
 import { DataIntegrations } from './components/DataIntegrations';
+import { ContractsPortal } from './components/ContractsPortal';
 
 const AppContent = () => {
   const { currentView, showCheckout, showTorbiona } = useApp();
@@ -28,6 +29,7 @@ const AppContent = () => {
       {currentView === 'kyb-verification' && <KYBVerification />}
       {currentView === 'access-control' && <AccessControlManager />}
       {currentView === 'data-integrations' && <DataIntegrations />}
+      {currentView === 'contracts-portal' && <ContractsPortal />}
       {showCheckout && <CheckoutPanel />}
       {showTorbiona && <TorbionaModal />}
       <FloatingChatWidget />

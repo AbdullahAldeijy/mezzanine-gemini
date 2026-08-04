@@ -20,7 +20,7 @@ export const AppProvider = ({ children }) => {
   };
 
   const nextSetupStep = () => {
-    if (setupStep < 3) setSetupStep(setupStep + 1);
+    if (setupStep < 4) setSetupStep(setupStep + 1);
     else {
       setCurrentView('b2b-platform');
       setSetupStep(1);
