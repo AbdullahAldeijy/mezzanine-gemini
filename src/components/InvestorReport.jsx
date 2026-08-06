@@ -42,11 +42,11 @@ export const InvestorReport = () => {
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex flex-wrap gap-3 mb-6">
             <button
-              onClick={() => setCurrentView('credit-structuring')}
+              onClick={() => setCurrentView('admin-risk-portal')}
               className="flex items-center gap-2 px-4 py-2 bg-white text-teal-700 hover:bg-white/90 rounded-xl transition-all font-semibold"
             >
               <Landmark size={18} />
-              Credit Structuring Portal (Finance Partner)
+              Credit Underwriting Portal (Finance Partner)
             </button>
             <button
               onClick={() => setCurrentView('b2b-platform')}

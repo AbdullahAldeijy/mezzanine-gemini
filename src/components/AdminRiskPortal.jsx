@@ -3,7 +3,8 @@ import { useApp } from '../context/AppContext';
 import {
   ArrowLeft, Shield, CheckCircle2, AlertTriangle, Building2,
   Database, Activity, CreditCard, Download, Zap, Clock, TrendingUp, Users, Briefcase,
-  LayoutDashboard, Network, Bell, Percent, ArrowUpRight
+  LayoutDashboard, Network, Bell, Percent, ArrowUpRight, FileText, CheckSquare,
+  Lock, DollarSign, ClipboardCheck, Eye, Edit3, HelpCircle, XCircle
 } from 'lucide-react';
 
 const sectorDistribution = [
@@ -48,6 +49,16 @@ const manualReviewApps = [
     erp: { ccc: '-3 days worsened', invoices: 7 },
     platform: { pos: 3, rating: 3.9 },
     bureau: { defaults: 1, history: '1 Late Payment (2023)' },
+    companySummary: 'Qassim Heavy Metals — 4 yrs, heavy equipment manufacturing',
+    financials: 'Audited FY2023 statements verified',
+    fiveCs: 'Character, Capacity, Capital, Collateral, Conditions — reviewed',
+    mezzanineIndex: 612,
+    expectedCashFlows: 'SAR 640K projected over 12 months',
+    structuring: {
+      capacity: '80,000 SAR', pricing: '11% APR', duration: '9 Months',
+      reserveRatio: '8%', disbursementTerms: '2 tranches tied to milestones',
+      controlPlan: 'Monthly ERP sync + escrow release',
+    },
   },
   {
     id: 3,
@@ -64,6 +75,16 @@ const manualReviewApps = [
     erp: { ccc: '+2 days improved', invoices: 4 },
     platform: { pos: 1, rating: 4.2 },
     bureau: { defaults: 0, history: 'Limited History' },
+    companySummary: 'Al-Noor Trading Co. — 1 yr, retail & distribution',
+    financials: 'Unaudited FY2023 statements — pending CPA sign-off',
+    fiveCs: 'Character, Capacity, Capital, Collateral, Conditions — reviewed',
+    mezzanineIndex: 588,
+    expectedCashFlows: 'SAR 410K projected over 12 months',
+    structuring: {
+      capacity: '70,000 SAR', pricing: '10.5% APR', duration: '6 Months',
+      reserveRatio: '7%', disbursementTerms: 'Single tranche, escrow controlled',
+      controlPlan: 'Quarterly ERP sync + platform activity review',
+    },
   },
 ];
 
@@ -102,12 +123,28 @@ const autoApprovedApps = [
   },
 ];
 
+const decisionOptions = [
+  { id: 'approve', icon: CheckCircle2, label: 'Approval', labelAr: 'موافقة', accent: 'emerald' },
+  { id: 'conditional', icon: AlertTriangle, label: 'Conditional Approval', labelAr: 'موافقة بشروط', accent: 'teal' },
+  { id: 'amend', icon: Edit3, label: 'Amend Amount', labelAr: 'تعديل المبلغ', accent: 'amber' },
+  { id: 'info', icon: HelpCircle, label: 'Request Information', labelAr: 'طلب معلومات', accent: 'slate' },
+  { id: 'reject', icon: XCircle, label: 'Rejection', labelAr: 'رفض', accent: 'red' },
+];
+const decisionAccent = {
+  emerald: 'bg-emerald-500/10 border-emerald-500/40 text-emerald-700',
+  teal: 'bg-[#56afb6]/10 border-[#56afb6]/40 text-[#56afb6]',
+  amber: 'bg-amber-500/10 border-amber-500/40 text-amber-700',
+  slate: 'bg-slate-500/10 border-slate-400/40 text-slate-600',
+  red: 'bg-red-500/10 border-red-500/40 text-red-600',
+};
+
 export const AdminRiskPortal = () => {
   const { setCurrentView } = useApp();
   const [hubTab, setHubTab] = useState('operations');
   const [activeTab, setActiveTab] = useState('manual');
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [creditLimit, setCreditLimit] = useState(0);
+  const [decision, setDecision] = useState('conditional');
   const [portfolios, setPortfolios] = useState([
     {
       id: 1,
@@ -147,6 +184,7 @@ export const AdminRiskPortal = () => {
   const handleSelectRequest = (app) => {
     setSelectedRequest(app);
     setCreditLimit(app.recommendedLimit);
+    setDecision('conditional');
   };
 
   const handleBackToList = () => {
@@ -544,6 +582,9 @@ export const AdminRiskPortal = () => {
                     <p className="text-sm text-slate-600">
                       Credit Request: <span className="font-semibold">{selectedRequest.amount.toLocaleString()} SAR</span> for {selectedRequest.purpose}
                     </p>
+                    {selectedRequest.companySummary && (
+                      <p className="text-xs text-slate-500 mt-1">{selectedRequest.companySummary}</p>
+                    )}
                   </div>
 
                   {/* AI Alert for Manual Review */}
@@ -685,6 +726,76 @@ export const AdminRiskPortal = () => {
                       </div>
                     </div>
                   </div>
+
+                  {/* Underwriting Inputs (5Cs, Financials, Cash Flows) */}
+                  {selectedRequest.structuring && (
+                    <div>
+                      <p className="text-xs font-bold text-slate-400 uppercase mb-3">Mezzanine Finance Inputs</p>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div className="bg-white/70 backdrop-blur-md border border-white/60 rounded-xl p-3">
+                          <div className="flex items-center gap-2 mb-1">
+                            <FileText size={14} className="text-[#56afb6]" />
+                            <span className="text-xs font-bold text-slate-500 uppercase">Financial Statements</span>
+                          </div>
+                          <p className="text-xs text-slate-700">{selectedRequest.financials}</p>
+                        </div>
+                        <div className="bg-white/70 backdrop-blur-md border border-white/60 rounded-xl p-3">
+                          <div className="flex items-center gap-2 mb-1">
+                            <CheckSquare size={14} className="text-[#56afb6]" />
+                            <span className="text-xs font-bold text-slate-500 uppercase">5Cs Assessment</span>
+                          </div>
+                          <p className="text-xs text-slate-700">{selectedRequest.fiveCs}</p>
+                        </div>
+                        <div className="bg-white/70 backdrop-blur-md border border-white/60 rounded-xl p-3">
+                          <div className="flex items-center gap-2 mb-1">
+                            <Percent size={14} className="text-[#56afb6]" />
+                            <span className="text-xs font-bold text-slate-500 uppercase">Mezzanine Index</span>
+                          </div>
+                          <p className="text-xs text-slate-700">{selectedRequest.mezzanineIndex} / 1000</p>
+                        </div>
+                        <div className="bg-white/70 backdrop-blur-md border border-white/60 rounded-xl p-3">
+                          <div className="flex items-center gap-2 mb-1">
+                            <TrendingUp size={14} className="text-[#56afb6]" />
+                            <span className="text-xs font-bold text-slate-500 uppercase">Expected Cash Flows</span>
+                          </div>
+                          <p className="text-xs text-slate-700">{selectedRequest.expectedCashFlows}</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Structuring Result */}
+                  {selectedRequest.structuring && (
+                    <div>
+                      <p className="text-xs font-bold text-slate-400 uppercase mb-3">Structuring Result</p>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                        <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-3">
+                          <div className="flex items-center gap-1 mb-1"><DollarSign size={12} className="text-emerald-600" /><span className="text-xs text-emerald-700 uppercase font-semibold">Capacity</span></div>
+                          <p className="text-sm font-bold text-slate-900">{selectedRequest.structuring.capacity}</p>
+                        </div>
+                        <div className="bg-[#56afb6]/10 border border-[#56afb6]/30 rounded-xl p-3">
+                          <div className="flex items-center gap-1 mb-1"><Clock size={12} className="text-[#56afb6]" /><span className="text-xs text-[#56afb6] uppercase font-semibold">Duration</span></div>
+                          <p className="text-sm font-bold text-slate-900">{selectedRequest.structuring.duration}</p>
+                        </div>
+                        <div className="bg-[#56afb6]/10 border border-[#56afb6]/30 rounded-xl p-3">
+                          <div className="flex items-center gap-1 mb-1"><Percent size={12} className="text-[#56afb6]" /><span className="text-xs text-[#56afb6] uppercase font-semibold">Pricing</span></div>
+                          <p className="text-sm font-bold text-slate-900">{selectedRequest.structuring.pricing}</p>
+                        </div>
+                        <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-3">
+                          <div className="flex items-center gap-1 mb-1"><Lock size={12} className="text-amber-600" /><span className="text-xs text-amber-700 uppercase font-semibold">Reserve Ratio</span></div>
+                          <p className="text-sm font-bold text-slate-900">{selectedRequest.structuring.reserveRatio}</p>
+                        </div>
+                        <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-3">
+                          <div className="flex items-center gap-1 mb-1"><ClipboardCheck size={12} className="text-amber-600" /><span className="text-xs text-amber-700 uppercase font-semibold">Disbursement</span></div>
+                          <p className="text-sm font-bold text-slate-900">{selectedRequest.structuring.disbursementTerms}</p>
+                        </div>
+                        <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-3">
+                          <div className="flex items-center gap-1 mb-1"><Eye size={12} className="text-amber-600" /><span className="text-xs text-amber-700 uppercase font-semibold">Monitoring</span></div>
+                          <p className="text-sm font-bold text-slate-900">{selectedRequest.structuring.controlPlan}</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {/* Action Bar - Sticky Bottom */}
@@ -701,27 +812,47 @@ export const AdminRiskPortal = () => {
                       </button>
                     </div>
                   ) : (
-                    <div className="flex flex-col md:flex-row gap-2">
-                      <div className="flex flex-col md:w-40">
-                        <label className="text-xs text-slate-500 font-medium mb-1">Credit Limit (SAR)</label>
-                        <input
-                          type="number"
-                          value={creditLimit}
-                          onChange={(e) => setCreditLimit(Number(e.target.value))}
-                          className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm font-semibold focus:border-[#56afb6] focus:ring-2 focus:ring-[#56afb6]/20 outline-none"
-                        />
+                    <div className="space-y-2">
+                      <div className="flex items-baseline justify-between">
+                        <label className="text-xs font-bold text-slate-400 uppercase">Financier's Decision</label>
+                        <span className="text-xs text-slate-400">قرار الممول</span>
                       </div>
-                      <div className="flex flex-col md:flex-row gap-2 flex-1">
-                        <button className="w-full py-2 bg-gradient-to-r from-[#56afb6] to-teal-500 text-white rounded-xl text-sm font-semibold">
-                          Approve
-                        </button>
-                        <button className="w-full py-2 border-2 border-red-400 text-red-500 rounded-xl text-sm font-semibold">
-                          Reject
-                        </button>
-                        <button className="w-full py-2 border-2 border-slate-300 text-slate-600 rounded-xl text-sm font-semibold">
-                          Request Docs
-                        </button>
+                      <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                        {decisionOptions.map(({ id, icon: Icon, label, labelAr, accent }) => {
+                          const isActive = decision === id;
+                          return (
+                            <button
+                              key={id}
+                              onClick={() => setDecision(id)}
+                              className={`text-left rounded-xl p-2 border-2 transition-all ${
+                                isActive ? decisionAccent[accent] : 'bg-white/60 border-slate-200 text-slate-400 hover:border-slate-300'
+                              }`}
+                            >
+                              <Icon size={14} className="mb-1" />
+                              <p className={`text-[11px] font-bold leading-tight ${isActive ? 'text-slate-900' : 'text-slate-600'}`}>{label}</p>
+                              <p className="text-[10px]">{labelAr}</p>
+                            </button>
+                          );
+                        })}
                       </div>
+
+                      {(decision === 'approve' || decision === 'conditional' || decision === 'amend') && (
+                        <div className="flex flex-col md:w-48">
+                          <label className="text-xs text-slate-500 font-medium mb-1">Credit Limit (SAR)</label>
+                          <input
+                            type="number"
+                            value={creditLimit}
+                            onChange={(e) => setCreditLimit(Number(e.target.value))}
+                            className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm font-semibold focus:border-[#56afb6] focus:ring-2 focus:ring-[#56afb6]/20 outline-none"
+                          />
+                        </div>
+                      )}
+
+                      <button className={`w-full py-2 rounded-xl text-sm font-semibold text-white bg-gradient-to-r ${
+                        decision === 'reject' ? 'from-red-500 to-red-600' : 'from-[#56afb6] to-teal-500'
+                      }`}>
+                        Confirm {decisionOptions.find((d) => d.id === decision)?.label}
+                      </button>
                     </div>
                   )}
                 </div>
@@ -737,6 +868,68 @@ export const AdminRiskPortal = () => {
           </main>
         </div>
       </div>
+      )}
+
+      {/* Control & Monitoring (Mezzanine Finance) */}
+      {hubTab === 'credit-risk' && (
+        <div className="flex-1 overflow-y-auto p-4 md:p-6 bg-[#f7f4e8] border-t border-slate-200">
+          <div className="max-w-7xl mx-auto space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
+              <h2 className="text-xl md:text-2xl font-bold text-slate-900">Control & Monitoring</h2>
+              <p className="text-sm text-slate-400">التحكم والمراقبة (ميزانين المالية)</p>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              {/* Control & Monitoring Plan */}
+              <div className="bg-white/70 backdrop-blur-md border border-white/60 rounded-2xl p-4 sm:p-5">
+                <div className="flex items-center gap-2 mb-3">
+                  <Lock size={16} className="text-[#56afb6]" />
+                  <p className="text-sm font-bold text-slate-700">Control & Monitoring Plan Defines</p>
+                </div>
+                <div className="space-y-2">
+                  {[
+                    ['Amount per Disbursement', 'مبلغ كل دفعة'],
+                    ['Disbursement Conditions', 'شروط الصرف'],
+                    ['Beneficiary', 'المستفيد'],
+                    ['Required Documents', 'المستندات المطلوبة'],
+                    ['Suspension & Hold Rules', 'قواعد التعليق والإيقاف'],
+                    ['Reserve Ratio', 'نسبة الاحتياطي'],
+                    ['Repayment Schedule', 'جدول السداد'],
+                  ].map(([en, ar]) => (
+                    <div key={en} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-0.5 sm:gap-2 bg-slate-50 rounded-lg px-3 py-2">
+                      <span className="text-xs font-medium text-slate-700">{en}</span>
+                      <span className="text-xs text-slate-400">{ar}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Mezzanine Tech Automation */}
+              <div className="bg-slate-900 rounded-2xl p-4 sm:p-5 border border-slate-700">
+                <div className="flex items-center gap-2 mb-3">
+                  <Zap size={16} className="text-[#56afb6]" />
+                  <p className="text-sm font-bold text-white">Mezzanine Tech Automatically</p>
+                </div>
+                <div className="space-y-2">
+                  {[
+                    ['Applies Conditions Technically', 'تطبيق الشروط تقنيًا'],
+                    ['Verifies Invoices', 'التحقق من الفواتير'],
+                    ['Monitors Usage', 'مراقبة الاستخدام'],
+                    ['Tracks Execution', 'متابعة التنفيذ'],
+                    ['Issues Alerts', 'إصدار التنبيهات'],
+                    ['Updates Company Index', 'تحديث مؤشر المنشأة'],
+                    ['Monitors Repayment Source', 'مراقبة مصدر السداد'],
+                  ].map(([en, ar]) => (
+                    <div key={en} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-0.5 sm:gap-2 bg-slate-800/60 rounded-lg px-3 py-2">
+                      <span className="text-xs font-medium text-slate-200">{en}</span>
+                      <span className="text-xs text-slate-500">{ar}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Investment & Sukuk Portfolios Content */}

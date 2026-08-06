@@ -447,7 +447,7 @@ export const CRMDashboardFull = () => {
     { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard Overview' },
     { id: 'products', icon: Package, label: 'My Products' },
     { id: 'orders', icon: FileText, label: 'Purchase Orders' },
-    { id: 'analytics', icon: BarChart3, label: 'Analytics & Reports' },
+    { id: 'analytics', icon: DollarSign, label: 'Financing Status' },
     { id: 'suppliers', icon: Users, label: 'Supplier Performance' },
     { id: 'market', icon: TrendingUp, label: 'Market Analytics' },
     { id: 'advertising', icon: Megaphone, label: 'Advertising Packages' },
@@ -457,8 +457,6 @@ export const CRMDashboardFull = () => {
     { id: 'access-control', icon: ShieldCheck, label: 'Team & Access' },
     { id: 'contracts-portal', icon: FileCheck, label: 'Digital Contracts', externalView: 'contracts-portal' },
   ];
-
-  const revenueData = [45, 52, 48, 61, 58, 67];
 
   return (
     <div className="flex min-h-screen bg-cream pb-16 md:pb-0">
@@ -839,70 +837,55 @@ export const CRMDashboardFull = () => {
             </div>
           )}
 
-          {/* Analytics */}
+          {/* Financing Status */}
           {activeTab === 'analytics' && (
             <div>
-              <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-6 md:mb-8">Analytics & Reports</h2>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-                {/* Sales Chart */}
-                <div className="col-span-1 md:col-span-2 bg-white/90 backdrop-blur rounded-2xl shadow-sm p-4 md:p-6">
-                  <h3 className="text-lg font-bold text-slate-900 mb-6">Monthly Revenue</h3>
-                  <div className="flex items-end justify-between h-64 gap-4">
-                    {revenueData.map((value, idx) => (
-                      <div key={idx} className="flex-1 flex flex-col items-center">
-                        <div className="w-full bg-gradient-to-t from-teal-400 to-teal-600 rounded-t-lg" style={{ height: `${(value / 70) * 100}%` }}></div>
-                        <p className="text-xs text-slate-500 mt-2">{['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][idx]}</p>
-                        <p className="text-sm font-bold text-slate-900">${value}K</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+              <div className="flex items-baseline justify-between mb-6 md:mb-8">
+                <h2 className="text-2xl md:text-3xl font-bold text-slate-900">Financing Status</h2>
+                <p className="text-sm text-slate-400">حالة التمويل</p>
+              </div>
 
-                {/* Financial Health */}
-                <div className="bg-white/90 backdrop-blur rounded-2xl shadow-sm p-4 md:p-6">
-                  <h3 className="text-lg font-bold text-slate-900 mb-6">Financial Health</h3>
-                  <div className="space-y-4">
-                    <div>
-                      <p className="text-sm text-slate-500">Profit Margin</p>
-                      <p className="text-3xl font-bold text-teal-500">23%</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-slate-500">Total Revenue</p>
-                      <p className="text-2xl font-bold text-slate-900">$331K</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-slate-500 mb-2">Payment Status</p>
-                      <div className="space-y-2">
-                        <div className="flex justify-between text-sm">
-                          <span>Paid</span>
-                          <span className="font-medium">85%</span>
-                        </div>
-                        <div className="w-full bg-gray-200 rounded-full h-2">
-                          <div className="bg-green-500 h-2 rounded-full" style={{ width: '85%' }}></div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+              <div className="bg-gradient-to-br from-teal-500 to-teal-700 rounded-2xl shadow-sm p-4 sm:p-6 md:p-8 text-white">
+                <div className="flex items-center gap-2 mb-6">
+                  <Building2 size={18} className="flex-shrink-0" />
+                  <span className="text-sm font-semibold">Mezzanine Facility — BuildTech Construction</span>
                 </div>
-
-                {/* Inventory Alerts */}
-                <div className="bg-white/90 backdrop-blur rounded-2xl shadow-sm p-4 md:p-6">
-                  <h3 className="text-lg font-bold text-slate-900 mb-6">Inventory & Alerts</h3>
-                  <div className="mb-6">
-                    <p className="text-sm text-slate-500">Total Inventory Value</p>
-                    <p className="text-3xl font-bold text-slate-900">$892K</p>
+                <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-6">
+                  <div>
+                    <p className="text-[11px] sm:text-xs text-white/70 mb-1">Approved</p>
+                    <p className="text-base sm:text-xl md:text-2xl font-bold leading-tight">850,000<span className="block sm:inline text-[10px] sm:text-xs text-white/70"> SAR</span></p>
                   </div>
                   <div>
-                    <p className="text-sm text-slate-500 mb-3">Items Needing Reorder</p>
-                    <div className="space-y-2">
-                      {['Safety Helmets', 'Steel Bars'].map((item) => (
-                        <div key={item} className="flex items-center gap-2 p-2 bg-red-50 rounded-lg">
-                          <AlertTriangle size={16} className="text-red-500" />
-                          <span className="text-sm text-slate-900">{item}</span>
-                        </div>
-                      ))}
-                    </div>
+                    <p className="text-[11px] sm:text-xs text-white/70 mb-1">Disbursed</p>
+                    <p className="text-base sm:text-xl md:text-2xl font-bold leading-tight">500,000<span className="block sm:inline text-[10px] sm:text-xs text-white/70"> SAR</span></p>
+                  </div>
+                  <div>
+                    <p className="text-[11px] sm:text-xs text-white/70 mb-1">Remaining</p>
+                    <p className="text-base sm:text-xl md:text-2xl font-bold leading-tight">350,000<span className="block sm:inline text-[10px] sm:text-xs text-white/70"> SAR</span></p>
+                  </div>
+                </div>
+                <div className="h-2 bg-white/20 rounded-full overflow-hidden">
+                  <div className="h-full bg-white rounded-full" style={{ width: '59%' }} />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mt-4 md:mt-6">
+                <div className="bg-white/90 backdrop-blur rounded-2xl shadow-sm p-4 md:p-6 flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center flex-shrink-0">
+                    <Clock size={20} className="text-amber-600" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-slate-500 uppercase font-semibold mb-1">Next Payment</p>
+                    <p className="text-sm font-bold text-slate-900">Pending — proof of receipt required</p>
+                  </div>
+                </div>
+                <div className="bg-white/90 backdrop-blur rounded-2xl shadow-sm p-4 md:p-6 flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center flex-shrink-0">
+                    <ShieldCheck size={20} className="text-emerald-600" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-slate-500 uppercase font-semibold mb-1">Risk Status</p>
+                    <p className="text-sm font-bold text-slate-900">Stable</p>
                   </div>
                 </div>
               </div>
