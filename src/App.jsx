@@ -14,6 +14,7 @@ import { KYBVerification } from './components/KYBVerification';
 import { AccessControlManager } from './components/AccessControlManager';
 import { DataIntegrations } from './components/DataIntegrations';
 import { ContractsPortal } from './components/ContractsPortal';
+import { CreditStructuringPortal } from './components/CreditStructuringPortal';
 
 const AppContent = () => {
   const { currentView, showCheckout, showFinancingRequest, showTorbiona } = useApp();
@@ -31,6 +32,7 @@ const AppContent = () => {
       {currentView === 'access-control' && <AccessControlManager />}
       {currentView === 'data-integrations' && <DataIntegrations />}
       {currentView === 'contracts-portal' && <ContractsPortal />}
+      {currentView === 'credit-structuring' && <CreditStructuringPortal />}
       {showCheckout && <CheckoutPanel />}
       {showFinancingRequest && <FinancingRequestModal />}
       {showTorbiona && <TorbionaModal />}

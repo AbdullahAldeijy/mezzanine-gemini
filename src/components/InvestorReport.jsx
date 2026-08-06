@@ -1,5 +1,5 @@
 import { useApp } from '../context/AppContext';
-import { ArrowLeft, Database, FileText, Building2, Shield, Cpu, TrendingUp, TrendingDown, Target, Award } from 'lucide-react';
+import { ArrowLeft, Database, FileText, Building2, Shield, Cpu, TrendingUp, TrendingDown, Target, Award, Landmark } from 'lucide-react';
 
 export const InvestorReport = () => {
   const { setCurrentView } = useApp();
@@ -40,13 +40,22 @@ export const InvestorReport = () => {
       {/* Header */}
       <div className="bg-gradient-to-r from-teal-400 to-teal-600 text-white py-12">
         <div className="max-w-7xl mx-auto px-6">
-          <button
-            onClick={() => setCurrentView('b2b-platform')}
-            className="mb-6 flex items-center gap-2 px-4 py-2 bg-white/20 hover:bg-white/30 rounded-xl transition-all"
-          >
-            <ArrowLeft size={18} />
-            Back to Prototype
-          </button>
+          <div className="flex flex-wrap gap-3 mb-6">
+            <button
+              onClick={() => setCurrentView('credit-structuring')}
+              className="flex items-center gap-2 px-4 py-2 bg-white text-teal-700 hover:bg-white/90 rounded-xl transition-all font-semibold"
+            >
+              <Landmark size={18} />
+              Credit Structuring Portal (Finance Partner)
+            </button>
+            <button
+              onClick={() => setCurrentView('b2b-platform')}
+              className="flex items-center gap-2 px-4 py-2 bg-white/20 hover:bg-white/30 rounded-xl transition-all"
+            >
+              <ArrowLeft size={18} />
+              Back to Prototype
+            </button>
+          </div>
           <h1 className="text-4xl font-bold mb-3">Mezzanine Growth Engine: Predictive Credit Scaling</h1>
           <p className="text-xl text-white/90">
             How we leverage B2B ecosystem data to unlock new segments and minimize risk over the next 3 years.
