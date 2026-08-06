@@ -59,6 +59,15 @@ const manualReviewApps = [
       reserveRatio: '8%', disbursementTerms: '2 tranches tied to milestones',
       controlPlan: 'Monthly ERP sync + escrow release',
     },
+    monitoring: {
+      amountPerDisbursement: '40,000 SAR / tranche (2 tranches)',
+      disbursementConditions: 'Milestone-based, escrow controlled',
+      beneficiary: 'Qassim Heavy Metals — Operating Account ****9013',
+      requiredDocuments: 'Milestone certificate + supplier invoice',
+      suspensionRules: 'Hold if ECL > 5% or compliance status lapses',
+      reserveRatio: '8%',
+      repaymentSchedule: 'Monthly, 9 installments',
+    },
   },
   {
     id: 3,
@@ -85,6 +94,15 @@ const manualReviewApps = [
       reserveRatio: '7%', disbursementTerms: 'Single tranche, escrow controlled',
       controlPlan: 'Quarterly ERP sync + platform activity review',
     },
+    monitoring: {
+      amountPerDisbursement: '70,000 SAR — single tranche',
+      disbursementConditions: 'Escrow controlled, single release',
+      beneficiary: 'Al-Noor Trading Co. — Operating Account ****5527',
+      requiredDocuments: 'Purchase invoice + delivery note',
+      suspensionRules: 'Hold if bureau history flags a new default',
+      reserveRatio: '7%',
+      repaymentSchedule: 'Monthly, 6 installments',
+    },
   },
 ];
 
@@ -104,6 +122,15 @@ const autoApprovedApps = [
     erp: { ccc: '+6 days improved', invoices: 2 },
     platform: { pos: 12, rating: 4.8 },
     bureau: { defaults: 0, history: 'Clean' },
+    monitoring: {
+      amountPerDisbursement: '15,000 SAR / tranche (3 tranches)',
+      disbursementConditions: 'Delivery-confirmed, escrow controlled',
+      beneficiary: 'BuildTech Construction — Operating Account ****4471',
+      requiredDocuments: 'GRN + supplier invoice per tranche',
+      suspensionRules: 'Auto-suspend if ECL > 3% or 2 missed ERP syncs',
+      reserveRatio: '5%',
+      repaymentSchedule: 'Monthly, 12 installments — auto-debit',
+    },
   },
   {
     id: 4,
@@ -120,6 +147,15 @@ const autoApprovedApps = [
     erp: { ccc: '+8 days improved', invoices: 1 },
     platform: { pos: 18, rating: 4.9 },
     bureau: { defaults: 0, history: 'Excellent' },
+    monitoring: {
+      amountPerDisbursement: '12,700 SAR / tranche (3 tranches)',
+      disbursementConditions: 'Delivery-confirmed, escrow controlled',
+      beneficiary: 'Riyadh Steel Works — Operating Account ****2208',
+      requiredDocuments: 'GRN + supplier invoice per tranche',
+      suspensionRules: 'Auto-suspend if ECL > 3% or 2 missed ERP syncs',
+      reserveRatio: '4%',
+      repaymentSchedule: 'Monthly, 10 installments — auto-debit',
+    },
   },
 ];
 
@@ -796,6 +832,68 @@ export const AdminRiskPortal = () => {
                       </div>
                     </div>
                   )}
+
+                  {/* Control & Monitoring */}
+                  {selectedRequest.monitoring && (
+                    <div>
+                      <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 mb-3">
+                        <p className="text-xs font-bold text-slate-400 uppercase">Control & Monitoring</p>
+                        <p className="text-xs text-slate-400">التحكم والمراقبة (ميزانين المالية)</p>
+                      </div>
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                        {/* Control & Monitoring Plan */}
+                        <div className="bg-white/70 backdrop-blur-md border border-white/60 rounded-2xl p-4 sm:p-5">
+                          <div className="flex items-center gap-2 mb-3">
+                            <Lock size={16} className="text-[#56afb6]" />
+                            <p className="text-sm font-bold text-slate-700">Disbursement Plan</p>
+                          </div>
+                          <div className="space-y-2">
+                            {[
+                              ['Amount per Disbursement', 'مبلغ كل دفعة', selectedRequest.monitoring.amountPerDisbursement],
+                              ['Disbursement Conditions', 'شروط الصرف', selectedRequest.monitoring.disbursementConditions],
+                              ['Beneficiary', 'المستفيد', selectedRequest.monitoring.beneficiary],
+                              ['Required Documents', 'المستندات المطلوبة', selectedRequest.monitoring.requiredDocuments],
+                              ['Suspension & Hold Rules', 'قواعد التعليق والإيقاف', selectedRequest.monitoring.suspensionRules],
+                              ['Reserve Ratio', 'نسبة الاحتياطي', selectedRequest.monitoring.reserveRatio],
+                              ['Repayment Schedule', 'جدول السداد', selectedRequest.monitoring.repaymentSchedule],
+                            ].map(([en, ar, value]) => (
+                              <div key={en} className="bg-slate-50 rounded-lg px-3 py-2">
+                                <div className="flex items-center justify-between">
+                                  <span className="text-xs font-semibold text-slate-700">{en}</span>
+                                  <span className="text-xs text-slate-400">{ar}</span>
+                                </div>
+                                <p className="text-xs text-slate-500 mt-0.5">{value}</p>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Mezzanine Tech Automation */}
+                        <div className="bg-slate-900 rounded-2xl p-4 sm:p-5 border border-slate-700">
+                          <div className="flex items-center gap-2 mb-3">
+                            <Zap size={16} className="text-[#56afb6]" />
+                            <p className="text-sm font-bold text-white">Mezzanine Tech Automatically</p>
+                          </div>
+                          <div className="space-y-2">
+                            {[
+                              ['Applies Conditions Technically', 'تطبيق الشروط تقنيًا'],
+                              ['Verifies Invoices', 'التحقق من الفواتير'],
+                              ['Monitors Usage', 'مراقبة الاستخدام'],
+                              ['Tracks Execution', 'متابعة التنفيذ'],
+                              ['Issues Alerts', 'إصدار التنبيهات'],
+                              ['Updates Company Index', 'تحديث مؤشر المنشأة'],
+                              ['Monitors Repayment Source', 'مراقبة مصدر السداد'],
+                            ].map(([en, ar]) => (
+                              <div key={en} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-0.5 sm:gap-2 bg-slate-800/60 rounded-lg px-3 py-2">
+                                <span className="text-xs font-medium text-slate-200">{en}</span>
+                                <span className="text-xs text-slate-500">{ar}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {/* Action Bar - Sticky Bottom */}
@@ -868,68 +966,6 @@ export const AdminRiskPortal = () => {
           </main>
         </div>
       </div>
-      )}
-
-      {/* Control & Monitoring (Mezzanine Finance) */}
-      {hubTab === 'credit-risk' && (
-        <div className="flex-1 overflow-y-auto p-4 md:p-6 bg-[#f7f4e8] border-t border-slate-200">
-          <div className="max-w-7xl mx-auto space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
-              <h2 className="text-xl md:text-2xl font-bold text-slate-900">Control & Monitoring</h2>
-              <p className="text-sm text-slate-400">التحكم والمراقبة (ميزانين المالية)</p>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              {/* Control & Monitoring Plan */}
-              <div className="bg-white/70 backdrop-blur-md border border-white/60 rounded-2xl p-4 sm:p-5">
-                <div className="flex items-center gap-2 mb-3">
-                  <Lock size={16} className="text-[#56afb6]" />
-                  <p className="text-sm font-bold text-slate-700">Control & Monitoring Plan Defines</p>
-                </div>
-                <div className="space-y-2">
-                  {[
-                    ['Amount per Disbursement', 'مبلغ كل دفعة'],
-                    ['Disbursement Conditions', 'شروط الصرف'],
-                    ['Beneficiary', 'المستفيد'],
-                    ['Required Documents', 'المستندات المطلوبة'],
-                    ['Suspension & Hold Rules', 'قواعد التعليق والإيقاف'],
-                    ['Reserve Ratio', 'نسبة الاحتياطي'],
-                    ['Repayment Schedule', 'جدول السداد'],
-                  ].map(([en, ar]) => (
-                    <div key={en} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-0.5 sm:gap-2 bg-slate-50 rounded-lg px-3 py-2">
-                      <span className="text-xs font-medium text-slate-700">{en}</span>
-                      <span className="text-xs text-slate-400">{ar}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Mezzanine Tech Automation */}
-              <div className="bg-slate-900 rounded-2xl p-4 sm:p-5 border border-slate-700">
-                <div className="flex items-center gap-2 mb-3">
-                  <Zap size={16} className="text-[#56afb6]" />
-                  <p className="text-sm font-bold text-white">Mezzanine Tech Automatically</p>
-                </div>
-                <div className="space-y-2">
-                  {[
-                    ['Applies Conditions Technically', 'تطبيق الشروط تقنيًا'],
-                    ['Verifies Invoices', 'التحقق من الفواتير'],
-                    ['Monitors Usage', 'مراقبة الاستخدام'],
-                    ['Tracks Execution', 'متابعة التنفيذ'],
-                    ['Issues Alerts', 'إصدار التنبيهات'],
-                    ['Updates Company Index', 'تحديث مؤشر المنشأة'],
-                    ['Monitors Repayment Source', 'مراقبة مصدر السداد'],
-                  ].map(([en, ar]) => (
-                    <div key={en} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-0.5 sm:gap-2 bg-slate-800/60 rounded-lg px-3 py-2">
-                      <span className="text-xs font-medium text-slate-200">{en}</span>
-                      <span className="text-xs text-slate-500">{ar}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
       )}
 
       {/* Investment & Sukuk Portfolios Content */}
