@@ -16,4 +16,5 @@ export { Dashboard } from './Dashboard';
 export { Marketplace } from './Marketplace';
 export { ProductCard } from './ProductCard';
 export { CheckoutPanel } from './CheckoutPanel';
+export { FinancingRequestModal } from './FinancingRequestModal';
 export { TorbionaModal } from './TorbionaModal';

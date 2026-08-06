@@ -4,6 +4,7 @@ import { SetupWizard } from './components/SetupWizard';
 import { B2BPlatform } from './components/B2BPlatform';
 import { CRMDashboardFull } from './components/CRMDashboardFull';
 import { CheckoutPanel } from './components/CheckoutPanel';
+import { FinancingRequestModal } from './components/FinancingRequestModal';
 import { TorbionaModal } from './components/TorbionaModal';
 import { FloatingChatWidget } from './components/FloatingChatWidget';
 import { InvestorReport } from './components/InvestorReport';
@@ -15,7 +16,7 @@ import { DataIntegrations } from './components/DataIntegrations';
 import { ContractsPortal } from './components/ContractsPortal';
 
 const AppContent = () => {
-  const { currentView, showCheckout, showTorbiona } = useApp();
+  const { currentView, showCheckout, showFinancingRequest, showTorbiona } = useApp();
 
   return (
     <>
@@ -31,6 +32,7 @@ const AppContent = () => {
       {currentView === 'data-integrations' && <DataIntegrations />}
       {currentView === 'contracts-portal' && <ContractsPortal />}
       {showCheckout && <CheckoutPanel />}
+      {showFinancingRequest && <FinancingRequestModal />}
       {showTorbiona && <TorbionaModal />}
       <FloatingChatWidget />
     </>

@@ -1,9 +1,36 @@
 import { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import {
-  ArrowLeft, Shield, CheckCircle2, AlertTriangle, Building2, 
-  Database, Activity, CreditCard, Download, Zap, Clock, TrendingUp, Users, Briefcase
+  ArrowLeft, Shield, CheckCircle2, AlertTriangle, Building2,
+  Database, Activity, CreditCard, Download, Zap, Clock, TrendingUp, Users, Briefcase,
+  LayoutDashboard, Network, Bell, Percent, ArrowUpRight
 } from 'lucide-react';
+
+const sectorDistribution = [
+  { label: 'Construction', value: 128 },
+  { label: 'Trading', value: 76 },
+  { label: 'Manufacturing', value: 58 },
+  { label: 'Logistics', value: 44 },
+  { label: 'Other', value: 36 },
+];
+const regionDistribution = [
+  { label: 'Riyadh', value: 142 },
+  { label: 'Jeddah', value: 88 },
+  { label: 'Dammam', value: 61 },
+  { label: 'Qassim', value: 33 },
+  { label: 'Other', value: 18 },
+];
+const sizeDistribution = [
+  { label: 'Small (1-49 employees)', value: 210 },
+  { label: 'Medium (50-249 employees)', value: 96 },
+  { label: 'Large (250+ employees)', value: 36 },
+];
+const opsAlerts = [
+  { level: 'high', text: 'Qassim Heavy Metals — ECL spiked to 4.7%, manual review recommended' },
+  { level: 'medium', text: '3 companies approaching 90% credit limit utilization' },
+  { level: 'medium', text: 'Al-Noor Trading Co. — new profile, limited bureau history' },
+  { level: 'low', text: 'Riyadh Construction Pool ECL trending down (-0.2pp this month)' },
+];
 
 const manualReviewApps = [
   {
@@ -77,7 +104,7 @@ const autoApprovedApps = [
 
 export const AdminRiskPortal = () => {
   const { setCurrentView } = useApp();
-  const [hubTab, setHubTab] = useState('credit-risk');
+  const [hubTab, setHubTab] = useState('operations');
   const [activeTab, setActiveTab] = useState('manual');
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [creditLimit, setCreditLimit] = useState(0);
@@ -140,9 +167,9 @@ export const AdminRiskPortal = () => {
           <div>
             <div className="flex items-center gap-2">
               <Shield size={16} className="text-[#56afb6]" />
-              <h1 className="text-white font-bold text-sm md:text-base">Mezzanine Capital & Risk Hub</h1>
+              <h1 className="text-white font-bold text-sm md:text-base">Admin Portal</h1>
             </div>
-            <p className="text-xs text-slate-400 mt-0.5 ml-6">Manage AI Credit Underwriting & Institutional Sukuk Issuance</p>
+            <p className="text-xs text-slate-400 mt-0.5 ml-6">Operations, Credit Underwriting & Sukuk Issuance</p>
           </div>
         </div>
       </header>
@@ -150,6 +177,18 @@ export const AdminRiskPortal = () => {
       {/* Hub Tabs */}
       <div className="px-4 py-3 bg-slate-800 border-b border-slate-700">
         <div className="flex gap-2 bg-slate-900/50 rounded-xl p-1">
+          <button
+            onClick={() => setHubTab('operations')}
+            className={`flex-1 py-2.5 px-4 rounded-lg text-xs md:text-sm font-semibold transition-all flex items-center justify-center gap-2 ${
+              hubTab === 'operations'
+                ? 'bg-gradient-to-r from-[#56afb6] to-teal-500 text-white shadow-md'
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            <LayoutDashboard size={16} />
+            <span className="hidden sm:inline">Mezzanine Operations Dashboard</span>
+            <span className="sm:hidden">Operations</span>
+          </button>
           <button
             onClick={() => setHubTab('credit-risk')}
             className={`flex-1 py-2.5 px-4 rounded-lg text-xs md:text-sm font-semibold transition-all flex items-center justify-center gap-2 ${
@@ -176,6 +215,189 @@ export const AdminRiskPortal = () => {
           </button>
         </div>
       </div>
+
+      {/* Mezzanine Operations Dashboard */}
+      {hubTab === 'operations' && (
+        <div className="flex-1 overflow-y-auto p-4 md:p-6">
+          <div className="max-w-7xl mx-auto space-y-6">
+            <div>
+              <h2 className="text-xl md:text-2xl font-bold text-slate-900 mb-1">Mezzanine Operations Dashboard</h2>
+              <p className="text-sm text-slate-600">Portfolio-wide view of registered companies, financing eligibility, relationships and risk</p>
+            </div>
+
+            {/* Top KPI Row */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+              <div className="bg-slate-900 rounded-xl p-4 border border-slate-700">
+                <div className="flex items-center gap-2 mb-1">
+                  <Building2 size={14} className="text-slate-400" />
+                  <p className="text-xs text-slate-400 uppercase font-semibold">Registered Companies</p>
+                </div>
+                <p className="text-2xl font-bold text-white">342</p>
+              </div>
+              <div className="bg-[#56afb6]/10 rounded-xl p-4 border border-[#56afb6]/30">
+                <div className="flex items-center gap-2 mb-1">
+                  <CheckCircle2 size={14} className="text-[#56afb6]" />
+                  <p className="text-xs text-[#56afb6] uppercase font-semibold">Eligible for Financing</p>
+                </div>
+                <p className="text-2xl font-bold text-[#56afb6]">218 <span className="text-sm text-slate-500">(64%)</span></p>
+              </div>
+              <div className="bg-emerald-500/10 rounded-xl p-4 border border-emerald-500/30">
+                <div className="flex items-center gap-2 mb-1">
+                  <Percent size={14} className="text-emerald-500" />
+                  <p className="text-xs text-emerald-600 uppercase font-semibold">Avg Mezzanine Index</p>
+                </div>
+                <p className="text-2xl font-bold text-emerald-600">742<span className="text-sm text-slate-500">/1000</span></p>
+              </div>
+              <div className="bg-amber-500/10 rounded-xl p-4 border border-amber-500/30">
+                <div className="flex items-center gap-2 mb-1">
+                  <TrendingUp size={14} className="text-amber-600" />
+                  <p className="text-xs text-amber-600 uppercase font-semibold">Creditworthiness Improvement</p>
+                </div>
+                <p className="text-2xl font-bold text-amber-600">+12.4%</p>
+              </div>
+              <div className="bg-white/70 backdrop-blur-md rounded-xl p-4 border border-white/60">
+                <div className="flex items-center gap-2 mb-1">
+                  <Activity size={14} className="text-slate-500" />
+                  <p className="text-xs text-slate-500 uppercase font-semibold">Financing Requests Volume</p>
+                </div>
+                <p className="text-2xl font-bold text-slate-900">48.6M <span className="text-sm text-slate-500">SAR</span></p>
+              </div>
+              <div className="bg-white/70 backdrop-blur-md rounded-xl p-4 border border-white/60">
+                <div className="flex items-center gap-2 mb-1">
+                  <CreditCard size={14} className="text-slate-500" />
+                  <p className="text-xs text-slate-500 uppercase font-semibold">Authorized Transactions</p>
+                </div>
+                <p className="text-2xl font-bold text-slate-900">1,284</p>
+              </div>
+              <div className="bg-white/70 backdrop-blur-md rounded-xl p-4 border border-white/60">
+                <div className="flex items-center gap-2 mb-1">
+                  <Network size={14} className="text-slate-500" />
+                  <p className="text-xs text-slate-500 uppercase font-semibold">Mapped Relationships</p>
+                </div>
+                <p className="text-2xl font-bold text-slate-900">1,967</p>
+              </div>
+              <div className="bg-white/70 backdrop-blur-md rounded-xl p-4 border border-white/60">
+                <div className="flex items-center gap-2 mb-1">
+                  <ArrowUpRight size={14} className="text-slate-500" />
+                  <p className="text-xs text-slate-500 uppercase font-semibold">Projected Q3 Flows</p>
+                </div>
+                <p className="text-2xl font-bold text-slate-900">+9.2%</p>
+              </div>
+            </div>
+
+            {/* Distribution: Sector / Region / Size */}
+            <div>
+              <p className="text-xs font-bold text-slate-400 uppercase mb-3">Distribution by Sector, Region & Size</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {[
+                  { title: 'By Sector', data: sectorDistribution },
+                  { title: 'By Region', data: regionDistribution },
+                  { title: 'By Size', data: sizeDistribution },
+                ].map((group) => {
+                  const max = Math.max(...group.data.map((d) => d.value));
+                  return (
+                    <div key={group.title} className="bg-white/70 backdrop-blur-md border border-white/60 rounded-xl p-4">
+                      <p className="text-sm font-bold text-slate-700 mb-3">{group.title}</p>
+                      <div className="space-y-2">
+                        {group.data.map((d) => (
+                          <div key={d.label}>
+                            <div className="flex justify-between text-xs text-slate-500 mb-1">
+                              <span>{d.label}</span>
+                              <span className="font-semibold text-slate-700">{d.value}</span>
+                            </div>
+                            <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                              <div
+                                className="h-full bg-gradient-to-r from-[#56afb6] to-teal-500 rounded-full"
+                                style={{ width: `${(d.value / max) * 100}%` }}
+                              />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Relationships + Forecasts */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <div className="bg-white/70 backdrop-blur-md border border-white/60 rounded-xl p-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <Network size={16} className="text-[#56afb6]" />
+                  <p className="text-sm font-bold text-slate-700">Company, Customer & Supplier Relationships</p>
+                </div>
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="bg-slate-50 rounded-xl p-3 text-center">
+                    <p className="text-lg font-bold text-slate-900">342</p>
+                    <p className="text-xs text-slate-500">Companies</p>
+                  </div>
+                  <div className="bg-slate-50 rounded-xl p-3 text-center">
+                    <p className="text-lg font-bold text-slate-900">1,120</p>
+                    <p className="text-xs text-slate-500">Customer Links</p>
+                  </div>
+                  <div className="bg-slate-50 rounded-xl p-3 text-center">
+                    <p className="text-lg font-bold text-slate-900">847</p>
+                    <p className="text-xs text-slate-500">Supplier Links</p>
+                  </div>
+                </div>
+                <p className="text-xs text-slate-500 mt-3">1,284 authorized financial & operational transactions flowing through the mapped network this month.</p>
+              </div>
+
+              <div className="bg-white/70 backdrop-blur-md border border-white/60 rounded-xl p-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <TrendingUp size={16} className="text-[#56afb6]" />
+                  <p className="text-sm font-bold text-slate-700">Forecast: Future Flows & Relationships</p>
+                </div>
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center bg-slate-50 rounded-xl p-3">
+                    <span className="text-xs text-slate-600">Next Quarter Financing Volume</span>
+                    <span className="text-sm font-bold text-emerald-600 flex items-center gap-1"><ArrowUpRight size={14} />+9.2%</span>
+                  </div>
+                  <div className="flex justify-between items-center bg-slate-50 rounded-xl p-3">
+                    <span className="text-xs text-slate-600">New Relationships Expected</span>
+                    <span className="text-sm font-bold text-emerald-600 flex items-center gap-1"><ArrowUpRight size={14} />+184</span>
+                  </div>
+                  <div className="flex justify-between items-center bg-slate-50 rounded-xl p-3">
+                    <span className="text-xs text-slate-600">Eligible Companies Growth</span>
+                    <span className="text-sm font-bold text-emerald-600 flex items-center gap-1"><ArrowUpRight size={14} />+6.8%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Alerts & Risk Indicators */}
+            <div>
+              <div className="flex items-center gap-2 mb-3">
+                <Bell size={16} className="text-[#56afb6]" />
+                <p className="text-xs font-bold text-slate-400 uppercase">Alerts & Risk Indicators</p>
+              </div>
+              <div className="space-y-2">
+                {opsAlerts.map((alert, i) => (
+                  <div
+                    key={i}
+                    className={`flex items-start gap-3 rounded-xl p-3 border ${
+                      alert.level === 'high'
+                        ? 'bg-red-50 border-red-200'
+                        : alert.level === 'medium'
+                        ? 'bg-amber-50 border-amber-200'
+                        : 'bg-emerald-50 border-emerald-200'
+                    }`}
+                  >
+                    <AlertTriangle
+                      size={16}
+                      className={`flex-shrink-0 mt-0.5 ${
+                        alert.level === 'high' ? 'text-red-500' : alert.level === 'medium' ? 'text-amber-500' : 'text-emerald-500'
+                      }`}
+                    />
+                    <p className="text-sm text-slate-700">{alert.text}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* KPI Cards */}
       {hubTab === 'credit-risk' && (

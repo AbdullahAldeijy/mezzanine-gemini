@@ -10,6 +10,7 @@ export const AppProvider = ({ children }) => {
   const [setupStep, setSetupStep] = useState(1);
   const [showCheckout, setShowCheckout] = useState(false);
   const [showTorbiona, setShowTorbiona] = useState(false);
+  const [showFinancingRequest, setShowFinancingRequest] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [userData, setUserData] = useState({});
   const [companyData, setCompanyData] = useState({});
@@ -35,6 +36,19 @@ export const AppProvider = ({ children }) => {
   const closeCheckout = () => {
     setShowCheckout(false);
     setSelectedProduct(null);
+  };
+
+  const openFinancingRequest = () => {
+    setShowFinancingRequest(true);
+  };
+
+  const closeFinancingRequest = () => {
+    setShowFinancingRequest(false);
+  };
+
+  const submitFinancingRequest = () => {
+    setShowFinancingRequest(false);
+    setShowTorbiona(true);
   };
 
   const openTorbiona = () => {
@@ -63,11 +77,15 @@ export const AppProvider = ({ children }) => {
       nextSetupStep,
       showCheckout,
       showTorbiona,
+      showFinancingRequest,
       selectedProduct,
       openCheckout,
       closeCheckout,
       openTorbiona,
       closeTorbiona,
+      openFinancingRequest,
+      closeFinancingRequest,
+      submitFinancingRequest,
       completePurchase,
       userData,
       completeRegistration,

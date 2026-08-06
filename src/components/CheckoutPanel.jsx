@@ -3,7 +3,7 @@ import { useApp } from '../context/AppContext';
 import { X } from 'lucide-react';
 
 export const CheckoutPanel = () => {
-  const { selectedProduct, closeCheckout, openTorbiona } = useApp();
+  const { selectedProduct, closeCheckout, openFinancingRequest } = useApp();
   const [delivery, setDelivery] = useState('standard');
   const [payment, setPayment] = useState('paynow');
 
@@ -22,7 +22,7 @@ export const CheckoutPanel = () => {
 
   const handleCompletePurchase = () => {
     if (payment === 'torbiona') {
-      openTorbiona();
+      openFinancingRequest();
     } else {
       alert('Purchase completed with Pay Now!');
       closeCheckout();
