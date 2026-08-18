@@ -3,7 +3,7 @@ import { useApp } from '../context/AppContext';
 import { Building2, User, Shield, Smartphone, CheckCircle, Calendar, FileCheck } from 'lucide-react';
 
 export const Auth = () => {
-  const { authTab, setAuthTab, completeRegistration, setCurrentView } = useApp();
+  const { authTab, setAuthTab, completeRegistration, setCurrentView, login } = useApp();
   const [showKYB, setShowKYB] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
@@ -46,6 +46,7 @@ export const Auth = () => {
   };
 
   const handleContinueToDashboard = () => {
+    login();
     if (authTab === 'register') {
       setCurrentView('setup');
     } else {

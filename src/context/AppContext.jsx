@@ -7,6 +7,7 @@ export const useApp = () => useContext(AppContext);
 export const AppProvider = ({ children }) => {
   const [currentView, setCurrentView] = useState('b2b-platform');
   const [authTab, setAuthTab] = useState('register');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [setupStep, setSetupStep] = useState(1);
   const [showCheckout, setShowCheckout] = useState(false);
   const [showTorbiona, setShowTorbiona] = useState(false);
@@ -29,8 +30,22 @@ export const AppProvider = ({ children }) => {
   };
 
   const openCheckout = (product) => {
+    if (!isLoggedIn) {
+      setAuthTab('register');
+      setCurrentView('auth');
+      return;
+    }
     setSelectedProduct(product);
     setShowCheckout(true);
+  };
+
+  const login = () => {
+    setIsLoggedIn(true);
+  };
+
+  const logout = () => {
+    setIsLoggedIn(false);
+    setCurrentView('b2b-platform');
   };
 
   const closeCheckout = () => {
@@ -72,6 +87,9 @@ export const AppProvider = ({ children }) => {
       setCurrentView,
       authTab,
       setAuthTab,
+      isLoggedIn,
+      login,
+      logout,
       setupStep,
       setSetupStep,
       nextSetupStep,

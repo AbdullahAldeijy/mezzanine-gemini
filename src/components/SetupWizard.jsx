@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { Check, Users, Building2, Package, Plus, Upload, TrendingUp, FileCheck, AlertCircle, FileText, DollarSign, Activity, GitBranch, ShieldCheck } from 'lucide-react';
 
-const UploadRow = ({ label, status }) => (
+const UploadRow = ({ label, status, onUpload }) => (
   <div className="flex items-center justify-between py-3 border-b border-gray-100 last:border-0">
     <div className="flex items-center gap-3">
       <FileText size={16} className="text-teal-500 flex-shrink-0" />
@@ -12,7 +12,7 @@ const UploadRow = ({ label, status }) => (
       {status === 'uploaded' ? (
         <span className="text-xs text-green-600 font-medium flex items-center gap-1"><Check size={12} /> Uploaded</span>
       ) : (
-        <button className="flex items-center gap-1 px-3 py-1 border border-teal-400 text-teal-600 rounded-lg text-xs hover:bg-teal-50 transition-all">
+        <button onClick={onUpload} className="flex items-center gap-1 px-3 py-1 border border-teal-400 text-teal-600 rounded-lg text-xs hover:bg-teal-50 transition-all">
           <Upload size={12} /> Upload
         </button>
       )}
@@ -27,8 +27,48 @@ const DataRow = ({ label, value }) => (
   </div>
 );
 
-const CompanyProfileTabs = () => {
+export const CompanyProfileTabs = () => {
   const [activeTab, setActiveTab] = useState(0);
+  const [regulatoryDocs, setRegulatoryDocs] = useState([
+    { label: 'Commercial Registration (CR)', status: 'uploaded' },
+    { label: 'Business Licenses', status: 'pending' },
+    { label: 'Zakat & Tax Certificate', status: 'uploaded' },
+    { label: 'National Address', status: 'uploaded' },
+    { label: 'Core Contracts', status: 'pending' },
+    { label: 'Other Regulatory Documents', status: 'pending' },
+  ]);
+  const [financialDocs, setFinancialDocs] = useState([
+    { label: 'Certified Financial Statements', status: 'pending' },
+    { label: 'Income Statement', status: 'pending' },
+    { label: 'Balance Sheet (Financial Position)', status: 'pending' },
+    { label: 'Cash Flow Statement', status: 'pending' },
+    { label: 'Liabilities & Credit Facilities', status: 'pending' },
+  ]);
+
+  const markUploaded = (setter, label) => {
+    setter(docs => docs.map(d => d.label === label ? { ...d, status: 'uploaded' } : d));
+  };
+
+  const [userAssignments, setUserAssignments] = useState([
+    { role: 'Company Owner', name: 'Ahmed Al-Rashid', access: 'Full Access', color: 'from-teal-400 to-teal-600' },
+    { role: 'CFO', name: 'Fatima Hassan', access: 'Financial + Reports', color: 'from-blue-400 to-blue-600' },
+    { role: 'Accountant', name: 'Mohammed Ali', access: 'Invoices + Payments', color: 'from-purple-400 to-purple-600' },
+    { role: 'Project Manager', name: '— Not assigned —', access: 'Projects + Contracts', color: 'from-orange-400 to-orange-600' },
+    { role: 'Sales Manager', name: '— Not assigned —', access: 'Customers + Orders', color: 'from-pink-400 to-pink-600' },
+    { role: 'External Auditor', name: '— Not assigned —', access: 'Read Only', color: 'from-slate-400 to-slate-600' },
+  ]);
+
+  const handleUserAction = (role) => {
+    const entry = userAssignments.find(u => u.role === role);
+    if (entry.name.startsWith('—')) {
+      const name = window.prompt(`Invite someone as ${role}:`);
+      if (!name) return;
+      setUserAssignments(userAssignments.map(u => u.role === role ? { ...u, name } : u));
+    } else {
+      alert(`Editing access for ${entry.name} (${role}).`);
+    }
+  };
+
   const tabs = [
     { label: 'Regulatory Docs', icon: FileText },
     { label: 'Financial Data', icon: DollarSign },
@@ -62,12 +102,9 @@ const CompanyProfileTabs = () => {
       {activeTab === 0 && (
         <div className="bg-white rounded-xl p-5 shadow-sm">
           <p className="text-xs text-slate-400 mb-3 uppercase tracking-wider font-semibold">Regulatory Data & Attachments</p>
-          <UploadRow label="Commercial Registration (CR)" status="uploaded" />
-          <UploadRow label="Business Licenses" />
-          <UploadRow label="Zakat & Tax Certificate" status="uploaded" />
-          <UploadRow label="National Address" status="uploaded" />
-          <UploadRow label="Core Contracts" />
-          <UploadRow label="Other Regulatory Documents" />
+          {regulatoryDocs.map(doc => (
+            <UploadRow key={doc.label} label={doc.label} status={doc.status} onUpload={() => markUploaded(setRegulatoryDocs, doc.label)} />
+          ))}
         </div>
       )}
 
@@ -75,11 +112,9 @@ const CompanyProfileTabs = () => {
       {activeTab === 1 && (
         <div className="bg-white rounded-xl p-5 shadow-sm">
           <p className="text-xs text-slate-400 mb-3 uppercase tracking-wider font-semibold">Financial Data</p>
-          <UploadRow label="Certified Financial Statements" />
-          <UploadRow label="Income Statement" />
-          <UploadRow label="Balance Sheet (Financial Position)" />
-          <UploadRow label="Cash Flow Statement" />
-          <UploadRow label="Liabilities & Credit Facilities" />
+          {financialDocs.map(doc => (
+            <UploadRow key={doc.label} label={doc.label} status={doc.status} onUpload={() => markUploaded(setFinancialDocs, doc.label)} />
+          ))}
         </div>
       )}
 
@@ -165,14 +200,7 @@ const CompanyProfileTabs = () => {
         <div className="bg-white rounded-xl p-5 shadow-sm">
           <p className="text-xs text-slate-400 mb-4 uppercase tracking-wider font-semibold">Users & Permissions</p>
           <div className="space-y-3">
-            {[
-              { role: 'Company Owner', name: 'Ahmed Al-Rashid', access: 'Full Access', color: 'from-teal-400 to-teal-600' },
-              { role: 'CFO', name: 'Fatima Hassan', access: 'Financial + Reports', color: 'from-blue-400 to-blue-600' },
-              { role: 'Accountant', name: 'Mohammed Ali', access: 'Invoices + Payments', color: 'from-purple-400 to-purple-600' },
-              { role: 'Project Manager', name: '— Not assigned —', access: 'Projects + Contracts', color: 'from-orange-400 to-orange-600' },
-              { role: 'Sales Manager', name: '— Not assigned —', access: 'Customers + Orders', color: 'from-pink-400 to-pink-600' },
-              { role: 'External Auditor', name: '— Not assigned —', access: 'Read Only', color: 'from-slate-400 to-slate-600' },
-            ].map(u => (
+            {userAssignments.map(u => (
               <div key={u.role} className="flex items-center justify-between p-3 border border-gray-100 rounded-xl hover:bg-gray-50 transition-all">
                 <div className="flex items-center gap-3">
                   <div className={`w-8 h-8 rounded-full bg-gradient-to-r ${u.color} flex items-center justify-center text-white text-xs font-bold`}>
@@ -185,7 +213,7 @@ const CompanyProfileTabs = () => {
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="text-xs text-slate-500 hidden sm:block">{u.access}</span>
-                  <button className="px-3 py-1 border border-teal-400 text-teal-600 rounded-lg text-xs hover:bg-teal-50 transition-all">
+                  <button onClick={() => handleUserAction(u.role)} className="px-3 py-1 border border-teal-400 text-teal-600 rounded-lg text-xs hover:bg-teal-50 transition-all">
                     {u.name.startsWith('—') ? 'Invite' : 'Edit'}
                   </button>
                 </div>
@@ -198,8 +226,93 @@ const CompanyProfileTabs = () => {
   );
 };
 
+export const CompanyScoreSummary = () => (
+  <div>
+    <h3 className="text-2xl font-bold text-darkslate mb-2">Company Profile Score</h3>
+    <p className="text-slate-500 text-sm mb-8">Based on the data you've completed in the setup wizard.</p>
+
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* Profile Completion */}
+      <div className="bg-white rounded-2xl shadow-md p-6">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-blue-400 to-blue-600 flex items-center justify-center">
+            <FileCheck className="text-white" size={20} />
+          </div>
+          <div>
+            <p className="font-bold text-darkslate">Profile Completion</p>
+            <p className="text-xs text-slate-500">Data & documents filled</p>
+          </div>
+        </div>
+        <div className="flex items-end gap-2 mb-3">
+          <span className="text-5xl font-bold text-blue-500">75</span>
+          <span className="text-2xl font-bold text-blue-400 mb-1">%</span>
+        </div>
+        <div className="w-full bg-gray-100 rounded-full h-3 mb-4">
+          <div className="h-3 rounded-full bg-gradient-to-r from-blue-400 to-blue-600" style={{ width: '75%' }} />
+        </div>
+        <div className="space-y-2">
+          {[
+            { label: 'Organizational Structure', done: true },
+            { label: 'Company Page', done: true },
+            { label: 'Products Added', done: true },
+            { label: 'Financial Documents', done: false },
+            { label: 'Bank Statements', done: false },
+          ].map(item => (
+            <div key={item.label} className="flex items-center gap-2">
+              <div className={`w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 ${item.done ? 'bg-green-500' : 'bg-gray-200'}`}>
+                {item.done && <Check size={10} className="text-white" />}
+              </div>
+              <span className={`text-xs ${item.done ? 'text-slate-700' : 'text-slate-400'}`}>{item.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Credit Worthiness */}
+      <div className="bg-white rounded-2xl shadow-md p-6">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-teal-400 to-teal-600 flex items-center justify-center">
+            <TrendingUp className="text-white" size={20} />
+          </div>
+          <div>
+            <p className="font-bold text-darkslate">Mezzanine Credit Score</p>
+            <p className="text-xs text-slate-500">Initial financing eligibility</p>
+          </div>
+        </div>
+        <div className="flex items-end gap-2 mb-1">
+          <span className="text-5xl font-bold text-teal-500">68</span>
+          <span className="text-xl font-bold text-slate-400 mb-1">/ 100</span>
+        </div>
+        <p className="text-xs text-amber-600 font-medium mb-3">Good — Eligible for mezzanine financing</p>
+        <div className="w-full bg-gray-100 rounded-full h-3 mb-4">
+          <div className="h-3 rounded-full bg-gradient-to-r from-teal-400 to-teal-600" style={{ width: '68%' }} />
+        </div>
+        <div className="space-y-2">
+          {[
+            { label: 'Business Verification', score: '20/20', color: 'text-green-600' },
+            { label: 'Organizational Structure', score: '18/20', color: 'text-green-600' },
+            { label: 'Product Portfolio', score: '15/20', color: 'text-amber-600' },
+            { label: 'Financial Documents', score: '10/20', color: 'text-red-400' },
+            { label: 'Market Presence', score: '5/20', color: 'text-red-400' },
+          ].map(item => (
+            <div key={item.label} className="flex items-center justify-between">
+              <span className="text-xs text-slate-600">{item.label}</span>
+              <span className={`text-xs font-semibold ${item.color}`}>{item.score}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-xl flex items-start gap-3">
+      <AlertCircle size={16} className="text-amber-500 flex-shrink-0 mt-0.5" />
+      <p className="text-xs text-amber-800">Complete your financial documents and bank statements to increase your score and unlock higher financing limits.</p>
+    </div>
+  </div>
+);
+
 export const SetupWizard = () => {
-  const { setupStep, nextSetupStep, setCompanyData, companyData, setCurrentView } = useApp();
+  const { setupStep, setSetupStep, nextSetupStep, setCompanyData, companyData, setCurrentView } = useApp();
   const [formData, setFormData] = useState({
     companyName: '',
     industry: '',
@@ -239,31 +352,34 @@ export const SetupWizard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-cream p-8">
+    <div className="min-h-screen bg-cream p-4 md:p-8">
       <div className="max-w-6xl mx-auto">
-        <h2 
+        <h2
           onClick={() => setCurrentView('b2b-platform')}
-          className="text-3xl font-bold text-darkslate mb-8 text-center cursor-pointer hover:opacity-80 transition-opacity"
+          className="text-2xl md:text-3xl font-bold text-darkslate mb-6 md:mb-8 text-center cursor-pointer hover:opacity-80 transition-opacity"
         >
           <span className="bg-gradient-to-r from-teal-400 to-teal-600 bg-clip-text text-transparent">Mezzanine</span> Setup Wizard
         </h2>
-        
+
         {/* Stepper */}
-        <div className="flex justify-center mb-12">
+        <div className="flex justify-center mb-8 md:mb-12 overflow-x-auto px-2">
           {steps.map((step, idx) => (
-            <div key={step.number} className="flex items-center">
-              <div className="flex flex-col items-center">
-                <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold mb-2 ${
+            <div key={step.number} className="flex items-center flex-shrink-0">
+              <div
+                className="flex flex-col items-center cursor-pointer"
+                onClick={() => setSetupStep(step.number)}
+              >
+                <div className={`w-8 h-8 md:w-12 md:h-12 rounded-full flex items-center justify-center font-bold mb-2 text-sm md:text-base flex-shrink-0 ${
                   setupStep > step.number ? 'bg-gradient-to-r from-teal-400 to-teal-600 text-white' :
                   setupStep === step.number ? 'bg-gradient-to-r from-teal-400 to-teal-600 text-white' :
                   'bg-lightgray text-darkslate'
                 }`}>
-                  {setupStep > step.number ? <Check size={24} /> : step.number}
+                  {setupStep > step.number ? <Check size={18} /> : step.number}
                 </div>
-                <p className="text-sm font-medium text-darkslate text-center max-w-[120px]">{step.title}</p>
+                <p className="hidden sm:block text-xs md:text-sm font-medium text-darkslate text-center max-w-[90px] md:max-w-[120px]">{step.title}</p>
               </div>
               {idx < steps.length - 1 && (
-                <div className={`w-24 h-1 mx-4 mb-8 ${
+                <div className={`w-8 md:w-24 h-1 mx-2 md:mx-4 mb-8 md:mb-8 flex-shrink-0 ${
                   setupStep > step.number ? 'bg-gradient-to-r from-teal-400 to-teal-600' : 'bg-lightgray'
                 }`} />
               )}
@@ -272,7 +388,7 @@ export const SetupWizard = () => {
         </div>
 
         {/* Step Content */}
-        <div className="bg-white/70 backdrop-blur-md rounded-2xl shadow-lg p-8">
+        <div className="bg-white/70 backdrop-blur-md rounded-2xl shadow-lg p-4 md:p-8">
           {setupStep === 1 && (
             <div>
               <h3 className="text-2xl font-bold text-darkslate mb-6">Create Organizational Structure</h3>
@@ -321,90 +437,7 @@ export const SetupWizard = () => {
             </div>
           )}
 
-          {setupStep === 4 && (
-            <div>
-              <h3 className="text-2xl font-bold text-darkslate mb-2">Company Profile Score</h3>
-              <p className="text-slate-500 text-sm mb-8">Based on the data you've completed in the setup wizard.</p>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Profile Completion */}
-                <div className="bg-white rounded-2xl shadow-md p-6">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-blue-400 to-blue-600 flex items-center justify-center">
-                      <FileCheck className="text-white" size={20} />
-                    </div>
-                    <div>
-                      <p className="font-bold text-darkslate">Profile Completion</p>
-                      <p className="text-xs text-slate-500">Data & documents filled</p>
-                    </div>
-                  </div>
-                  <div className="flex items-end gap-2 mb-3">
-                    <span className="text-5xl font-bold text-blue-500">75</span>
-                    <span className="text-2xl font-bold text-blue-400 mb-1">%</span>
-                  </div>
-                  <div className="w-full bg-gray-100 rounded-full h-3 mb-4">
-                    <div className="h-3 rounded-full bg-gradient-to-r from-blue-400 to-blue-600" style={{ width: '75%' }} />
-                  </div>
-                  <div className="space-y-2">
-                    {[
-                      { label: 'Organizational Structure', done: true },
-                      { label: 'Company Page', done: true },
-                      { label: 'Products Added', done: true },
-                      { label: 'Financial Documents', done: false },
-                      { label: 'Bank Statements', done: false },
-                    ].map(item => (
-                      <div key={item.label} className="flex items-center gap-2">
-                        <div className={`w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 ${item.done ? 'bg-green-500' : 'bg-gray-200'}`}>
-                          {item.done && <Check size={10} className="text-white" />}
-                        </div>
-                        <span className={`text-xs ${item.done ? 'text-slate-700' : 'text-slate-400'}`}>{item.label}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Credit Worthiness */}
-                <div className="bg-white rounded-2xl shadow-md p-6">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-teal-400 to-teal-600 flex items-center justify-center">
-                      <TrendingUp className="text-white" size={20} />
-                    </div>
-                    <div>
-                      <p className="font-bold text-darkslate">Mezzanine Credit Score</p>
-                      <p className="text-xs text-slate-500">Initial financing eligibility</p>
-                    </div>
-                  </div>
-                  <div className="flex items-end gap-2 mb-1">
-                    <span className="text-5xl font-bold text-teal-500">68</span>
-                    <span className="text-xl font-bold text-slate-400 mb-1">/ 100</span>
-                  </div>
-                  <p className="text-xs text-amber-600 font-medium mb-3">Good — Eligible for mezzanine financing</p>
-                  <div className="w-full bg-gray-100 rounded-full h-3 mb-4">
-                    <div className="h-3 rounded-full bg-gradient-to-r from-teal-400 to-teal-600" style={{ width: '68%' }} />
-                  </div>
-                  <div className="space-y-2">
-                    {[
-                      { label: 'Business Verification', score: '20/20', color: 'text-green-600' },
-                      { label: 'Organizational Structure', score: '18/20', color: 'text-green-600' },
-                      { label: 'Product Portfolio', score: '15/20', color: 'text-amber-600' },
-                      { label: 'Financial Documents', score: '10/20', color: 'text-red-400' },
-                      { label: 'Market Presence', score: '5/20', color: 'text-red-400' },
-                    ].map(item => (
-                      <div key={item.label} className="flex items-center justify-between">
-                        <span className="text-xs text-slate-600">{item.label}</span>
-                        <span className={`text-xs font-semibold ${item.color}`}>{item.score}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-xl flex items-start gap-3">
-                <AlertCircle size={16} className="text-amber-500 flex-shrink-0 mt-0.5" />
-                <p className="text-xs text-amber-800">Complete your financial documents and bank statements to increase your score and unlock higher financing limits.</p>
-              </div>
-            </div>
-          )}
+          {setupStep === 4 && <CompanyScoreSummary />}
 
           <button
             onClick={handleNext}

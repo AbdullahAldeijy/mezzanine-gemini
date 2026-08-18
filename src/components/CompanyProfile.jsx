@@ -15,13 +15,19 @@ export const CompanyProfile = () => {
     <div className="min-h-screen bg-[#f7f4e8]">
       {/* Top Navigation Bar */}
       <nav className="bg-white shadow-md sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 py-3">
+        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
           <button
             onClick={() => setCurrentView('b2b-platform')}
             className="flex items-center gap-2 text-slate-600 hover:text-teal-500 transition-all font-medium min-h-[44px] -ml-2 pl-2 pr-4"
           >
             <ArrowLeft size={20} />
             <span>Back to Marketplace</span>
+          </button>
+          <button
+            onClick={() => setCurrentView('crm-dashboard')}
+            className="text-xs md:text-sm text-teal-600 hover:text-teal-700 font-medium px-3 py-2 border border-teal-200 rounded-lg hover:bg-teal-50 transition-all whitespace-nowrap"
+          >
+            Edit in Company Page Editor
           </button>
         </div>
       </nav>

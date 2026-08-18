@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { Search, User, LayoutDashboard, LogIn, FileText, Building2, Star, ArrowRight, X, Menu, Lock, TrendingUp, Send, MapPin, Calendar, Package } from 'lucide-react';
+import { Search, User, LayoutDashboard, LogIn, LogOut, FileText, Building2, Star, ArrowRight, X, Menu, Lock, TrendingUp, Send, MapPin, Calendar, Package } from 'lucide-react';
 
 export const B2BPlatform = () => {
-  const { setCurrentView, openCheckout } = useApp();
+  const { setCurrentView, openCheckout, isLoggedIn, logout, userData } = useApp();
   const [showRFQModal, setShowRFQModal] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -96,12 +96,22 @@ export const B2BPlatform = () => {
                 <FileText size={18} />
                 Submit RFQ
               </button>
-              <button
-                onClick={() => setCurrentView('auth')}
-                className="px-4 py-2 border-2 border-teal-500 text-teal-500 rounded-xl font-medium hover:bg-teal-50 transition-all flex items-center gap-2"
-              >
-                <LogIn size={18} />
-              </button>
+              {isLoggedIn ? (
+                <button
+                  onClick={logout}
+                  title="Log out"
+                  className="px-4 py-2 border-2 border-teal-500 text-teal-500 rounded-xl font-medium hover:bg-teal-50 transition-all flex items-center gap-2"
+                >
+                  <LogOut size={18} />
+                </button>
+              ) : (
+                <button
+                  onClick={() => setCurrentView('auth')}
+                  className="px-4 py-2 border-2 border-teal-500 text-teal-500 rounded-xl font-medium hover:bg-teal-50 transition-all flex items-center gap-2"
+                >
+                  <LogIn size={18} />
+                </button>
+              )}
               <button
                 onClick={() => setCurrentView('crm-dashboard')}
                 className="p-2 hover:bg-gray-100 rounded-xl transition-all"
@@ -123,9 +133,14 @@ export const B2BPlatform = () => {
               >
                 <Lock size={16} className="text-slate-400 hover:text-slate-600" />
               </button>
-              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-teal-400 to-teal-600 flex items-center justify-center text-white">
-                <User size={20} />
-              </div>
+              {isLoggedIn && (
+                <div
+                  title={userData?.fullName || 'Account'}
+                  className="w-10 h-10 rounded-full bg-gradient-to-r from-teal-400 to-teal-600 flex items-center justify-center text-white"
+                >
+                  <User size={20} />
+                </div>
+              )}
             </div>
 
             {/* Mobile Menu Button */}
@@ -162,13 +177,23 @@ export const B2BPlatform = () => {
               <FileText size={18} />
               Submit RFQ
             </button>
-            <button
-              onClick={() => { setCurrentView('auth'); setShowMobileMenu(false); }}
-              className="w-full py-2 px-4 border-2 border-teal-500 text-teal-500 rounded-xl font-medium flex items-center justify-center gap-2"
-            >
-              <LogIn size={18} />
-              Login
-            </button>
+            {isLoggedIn ? (
+              <button
+                onClick={() => { logout(); setShowMobileMenu(false); }}
+                className="w-full py-2 px-4 border-2 border-teal-500 text-teal-500 rounded-xl font-medium flex items-center justify-center gap-2"
+              >
+                <LogOut size={18} />
+                Log Out
+              </button>
+            ) : (
+              <button
+                onClick={() => { setCurrentView('auth'); setShowMobileMenu(false); }}
+                className="w-full py-2 px-4 border-2 border-teal-500 text-teal-500 rounded-xl font-medium flex items-center justify-center gap-2"
+              >
+                <LogIn size={18} />
+                Login
+              </button>
+            )}
             <button
               onClick={() => { setCurrentView('crm-dashboard'); setShowMobileMenu(false); }}
               className="w-full py-2 px-4 bg-gray-100 text-slate-700 rounded-xl font-medium flex items-center justify-center gap-2"

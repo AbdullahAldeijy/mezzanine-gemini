@@ -5,8 +5,7 @@ import {
   CheckCircle2, Plus, ChevronDown, Shield
 } from 'lucide-react';
 
-export const DataIntegrations = () => {
-  const { setCurrentView } = useApp();
+export const DataIntegrationsContent = () => {
   const [selectedERP, setSelectedERP] = useState('');
 
   const integrations = [
@@ -72,34 +71,21 @@ export const DataIntegrations = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#f7f4e8]">
-      {/* Header */}
-      <header className="bg-white shadow-md sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => setCurrentView('b2b-platform')}
-              className="p-2 hover:bg-slate-100 rounded-lg transition-all"
-            >
-              <ArrowLeft size={20} className="text-slate-600" />
-            </button>
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#56afb6]/20 flex items-center justify-center">
-                <Shield size={20} className="text-[#56afb6]" />
-              </div>
-              <div>
-                <h1 className="text-xl md:text-2xl font-bold text-slate-900">Data & API Integrations</h1>
-                <p className="text-xs md:text-sm text-slate-500">
-                  Connect your business data sources to unlock higher credit limits and AI-powered financing
-                </p>
-              </div>
-            </div>
-          </div>
+    <div>
+      {/* Page heading */}
+      <div className="flex items-center gap-3 mb-6 md:mb-8">
+        <div className="w-10 h-10 rounded-xl bg-[#56afb6]/20 flex items-center justify-center flex-shrink-0">
+          <Shield size={20} className="text-[#56afb6]" />
         </div>
-      </header>
+        <div>
+          <h1 className="text-xl md:text-2xl font-bold text-slate-900">Data & API Integrations</h1>
+          <p className="text-xs md:text-sm text-slate-500">
+            Connect your business data sources to unlock higher credit limits and AI-powered financing
+          </p>
+        </div>
+      </div>
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 py-6 md:py-8">
+      <div>
         {/* Info Banner */}
         <div className="bg-gradient-to-r from-[#56afb6]/10 to-teal-500/10 border border-[#56afb6]/30 rounded-2xl p-4 md:p-6 mb-6">
           <div className="flex items-start gap-4">
@@ -263,6 +249,29 @@ export const DataIntegrations = () => {
             </p>
           </div>
         </div>
+      </div>
+    </div>
+  );
+};
+
+export const DataIntegrations = () => {
+  const { setCurrentView } = useApp();
+
+  return (
+    <div className="min-h-screen bg-[#f7f4e8]">
+      <header className="bg-white shadow-md sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 py-4">
+          <button
+            onClick={() => setCurrentView('b2b-platform')}
+            className="flex items-center gap-2 text-slate-600 hover:text-teal-500 transition-all font-medium"
+          >
+            <ArrowLeft size={20} />
+            <span>Back to Marketplace</span>
+          </button>
+        </div>
+      </header>
+      <div className="max-w-7xl mx-auto px-4 py-6 md:py-8">
+        <DataIntegrationsContent />
       </div>
     </div>
   );

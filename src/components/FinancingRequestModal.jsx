@@ -19,17 +19,17 @@ export const FinancingRequestModal = () => {
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <div className="bg-white/90 backdrop-blur-md rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
-        <div className="sticky top-0 bg-white/90 backdrop-blur-md p-6 border-b border-gray-200 flex justify-between items-center">
+        <div className="sticky top-0 bg-white/90 backdrop-blur-md p-4 md:p-6 border-b border-gray-200 flex justify-between items-center gap-3">
           <div>
-            <h2 className="text-2xl font-bold text-darkslate">Financing Request</h2>
-            <p className="text-sm text-gray-600">Submit the details of the financing you need for this purchase</p>
+            <h2 className="text-xl md:text-2xl font-bold text-darkslate">Financing Request</h2>
+            <p className="text-xs md:text-sm text-gray-600">Submit the details of the financing you need for this purchase</p>
           </div>
-          <button onClick={closeFinancingRequest} className="text-gray-500 hover:text-darkslate transition-all">
+          <button onClick={closeFinancingRequest} className="text-gray-500 hover:text-darkslate transition-all flex-shrink-0">
             <X size={24} />
           </button>
         </div>
 
-        <div className="p-6 space-y-6">
+        <div className="p-4 md:p-6 space-y-6">
           {/* Linked Opportunity */}
           <div className="bg-lightgray rounded-xl p-4 flex items-center gap-3">
             <FileText className="text-teal-600 flex-shrink-0" size={22} />
@@ -128,7 +128,7 @@ export const FinancingRequestModal = () => {
             <p className="text-sm text-gray-700 mb-4">
               Torbiona AI improves creditworthiness over time using verified platform activity, invoices, and repayment history — increasing the financed portion available on future requests.
             </p>
-            <div className="grid grid-cols-3 gap-3 text-center mb-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-center mb-4">
               <div className="bg-white rounded-xl p-3">
                 <p className="text-xs text-gray-500 mb-1">Requested Amount</p>
                 <p className="text-lg font-bold text-darkslate">{amount.toLocaleString()} SAR</p>

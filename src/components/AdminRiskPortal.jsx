@@ -159,6 +159,64 @@ const autoApprovedApps = [
   },
 ];
 
+const inProgressApps = [
+  {
+    id: 5,
+    company: 'Dammam Logistics Hub',
+    amount: 62000,
+    purpose: 'Fleet Expansion',
+    status: 'In Progress',
+    type: 'progress',
+    reason: 'Awaiting Additional Documentation',
+    aiConfidence: 71,
+    ecl: 2.8,
+    recommendedLimit: 50000,
+    govApi: { status: 'Active', age: '3 Years', compliance: 'Pending' },
+    erp: { ccc: '-1 day worsened', invoices: 5 },
+    platform: { pos: 6, rating: 4.1 },
+    bureau: { defaults: 0, history: 'Clean' },
+    companySummary: 'Dammam Logistics Hub — 3 yrs, freight & distribution',
+    financials: 'FY2023 statements under review',
+    fiveCs: 'Character, Capacity, Capital, Collateral, Conditions — in progress',
+    mezzanineIndex: 601,
+    expectedCashFlows: 'SAR 520K projected over 12 months',
+    structuring: {
+      capacity: '50,000 SAR', pricing: '10.8% APR', duration: '8 Months',
+      reserveRatio: '6%', disbursementTerms: 'Pending underwriter sign-off',
+      controlPlan: 'Weekly ERP sync pending activation',
+    },
+    monitoring: {
+      amountPerDisbursement: '25,000 SAR / tranche (2 tranches)',
+      disbursementConditions: 'Pending document verification',
+      beneficiary: 'Dammam Logistics Hub — Operating Account ****7742',
+      requiredDocuments: 'Fleet registration + insurance certificate',
+      suspensionRules: 'Hold if documentation not received in 5 business days',
+      reserveRatio: '6%',
+      repaymentSchedule: 'Monthly, 8 installments',
+    },
+  },
+];
+
+const autoRejectedApps = [
+  {
+    id: 6,
+    company: 'Hail Textiles Co.',
+    amount: 150000,
+    purpose: 'Working Capital',
+    status: 'Auto-Rejected ❌',
+    type: 'rejected',
+    reason: 'ECL Exceeds Threshold',
+    aiConfidence: 22,
+    ecl: 8.4,
+    recommendedLimit: 0,
+    rejectedAt: '2024-01-15 07:12:05',
+    govApi: { status: 'Active', age: '1 Year', compliance: 'Non-Compliant' },
+    erp: { ccc: '-14 days worsened', invoices: 1 },
+    platform: { pos: 0, rating: 2.3 },
+    bureau: { defaults: 2, history: '2 Defaults (2022, 2023)' },
+  },
+];
+
 const decisionOptions = [
   { id: 'approve', icon: CheckCircle2, label: 'Approval', labelAr: 'موافقة', accent: 'emerald' },
   { id: 'conditional', icon: AlertTriangle, label: 'Conditional Approval', labelAr: 'موافقة بشروط', accent: 'teal' },
@@ -173,6 +231,29 @@ const decisionAccent = {
   slate: 'bg-slate-500/10 border-slate-400/40 text-slate-600',
   red: 'bg-red-500/10 border-red-500/40 text-red-600',
 };
+
+const AdminIdentityBanner = ({ company, companyAr, role, description, manages, gradient, Icon }) => (
+  <div className={`rounded-2xl p-4 md:p-5 bg-gradient-to-r ${gradient} text-white shadow-sm`}>
+    <div className="flex items-start gap-3">
+      <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
+        <Icon size={20} className="text-white" />
+      </div>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2 flex-wrap">
+          <h3 className="text-base md:text-lg font-bold">{company}</h3>
+          <span className="text-xs text-white/60">{companyAr}</span>
+        </div>
+        <p className="text-xs md:text-sm text-white/90 font-semibold mt-0.5">{role}</p>
+        <p className="text-xs text-white/75 mt-2 leading-relaxed max-w-3xl">{description}</p>
+        <div className="flex flex-wrap gap-1.5 mt-3">
+          {manages.map((m) => (
+            <span key={m} className="px-2.5 py-1 bg-white/15 rounded-full text-[11px] font-medium">{m}</span>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+);
 
 export const AdminRiskPortal = () => {
   const { setCurrentView } = useApp();
@@ -214,8 +295,16 @@ export const AdminRiskPortal = () => {
     },
   ]);
 
-  const currentList = activeTab === 'manual' ? manualReviewApps : autoApprovedApps;
+  const listByTab = {
+    manual: manualReviewApps,
+    auto: autoApprovedApps,
+    progress: inProgressApps,
+    rejected: autoRejectedApps,
+  };
+  const currentList = listByTab[activeTab];
   const isAutoApproved = selectedRequest?.type === 'auto';
+  const isAutoRejected = selectedRequest?.type === 'rejected';
+  const isReadOnly = isAutoApproved || isAutoRejected;
 
   const handleSelectRequest = (app) => {
     setSelectedRequest(app);
@@ -243,7 +332,7 @@ export const AdminRiskPortal = () => {
               <Shield size={16} className="text-[#56afb6]" />
               <h1 className="text-white font-bold text-sm md:text-base">Admin Portal</h1>
             </div>
-            <p className="text-xs text-slate-400 mt-0.5 ml-6">Operations, Credit Underwriting & Sukuk Issuance</p>
+            <p className="text-xs text-slate-400 mt-0.5 ml-6">Mezzanine Tech · Mezzanine Finance · Mezzanine Investment</p>
           </div>
         </div>
       </header>
@@ -260,8 +349,8 @@ export const AdminRiskPortal = () => {
             }`}
           >
             <LayoutDashboard size={16} />
-            <span className="hidden sm:inline">Mezzanine Operations Dashboard</span>
-            <span className="sm:hidden">Operations</span>
+            <span className="hidden sm:inline">Mezzanine Tech</span>
+            <span className="sm:hidden">Tech</span>
           </button>
           <button
             onClick={() => setHubTab('credit-risk')}
@@ -272,8 +361,8 @@ export const AdminRiskPortal = () => {
             }`}
           >
             <Shield size={16} />
-            <span className="hidden sm:inline">Credit Underwriting (Torbiona AI)</span>
-            <span className="sm:hidden">Credit Risk</span>
+            <span className="hidden sm:inline">Mezzanine Finance</span>
+            <span className="sm:hidden">Finance</span>
           </button>
           <button
             onClick={() => setHubTab('investment-portfolios')}
@@ -284,8 +373,8 @@ export const AdminRiskPortal = () => {
             }`}
           >
             <TrendingUp size={16} />
-            <span className="hidden sm:inline">Investment & Sukuk Portfolios</span>
-            <span className="sm:hidden">Portfolios</span>
+            <span className="hidden sm:inline">Mezzanine Investment</span>
+            <span className="sm:hidden">Investment</span>
           </button>
         </div>
       </div>
@@ -298,6 +387,22 @@ export const AdminRiskPortal = () => {
               <h2 className="text-xl md:text-2xl font-bold text-slate-900 mb-1">Mezzanine Operations Dashboard</h2>
               <p className="text-sm text-slate-600">Portfolio-wide view of registered companies, financing eligibility, relationships and risk</p>
             </div>
+
+            <AdminIdentityBanner
+              company="Mezzanine Tech"
+              companyAr="ميزانين تك"
+              role="Platform Operations Administrator"
+              description="Owns the core platform infrastructure — company onboarding, data pipelines, relationship mapping, and system-wide risk monitoring across every registered company on Mezzanine."
+              manages={[
+                'Registered company directory',
+                'Sector / region / size analytics',
+                'Relationship & transaction network',
+                'Platform alerts & risk indicators',
+                'Data integration health (ERP, SIMAH, Gov API)',
+              ]}
+              gradient="from-teal-500 to-teal-700"
+              Icon={LayoutDashboard}
+            />
 
             {/* Top KPI Row */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
@@ -473,6 +578,27 @@ export const AdminRiskPortal = () => {
         </div>
       )}
 
+      {/* Mezzanine Finance Identity */}
+      {hubTab === 'credit-risk' && (
+        <div className="px-4 pt-4 bg-slate-800">
+          <AdminIdentityBanner
+            company="Mezzanine Finance"
+            companyAr="ميزانين للتمويل"
+            role="Credit Underwriting Administrator — powered by Torbiona AI"
+            description="Reviews and decisions every financing request — approving, rejecting, or escalating based on Torbiona AI's automated risk scoring, then structures disbursement and repayment controls."
+            manages={[
+              'Financing request queue',
+              'ECL scoring & AI confidence review',
+              'Credit limit approval & structuring',
+              'Disbursement & repayment monitoring',
+              'Audit trail & compliance decisions',
+            ]}
+            gradient="from-indigo-500 to-indigo-700"
+            Icon={Shield}
+          />
+        </div>
+      )}
+
       {/* KPI Cards */}
       {hubTab === 'credit-risk' && (
         <div className="px-4 py-4 bg-slate-800 border-b border-slate-700">
@@ -537,10 +663,10 @@ export const AdminRiskPortal = () => {
           {/* Queue List - Hidden on mobile when request selected */}
           <aside className={`${selectedRequest ? 'hidden md:block' : 'block'} bg-slate-900 overflow-y-auto`}>
             {/* Tabs */}
-            <div className="flex border-b border-slate-700">
+            <div className="flex flex-wrap border-b border-slate-700">
               <button
                 onClick={() => setActiveTab('manual')}
-                className={`flex-1 px-4 py-3 text-xs font-semibold uppercase ${
+                className={`flex-1 min-w-[45%] px-3 py-3 text-xs font-semibold uppercase ${
                   activeTab === 'manual'
                     ? 'bg-amber-500/10 text-amber-400 border-b-2 border-amber-400'
                     : 'text-slate-500'
@@ -550,13 +676,33 @@ export const AdminRiskPortal = () => {
               </button>
               <button
                 onClick={() => setActiveTab('auto')}
-                className={`flex-1 px-4 py-3 text-xs font-semibold uppercase ${
+                className={`flex-1 min-w-[45%] px-3 py-3 text-xs font-semibold uppercase ${
                   activeTab === 'auto'
                     ? 'bg-emerald-500/10 text-emerald-400 border-b-2 border-emerald-400'
                     : 'text-slate-500'
                 }`}
               >
                 Auto-Approved
+              </button>
+              <button
+                onClick={() => setActiveTab('progress')}
+                className={`flex-1 min-w-[45%] px-3 py-3 text-xs font-semibold uppercase ${
+                  activeTab === 'progress'
+                    ? 'bg-[#56afb6]/10 text-[#56afb6] border-b-2 border-[#56afb6]'
+                    : 'text-slate-500'
+                }`}
+              >
+                In Progress
+              </button>
+              <button
+                onClick={() => setActiveTab('rejected')}
+                className={`flex-1 min-w-[45%] px-3 py-3 text-xs font-semibold uppercase ${
+                  activeTab === 'rejected'
+                    ? 'bg-red-500/10 text-red-400 border-b-2 border-red-400'
+                    : 'text-slate-500'
+                }`}
+              >
+                Auto-Rejected
               </button>
             </div>
 
@@ -582,6 +728,10 @@ export const AdminRiskPortal = () => {
                   <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${
                     app.type === 'auto'
                       ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                      : app.type === 'rejected'
+                      ? 'bg-red-50 text-red-700 border border-red-200'
+                      : app.type === 'progress'
+                      ? 'bg-[#56afb6]/10 text-[#56afb6] border border-[#56afb6]/30'
                       : 'bg-amber-50 text-amber-700 border border-amber-200'
                   }`}>
                     {app.status}
@@ -624,7 +774,7 @@ export const AdminRiskPortal = () => {
                   </div>
 
                   {/* AI Alert for Manual Review */}
-                  {!isAutoApproved && (
+                  {!isReadOnly && (
                     <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-start gap-3">
                       <AlertTriangle size={20} className="text-amber-600 flex-shrink-0" />
                       <div>
@@ -636,13 +786,15 @@ export const AdminRiskPortal = () => {
 
                   {/* AI Verdict */}
                   <div className={`rounded-2xl border p-4 ${
-                    isAutoApproved ? 'bg-emerald-50 border-emerald-200' : 'bg-amber-50 border-amber-200'
+                    isAutoApproved ? 'bg-emerald-50 border-emerald-200' : isAutoRejected ? 'bg-red-50 border-red-200' : 'bg-amber-50 border-amber-200'
                   }`}>
                     <div className="flex items-center gap-2 mb-3">
-                      <Shield size={16} className={isAutoApproved ? 'text-emerald-600' : 'text-amber-600'} />
+                      <Shield size={16} className={isAutoApproved ? 'text-emerald-600' : isAutoRejected ? 'text-red-600' : 'text-amber-600'} />
                       <span className="text-xs font-bold text-slate-700 uppercase">Torbiona AI Verdict</span>
-                      {isAutoApproved && (
-                        <span className="ml-auto text-xs bg-emerald-100 text-emerald-700 px-2 py-1 rounded-full font-semibold">
+                      {isReadOnly && (
+                        <span className={`ml-auto text-xs px-2 py-1 rounded-full font-semibold ${
+                          isAutoApproved ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'
+                        }`}>
                           STP Executed
                         </span>
                       )}
@@ -650,17 +802,20 @@ export const AdminRiskPortal = () => {
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                       <div className="bg-white/60 rounded-xl p-3 border border-white/80">
                         <p className="text-xs text-slate-500 uppercase mb-1">ECL Score</p>
-                        <p className={`text-2xl font-bold ${isAutoApproved ? 'text-emerald-600' : 'text-amber-600'}`}>
+                        <p className={`text-2xl font-bold ${isAutoApproved ? 'text-emerald-600' : isAutoRejected ? 'text-red-600' : 'text-amber-600'}`}>
                           {selectedRequest.ecl}%
                         </p>
                       </div>
                       <div className="bg-white/60 rounded-xl p-3 border border-white/80 sm:col-span-2">
                         <p className="text-xs text-slate-500 uppercase mb-1">Recommendation</p>
-                        <p className={`text-lg font-bold ${isAutoApproved ? 'text-emerald-700' : 'text-amber-700'}`}>
-                          {isAutoApproved ? '✅ AUTO-APPROVED' : '⚠️ MANUAL REVIEW'}
+                        <p className={`text-lg font-bold ${isAutoApproved ? 'text-emerald-700' : isAutoRejected ? 'text-red-700' : 'text-amber-700'}`}>
+                          {isAutoApproved ? '✅ AUTO-APPROVED' : isAutoRejected ? '❌ AUTO-REJECTED' : '⚠️ MANUAL REVIEW'}
                         </p>
                         {isAutoApproved && (
                           <p className="text-xs text-emerald-600 mt-1">Approved at: {selectedRequest.approvedAt}</p>
+                        )}
+                        {isAutoRejected && (
+                          <p className="text-xs text-red-600 mt-1">Rejected at: {selectedRequest.rejectedAt} — {selectedRequest.reason}</p>
                         )}
                         <p className="text-xs text-slate-600 mt-1">
                           Limit: <span className="font-bold">{selectedRequest.recommendedLimit.toLocaleString()} SAR</span>
@@ -898,11 +1053,15 @@ export const AdminRiskPortal = () => {
 
                 {/* Action Bar - Sticky Bottom */}
                 <div className="sticky bottom-0 bg-white/90 backdrop-blur-xl border-t border-slate-200 px-4 py-3">
-                  {isAutoApproved ? (
+                  {isReadOnly ? (
                     <div className="space-y-2">
-                      <div className="flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                        <CheckCircle2 size={16} />
-                        ✅ Auto-Approved by Torbiona AI
+                      <div className={`flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-semibold border ${
+                        isAutoApproved
+                          ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                          : 'bg-red-50 text-red-700 border-red-200'
+                      }`}>
+                        {isAutoApproved ? <CheckCircle2 size={16} /> : <XCircle size={16} />}
+                        {isAutoApproved ? '✅ Auto-Approved by Torbiona AI' : '❌ Auto-Rejected by Torbiona AI'}
                       </div>
                       <button className="w-full py-2 bg-slate-100 border border-slate-300 text-slate-700 rounded-xl text-sm font-semibold hover:bg-slate-200 flex items-center justify-center gap-2">
                         <Download size={16} />
@@ -975,6 +1134,23 @@ export const AdminRiskPortal = () => {
             <div className="mb-6">
               <h2 className="text-xl md:text-2xl font-bold text-slate-900 mb-2">Regional Securitization Pools</h2>
               <p className="text-sm text-slate-600">Bundle B2B credit portfolios by region into investable Sukuk instruments for institutional investors</p>
+            </div>
+
+            <div className="mb-6">
+              <AdminIdentityBanner
+                company="Mezzanine Investment"
+                companyAr="ميزانين للاستثمار"
+                role="Capital Markets & Securitization Administrator"
+                description="Bundles credit portfolios already approved by Mezzanine Finance into regional pools and issues them as Sharia-compliant Sukuk instruments to institutional investors."
+                manages={[
+                  'Regional securitization pools',
+                  'Sukuk issuance & listing',
+                  'Institutional investor relationships',
+                  'Portfolio yield & ECL oversight',
+                ]}
+                gradient="from-purple-500 to-purple-700"
+                Icon={Briefcase}
+              />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

@@ -32,14 +32,14 @@ export const TorbionaModal = () => {
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <div className="bg-white/90 backdrop-blur-md rounded-2xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-y-auto">
-        <div className="sticky top-0 bg-white/90 backdrop-blur-md p-6 border-b border-gray-200 flex justify-between items-center">
-          <h2 className="text-2xl font-bold text-darkslate">Torbiona Credit Calculator</h2>
+        <div className="sticky top-0 bg-white/90 backdrop-blur-md p-4 md:p-6 border-b border-gray-200 flex justify-between items-center">
+          <h2 className="text-xl md:text-2xl font-bold text-darkslate">Torbiona Credit Calculator</h2>
           <button onClick={closeTorbiona} className="text-gray-500 hover:text-darkslate transition-all">
             <X size={24} />
           </button>
         </div>
 
-        <div className="p-6">
+        <div className="p-4 md:p-6">
           <div className="grid md:grid-cols-2 gap-8 mb-8">
             {/* Left: Score Bars */}
             <div>

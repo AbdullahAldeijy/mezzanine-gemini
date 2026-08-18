@@ -558,8 +558,7 @@ const ArchivedTab = () => (
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 
-export const ContractsPortal = () => {
-  const { setCurrentView } = useApp();
+export const ContractsPortalContent = () => {
   const [activeTab, setActiveTab] = useState('pending');
 
   const tabs = [
@@ -582,6 +581,61 @@ export const ContractsPortal = () => {
       count: archivedContracts.length,
     },
   ];
+
+  return (
+    <div>
+      {/* Page heading */}
+      <div className="mb-6">
+        <h2 className="text-2xl md:text-3xl font-bold text-slate-900 leading-tight">
+          Digital Contracts &amp; Promissory Notes
+          <span className="block text-base md:text-lg font-semibold text-slate-400 mt-0.5">
+            العقود الرقمية والسندات لأمر
+          </span>
+        </h2>
+        <p className="text-sm text-slate-500 mt-2 flex items-center gap-2">
+          <Shield size={13} className="text-blue-900" />
+          All contracts are legally binding under Saudi E-Transaction Law. Signatures require Nafath identity verification.
+        </p>
+      </div>
+
+      {/* KPI bar */}
+      <KPIBar />
+
+      {/* ── Tab Navigation ── */}
+      <div className="bg-white/70 backdrop-blur-md rounded-2xl p-1.5 shadow-sm mb-6 flex gap-1">
+        {tabs.map(({ id, label, icon: Icon, count }) => (
+          <button
+            key={id}
+            onClick={() => setActiveTab(id)}
+            className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-sm font-semibold transition-all ${
+              activeTab === id
+                ? 'bg-blue-900 text-white shadow-md'
+                : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'
+            }`}
+          >
+            <Icon size={15} />
+            <span className="hidden sm:inline">{label}</span>
+            <span className={`text-xs px-1.5 py-0.5 rounded-full font-bold ${
+              activeTab === id
+                ? 'bg-white/20 text-white'
+                : 'bg-slate-100 text-slate-500'
+            }`}>
+              {count}
+            </span>
+          </button>
+        ))}
+      </div>
+
+      {/* ── Tab Content ── */}
+      {activeTab === 'pending' && <PendingSignaturesTab />}
+      {activeTab === 'active' && <ActiveContractsTab />}
+      {activeTab === 'archived' && <ArchivedTab />}
+    </div>
+  );
+};
+
+export const ContractsPortal = () => {
+  const { setCurrentView } = useApp();
 
   return (
     <div className="min-h-screen bg-[#f7f4e8]">
@@ -642,53 +696,7 @@ export const ContractsPortal = () => {
 
       {/* ── Page Content ── */}
       <main className="px-4 md:px-8 py-6 md:py-8 max-w-7xl mx-auto">
-
-        {/* Page heading */}
-        <div className="mb-6">
-          <h2 className="text-2xl md:text-3xl font-bold text-slate-900 leading-tight">
-            Digital Contracts &amp; Promissory Notes
-            <span className="block text-base md:text-lg font-semibold text-slate-400 mt-0.5">
-              العقود الرقمية والسندات لأمر
-            </span>
-          </h2>
-          <p className="text-sm text-slate-500 mt-2 flex items-center gap-2">
-            <Shield size={13} className="text-blue-900" />
-            All contracts are legally binding under Saudi E-Transaction Law. Signatures require Nafath identity verification.
-          </p>
-        </div>
-
-        {/* KPI bar */}
-        <KPIBar />
-
-        {/* ── Tab Navigation ── */}
-        <div className="bg-white/70 backdrop-blur-md rounded-2xl p-1.5 shadow-sm mb-6 flex gap-1">
-          {tabs.map(({ id, label, icon: Icon, count }) => (
-            <button
-              key={id}
-              onClick={() => setActiveTab(id)}
-              className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-sm font-semibold transition-all ${
-                activeTab === id
-                  ? 'bg-blue-900 text-white shadow-md'
-                  : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'
-              }`}
-            >
-              <Icon size={15} />
-              <span className="hidden sm:inline">{label}</span>
-              <span className={`text-xs px-1.5 py-0.5 rounded-full font-bold ${
-                activeTab === id
-                  ? 'bg-white/20 text-white'
-                  : 'bg-slate-100 text-slate-500'
-              }`}>
-                {count}
-              </span>
-            </button>
-          ))}
-        </div>
-
-        {/* ── Tab Content ── */}
-        {activeTab === 'pending' && <PendingSignaturesTab />}
-        {activeTab === 'active' && <ActiveContractsTab />}
-        {activeTab === 'archived' && <ArchivedTab />}
+        <ContractsPortalContent />
       </main>
     </div>
   );

@@ -1,6 +1,9 @@
 import { useState } from 'react';
-import { LayoutDashboard, Package, FileText, BarChart3, TrendingUp, Search, Bell, Plus, Download, Star, AlertTriangle, DollarSign, Users, Clock, Edit, Trash2, X, Megaphone, Building2, CheckSquare, Briefcase, ArrowUp, Check, Twitter, Linkedin, Facebook, Upload, Award, MoreHorizontal, ShieldCheck, Shield, Zap, FileCheck } from 'lucide-react';
+import { LayoutDashboard, Package, FileText, BarChart3, TrendingUp, Search, Bell, Plus, Download, Star, AlertTriangle, DollarSign, Users, Clock, Edit, Trash2, X, Megaphone, Building2, CheckSquare, Briefcase, ArrowUp, Check, Twitter, Linkedin, Facebook, Upload, Award, MoreHorizontal, ShieldCheck, Shield, Zap, FileCheck, CreditCard, CheckCircle2 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
+import { CompanyScoreSummary, CompanyProfileTabs } from './SetupWizard';
+import { ContractsPortalContent } from './ContractsPortal';
+import { DataIntegrationsContent } from './DataIntegrations';
 
 const modules = [
   { id: 'orders', name: 'Orders' },
@@ -103,12 +106,21 @@ const AccessControlContent = ({
   selectedRole,
   setSelectedRole,
   teamMembers,
+  setTeamMembers,
   selectedMember,
   setSelectedMember,
   customPermissionsEnabled,
   setCustomPermissionsEnabled,
+  accessTab,
+  setAccessTab,
+  departments,
+  onAddDepartment,
+  onAddEmployee,
+  pendingTasks,
+  completedTasks,
+  onAddTask,
+  onMarkTaskComplete,
 }) => {
-  const [accessTab, setAccessTab] = useState('roles');
 
   const handlePermissionChange = (moduleId, action, value) => {
     if (selectedRole) {
@@ -141,13 +153,51 @@ const AccessControlContent = ({
 
   const getRoleById = (roleId) => roles.find(r => r.id === roleId);
 
+  const handleCreateRole = () => {
+    const name = window.prompt('New role name?', 'New Role');
+    if (!name) return;
+    const newRole = {
+      id: Date.now(),
+      name,
+      color: 'slate',
+      permissions: Object.fromEntries(modules.map(m => [m.id, { view: true, edit: false, delete: false, approve: false }])),
+    };
+    setRoles([...roles, newRole]);
+    setSelectedRole(newRole);
+  };
+
+  const handleInviteEmployee = () => {
+    const name = window.prompt('Invite employee — full name?');
+    if (!name) return;
+    const email = window.prompt('Email address?', `${name.toLowerCase().replace(/\s+/g, '.')}@buildtech.sa`);
+    setTeamMembers([...teamMembers, {
+      id: Date.now(),
+      name,
+      email: email || '',
+      roleId: roles[0]?.id,
+      status: 'Pending',
+      approvalLimit: 0,
+    }]);
+  };
+
   return (
     <div>
       {/* Access Tabs */}
-      <div className="flex gap-2 mb-6 bg-white/70 backdrop-blur-md rounded-xl p-1 shadow-sm">
+      <div className="flex flex-wrap gap-2 mb-6 bg-white/70 backdrop-blur-md rounded-xl p-1 shadow-sm">
+        <button
+          onClick={() => setAccessTab('tasks')}
+          className={`flex-1 min-w-[45%] sm:min-w-0 py-3 px-4 rounded-lg text-sm font-semibold transition-all flex items-center justify-center gap-2 ${
+            accessTab === 'tasks'
+              ? 'bg-gradient-to-r from-[#56afb6] to-teal-500 text-white shadow-md'
+              : 'text-slate-600 hover:bg-slate-50'
+          }`}
+        >
+          <CheckSquare size={16} />
+          Tasks & Goals
+        </button>
         <button
           onClick={() => setAccessTab('roles')}
-          className={`flex-1 py-3 px-4 rounded-lg text-sm font-semibold transition-all flex items-center justify-center gap-2 ${
+          className={`flex-1 min-w-[45%] sm:min-w-0 py-3 px-4 rounded-lg text-sm font-semibold transition-all flex items-center justify-center gap-2 ${
             accessTab === 'roles'
               ? 'bg-gradient-to-r from-[#56afb6] to-teal-500 text-white shadow-md'
               : 'text-slate-600 hover:bg-slate-50'
@@ -158,7 +208,7 @@ const AccessControlContent = ({
         </button>
         <button
           onClick={() => setAccessTab('members')}
-          className={`flex-1 py-3 px-4 rounded-lg text-sm font-semibold transition-all flex items-center justify-center gap-2 ${
+          className={`flex-1 min-w-[45%] sm:min-w-0 py-3 px-4 rounded-lg text-sm font-semibold transition-all flex items-center justify-center gap-2 ${
             accessTab === 'members'
               ? 'bg-gradient-to-r from-[#56afb6] to-teal-500 text-white shadow-md'
               : 'text-slate-600 hover:bg-slate-50'
@@ -167,7 +217,141 @@ const AccessControlContent = ({
           <Users size={16} />
           Team Members
         </button>
+        <button
+          onClick={() => setAccessTab('departments')}
+          className={`flex-1 min-w-[45%] sm:min-w-0 py-3 px-4 rounded-lg text-sm font-semibold transition-all flex items-center justify-center gap-2 ${
+            accessTab === 'departments'
+              ? 'bg-gradient-to-r from-[#56afb6] to-teal-500 text-white shadow-md'
+              : 'text-slate-600 hover:bg-slate-50'
+          }`}
+        >
+          <Building2 size={16} />
+          Departments
+        </button>
       </div>
+
+      {/* Tasks & Goals Tab */}
+      {accessTab === 'tasks' && (
+        <div>
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+            <h3 className="text-lg font-bold text-slate-900">Tasks & Goals</h3>
+            <button onClick={onAddTask} className="w-full md:w-auto px-6 py-3 bg-teal-500 text-white rounded-xl font-medium hover:bg-teal-600 flex items-center justify-center gap-2">
+              <Plus size={20} />
+              Add New Task
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+            <div>
+              <h4 className="text-base font-bold text-slate-900 mb-4">Pending {pendingTasks.length === 0 && <span className="text-sm font-normal text-slate-400">(none)</span>}</h4>
+              <div className="space-y-4">
+                {pendingTasks.map((task) => (
+                  <div key={task.id} className="bg-white/80 backdrop-blur-md rounded-2xl shadow-sm p-5">
+                    <h5 className="text-base font-bold text-slate-900 mb-2">{task.title}</h5>
+                    <p className="text-sm text-slate-600 mb-4">{task.desc}</p>
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0">
+                        <Users className="text-purple-500" size={18} />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-slate-900">{task.assignee}</p>
+                        <p className="text-xs text-slate-500">Assigned to</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between mb-4">
+                      <div>
+                        <p className="text-xs text-slate-500">Reward</p>
+                        <p className="text-lg font-bold text-teal-500">{task.reward.toLocaleString()} SAR</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-slate-500">Due Date</p>
+                        <p className="text-sm font-medium text-slate-900">{task.due}</p>
+                      </div>
+                    </div>
+                    <button onClick={() => onMarkTaskComplete(task)} className="w-full py-2 bg-teal-500 text-white rounded-xl text-sm font-medium hover:bg-teal-600">
+                      Mark Complete
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <h4 className="text-base font-bold text-slate-900 mb-4">Completed {completedTasks.length === 0 && <span className="text-sm font-normal text-slate-400">(none)</span>}</h4>
+              <div className="space-y-4">
+                {completedTasks.map((task) => (
+                  <div key={task.id} className="bg-white/80 backdrop-blur-md rounded-2xl shadow-sm p-5 border-2 border-green-200">
+                    <div className="flex items-start justify-between mb-2 gap-2">
+                      <h5 className="text-base font-bold text-slate-900">{task.title}</h5>
+                      <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                        <Check className="text-green-600" size={18} />
+                      </div>
+                    </div>
+                    <p className="text-sm text-slate-600 mb-4">{task.desc}</p>
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+                        <Users className="text-blue-500" size={18} />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-slate-900">{task.assignee}</p>
+                        <p className="text-xs text-slate-500">Completed by</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-xs text-slate-500">Reward Paid</p>
+                        <p className="text-lg font-bold text-green-600">{task.reward.toLocaleString()} SAR</p>
+                      </div>
+                      <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">✓ Completed</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Departments Tab */}
+      {accessTab === 'departments' && (
+        <div>
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="text-lg font-bold text-slate-900">Department Structure</h3>
+            <button onClick={onAddDepartment} className="px-4 py-2 bg-gradient-to-r from-[#56afb6] to-teal-500 text-white rounded-xl text-sm font-semibold shadow-md hover:shadow-lg transition-all flex items-center gap-2">
+              <Plus size={16} />
+              Add New Department
+            </button>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+            {departments.map((dept, idx) => (
+              <div key={idx} className="bg-white/80 backdrop-blur-md rounded-2xl p-5 shadow-sm">
+                <div className="flex items-center justify-between mb-4">
+                  <h4 className="text-base font-bold text-slate-900">{dept.name}</h4>
+                  <button onClick={() => onAddEmployee(dept.name)} title="Add Employee" className="p-2 hover:bg-slate-100 rounded-lg transition-all">
+                    <Plus size={16} className="text-teal-500" />
+                  </button>
+                </div>
+                <div className="space-y-2">
+                  {dept.employees.map((emp, i) => (
+                    <div key={i} className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
+                      <div className={`w-10 h-10 rounded-full bg-${dept.color}-100 flex items-center justify-center`}>
+                        <Users className={`text-${dept.color}-500`} size={18} />
+                      </div>
+                      <div>
+                        <p className="font-medium text-slate-900 text-sm">{emp.name}</p>
+                        <p className="text-xs text-slate-500">{emp.role}</p>
+                      </div>
+                    </div>
+                  ))}
+                  {dept.employees.length === 0 && (
+                    <p className="text-sm text-slate-400 text-center py-4">No employees yet</p>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Role Groups Tab */}
       {accessTab === 'roles' && (
@@ -176,7 +360,7 @@ const AccessControlContent = ({
             <div>
               <div className="flex justify-between items-center mb-6">
                 <h3 className="text-lg font-bold text-slate-900">Role Templates</h3>
-                <button className="px-4 py-2 bg-gradient-to-r from-[#56afb6] to-teal-500 text-white rounded-xl text-sm font-semibold shadow-md hover:shadow-lg transition-all flex items-center gap-2">
+                <button onClick={handleCreateRole} className="px-4 py-2 bg-gradient-to-r from-[#56afb6] to-teal-500 text-white rounded-xl text-sm font-semibold shadow-md hover:shadow-lg transition-all flex items-center gap-2">
                   <Plus size={16} />
                   Create New Role
                 </button>
@@ -221,7 +405,7 @@ const AccessControlContent = ({
                   <ArrowUp size={18} className="rotate-[-90deg]" />
                   <span className="font-medium">Back to Roles</span>
                 </button>
-                <button className="px-4 py-2 bg-gradient-to-r from-[#56afb6] to-teal-500 text-white rounded-xl text-sm font-semibold shadow-md hover:shadow-lg transition-all flex items-center gap-2">
+                <button onClick={() => { alert(`${selectedRole.name} permissions saved.`); setSelectedRole(null); }} className="px-4 py-2 bg-gradient-to-r from-[#56afb6] to-teal-500 text-white rounded-xl text-sm font-semibold shadow-md hover:shadow-lg transition-all flex items-center gap-2">
                   <Check size={16} />
                   Save Changes
                 </button>
@@ -255,7 +439,7 @@ const AccessControlContent = ({
             <div>
               <div className="flex justify-between items-center mb-6">
                 <h3 className="text-lg font-bold text-slate-900">Team Members</h3>
-                <button className="px-4 py-2 bg-gradient-to-r from-[#56afb6] to-teal-500 text-white rounded-xl text-sm font-semibold shadow-md hover:shadow-lg transition-all flex items-center gap-2">
+                <button onClick={handleInviteEmployee} className="px-4 py-2 bg-gradient-to-r from-[#56afb6] to-teal-500 text-white rounded-xl text-sm font-semibold shadow-md hover:shadow-lg transition-all flex items-center gap-2">
                   <Plus size={16} />
                   Invite Employee
                 </button>
@@ -323,7 +507,7 @@ const AccessControlContent = ({
                   <ArrowUp size={18} className="rotate-[-90deg]" />
                   <span className="font-medium">Back to Team</span>
                 </button>
-                <button className="px-4 py-2 bg-gradient-to-r from-[#56afb6] to-teal-500 text-white rounded-xl text-sm font-semibold shadow-md hover:shadow-lg transition-all flex items-center gap-2">
+                <button onClick={() => { alert(`${selectedMember.name} updated.`); setSelectedMember(null); setCustomPermissionsEnabled(false); }} className="px-4 py-2 bg-gradient-to-r from-[#56afb6] to-teal-500 text-white rounded-xl text-sm font-semibold shadow-md hover:shadow-lg transition-all flex items-center gap-2">
                   <Check size={16} />
                   Save Changes
                 </button>
@@ -417,25 +601,105 @@ export const CRMDashboardFull = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [showProductModal, setShowProductModal] = useState(false);
   const [showMoreMenu, setShowMoreMenu] = useState(false);
-  const [innerTab, setInnerTab] = useState('tasks');
   const [roles, setRoles] = useState(defaultRoles);
   const [selectedRole, setSelectedRole] = useState(null);
   const [teamMembers, setTeamMembers] = useState(mockTeamMembers);
   const [selectedMember, setSelectedMember] = useState(null);
   const [customPermissionsEnabled, setCustomPermissionsEnabled] = useState(false);
+  const [teamAccessTab, setTeamAccessTab] = useState('roles');
+  const [poFilter, setPoFilter] = useState('All');
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [newProduct, setNewProduct] = useState({ name: '', description: '', stock: '', minStock: '', price: '' });
 
-  const mockProducts = [
+  const [products, setProducts] = useState([
     { id: 1, name: 'Heavy Duty Excavator', category: 'Heavy Machinery', stock: 8, minStock: 5, price: 450000, image: 'https://images.unsplash.com/photo-1581094271901-8022df4466f9?w=100' },
     { id: 2, name: 'Steel Reinforcement Bars', category: 'Building Materials', stock: 2, minStock: 10, price: 850, image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=100' },
     { id: 3, name: 'Industrial Concrete Mixer', category: 'Heavy Machinery', stock: 15, minStock: 5, price: 125000, image: 'https://images.unsplash.com/photo-1590856029826-c7a73142bbf1?w=100' },
     { id: 4, name: 'Safety Helmets (Box of 50)', category: 'Safety Equipment', stock: 3, minStock: 20, price: 1200, image: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=100' },
-  ];
+  ]);
 
-  const mockPOs = [
+  const [purchaseOrders, setPurchaseOrders] = useState([
     { id: 'PO-2024-001', supplier: 'Global Materials Supply', product: 'Steel Reinforcement Bars', amount: 22500, due: 'Dec 15', status: 'Completed', rating: 4.5 },
     { id: 'PO-2024-002', supplier: 'BuildTech Construction', product: 'Concrete Mix', amount: 18000, due: 'Dec 20', status: 'Pending', rating: 4.7 },
     { id: 'PO-2024-003', supplier: 'Heavy Equipment Co.', product: 'Excavator Parts', amount: 45000, due: 'Dec 10', status: 'Completed', rating: 4.8 },
+  ]);
+
+  const [payments, setPayments] = useState([
+    { id: 'INST-01', amount: 150000, dueDate: 'Sep 15, 2026', status: 'Paid', paidDate: 'Sep 14, 2026' },
+    { id: 'INST-02', amount: 150000, dueDate: 'Oct 15, 2026', status: 'Paid', paidDate: 'Oct 15, 2026' },
+    { id: 'INST-03', amount: 150000, dueDate: 'Nov 15, 2026', status: 'Paid', paidDate: 'Nov 13, 2026' },
+    { id: 'INST-04', amount: 150000, dueDate: 'Dec 15, 2026', status: 'Upcoming' },
+    { id: 'INST-05', amount: 150000, dueDate: 'Jan 15, 2027', status: 'Upcoming' },
+    { id: 'INST-06', amount: 150000, dueDate: 'Feb 15, 2027', status: 'Upcoming' },
+  ]);
+
+  const [departments, setDepartments] = useState([
+    { name: 'Executive Management', employees: [{ name: 'محمد العمري', role: 'CEO' }], color: 'teal' },
+    { name: 'Finance & Accounting', employees: [{ name: 'عبدالله السعد', role: 'CFO' }], color: 'blue' },
+    { name: 'Human Resources', employees: [{ name: 'فاطمة الأحمد', role: 'HR Manager' }], color: 'purple' },
+    { name: 'Marketing', employees: [], color: 'pink' },
+    { name: 'Sales', employees: [{ name: 'سارة المحمد', role: 'Sales Lead' }], color: 'orange' },
+    { name: 'Operations', employees: [], color: 'green' },
+  ]);
+
+  const [pendingTasks, setPendingTasks] = useState([
+    { id: 1, title: 'Increase Monthly Sales', desc: 'Achieve sales target of 50,000 SAR', assignee: 'فاطمة الأحمد', reward: 2000, due: '2026-12-31' },
+  ]);
+  const [completedTasks, setCompletedTasks] = useState([
+    { id: 2, title: 'Improve Customer Service', desc: 'Respond within 24hrs', assignee: 'عمر الزهراني', reward: 1500 },
+  ]);
+
+  const [purchasedPackage, setPurchasedPackage] = useState(null);
+
+  const notifications = [
+    { text: 'Low stock alert: Safety Helmets', time: '5 hours ago' },
+    { text: 'PO-2024-001 marked as completed', time: '2 hours ago' },
+    { text: 'New RFQ received from Al-Noor Trading', time: '1 day ago' },
   ];
+
+  const handleAddProduct = () => {
+    if (!newProduct.name) return;
+    setProducts([...products, {
+      id: Date.now(),
+      name: newProduct.name,
+      category: 'Uncategorized',
+      stock: Number(newProduct.stock) || 0,
+      minStock: Number(newProduct.minStock) || 0,
+      price: Number(newProduct.price) || 0,
+      image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=100',
+    }]);
+    setNewProduct({ name: '', description: '', stock: '', minStock: '', price: '' });
+    setShowProductModal(false);
+  };
+
+  const handleDeleteProduct = (id) => {
+    setProducts(products.filter(p => p.id !== id));
+  };
+
+  const handlePayInstallment = (id) => {
+    setPayments(payments.map(p => p.id === id ? { ...p, status: 'Paid', paidDate: 'Today' } : p));
+  };
+
+  const handleMarkTaskComplete = (task) => {
+    setPendingTasks(pendingTasks.filter(t => t.id !== task.id));
+    setCompletedTasks([{ ...task }, ...completedTasks]);
+  };
+
+  const handleAddTask = () => {
+    setPendingTasks([{ id: Date.now(), title: 'New Task', desc: 'Describe the goal for this task', assignee: 'Unassigned', reward: 0, due: '—' }, ...pendingTasks]);
+  };
+
+  const handleAddDepartment = () => {
+    const name = window.prompt('New department name?', 'New Department');
+    if (!name) return;
+    setDepartments([...departments, { name, employees: [], color: 'slate' }]);
+  };
+
+  const handleAddEmployee = (deptName) => {
+    const name = window.prompt(`Add employee to ${deptName}:`, '');
+    if (!name) return;
+    setDepartments(departments.map(d => d.name === deptName ? { ...d, employees: [...d.employees, { name, role: 'Team Member' }] } : d));
+  };
 
   const mockSuppliers = [
     { name: 'Global Materials Supply', deliveryTime: 2.8, rating: 4.7, orders: 67 },
@@ -447,16 +711,33 @@ export const CRMDashboardFull = () => {
     { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard Overview' },
     { id: 'products', icon: Package, label: 'My Products' },
     { id: 'orders', icon: FileText, label: 'Purchase Orders' },
-    { id: 'analytics', icon: DollarSign, label: 'Financing Status' },
+    { id: 'analytics', icon: DollarSign, label: 'Financing Eligibility' },
+    { id: 'torbiona', icon: CreditCard, label: 'Torbiona Payments' },
     { id: 'suppliers', icon: Users, label: 'Supplier Performance' },
     { id: 'market', icon: TrendingUp, label: 'Market Analytics' },
     { id: 'advertising', icon: Megaphone, label: 'Advertising Packages' },
     { id: 'departments', icon: Building2, label: 'Department Management' },
     { id: 'tasks', icon: CheckSquare, label: 'Workspace & Team' },
-    { id: 'company', icon: Briefcase, label: 'Company Page' },
+    { id: 'company', icon: Briefcase, label: 'Company Page Editor' },
+    { id: 'data-integrations', icon: Zap, label: 'Data & Integrations' },
     { id: 'access-control', icon: ShieldCheck, label: 'Team & Access' },
-    { id: 'contracts-portal', icon: FileCheck, label: 'Digital Contracts', externalView: 'contracts-portal' },
+    { id: 'contracts-portal', icon: FileCheck, label: 'Digital Contracts' },
   ];
+
+  const handleNavClick = (item) => {
+    if (item.id === 'departments') {
+      setActiveTab('departments');
+      setTeamAccessTab('departments');
+    } else if (item.id === 'access-control') {
+      setActiveTab('access-control');
+      setTeamAccessTab('roles');
+    } else if (item.id === 'tasks') {
+      setActiveTab('tasks');
+      setTeamAccessTab('tasks');
+    } else {
+      setActiveTab(item.id);
+    }
+  };
 
   return (
     <div className="flex min-h-screen bg-cream pb-16 md:pb-0">
@@ -477,10 +758,10 @@ export const CRMDashboardFull = () => {
             return (
               <div
                 key={item.id}
-                onClick={() => item.externalView ? setCurrentView(item.externalView) : setActiveTab(item.id)}
+                onClick={() => handleNavClick(item)}
                 className={`flex items-center gap-3 px-4 py-3 rounded-xl mb-2 cursor-pointer transition-all ${
                   activeTab === item.id ? 'bg-teal-500 text-white' : 'text-slate-600 hover:bg-gray-100'
-                } ${item.externalView ? 'border border-dashed border-blue-900/30 hover:border-blue-900/60 hover:text-blue-900 hover:bg-blue-900/5' : ''}`}
+                }`}
               >
                 <Icon size={20} />
                 <span className="text-sm font-medium">{item.label}</span>
@@ -488,15 +769,6 @@ export const CRMDashboardFull = () => {
             );
           })}
         </nav>
-        <div className="p-4 border-t border-gray-200 absolute bottom-0 left-0 right-0 bg-white/90">
-          <button
-            onClick={() => setCurrentView('b2b-platform')}
-            className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-teal-400 to-teal-600 text-white rounded-xl font-medium hover:shadow-lg transition-all"
-          >
-            <span>←</span>
-            Back to B2B Platform
-          </button>
-        </div>
       </div>
 
       {/* Main Content */}
@@ -525,12 +797,26 @@ export const CRMDashboardFull = () => {
                 />
               </div>
             </div>
-            <div className="flex items-center gap-2 md:gap-4">
-              <button className="relative p-2 hover:bg-gray-100 rounded-lg">
+            <div className="flex items-center gap-2 md:gap-4 relative">
+              <button onClick={() => setShowNotifications(!showNotifications)} className="relative p-2 hover:bg-gray-100 rounded-lg">
                 <Bell size={18} className="text-slate-600" />
                 <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
               </button>
-              <button className="hidden md:flex px-4 py-2 bg-teal-500 text-white rounded-xl text-sm font-medium hover:bg-teal-600 items-center gap-2">
+              {showNotifications && (
+                <div className="absolute right-0 top-12 w-72 bg-white rounded-2xl shadow-xl border border-gray-100 z-50 overflow-hidden">
+                  <div className="p-3 border-b border-gray-100 font-bold text-sm text-slate-900">Notifications</div>
+                  {notifications.map((n, idx) => (
+                    <div key={idx} className="p-3 border-b border-gray-50 last:border-0 hover:bg-gray-50">
+                      <p className="text-sm text-slate-800">{n.text}</p>
+                      <p className="text-xs text-slate-400 mt-1">{n.time}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+              <button
+                onClick={() => { setActiveTab('products'); setShowProductModal(true); }}
+                className="hidden md:flex px-4 py-2 bg-teal-500 text-white rounded-xl text-sm font-medium hover:bg-teal-600 items-center gap-2"
+              >
                 <Plus size={16} />
                 Quick Actions
               </button>
@@ -569,10 +855,14 @@ export const CRMDashboardFull = () => {
 
               {/* Quick Actions */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 mb-6 md:mb-8">
-                {['Add New Product', 'Add Employee', 'Browse Marketplace'].map((action) => (
-                  <button key={action} className="bg-white/90 backdrop-blur rounded-2xl shadow-sm p-6 hover:shadow-md transition-all text-left">
+                {[
+                  { label: 'Add New Product', onClick: () => { setActiveTab('products'); setShowProductModal(true); } },
+                  { label: 'Add Employee', onClick: () => { setActiveTab('departments'); setTeamAccessTab('departments'); } },
+                  { label: 'Browse Marketplace', onClick: () => setCurrentView('b2b-platform') },
+                ].map((action) => (
+                  <button key={action.label} onClick={action.onClick} className="bg-white/90 backdrop-blur rounded-2xl shadow-sm p-6 hover:shadow-md transition-all text-left">
                     <Plus className="text-teal-500 mb-3" size={24} />
-                    <p className="font-medium text-slate-900">{action}</p>
+                    <p className="font-medium text-slate-900">{action.label}</p>
                   </button>
                 ))}
               </div>
@@ -625,7 +915,7 @@ export const CRMDashboardFull = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {mockProducts.map((product) => (
+                    {products.map((product) => (
                       <tr key={product.id} className="border-b border-gray-100 hover:bg-gray-50">
                         <td className="px-4 md:px-6 py-3 md:py-4">
                           <div className="flex items-center gap-2 md:gap-3">
@@ -645,8 +935,8 @@ export const CRMDashboardFull = () => {
                         <td className="px-4 md:px-6 py-3 md:py-4 font-medium text-slate-900 text-xs md:text-sm whitespace-nowrap">${product.price.toLocaleString()}</td>
                         <td className="px-4 md:px-6 py-3 md:py-4">
                           <div className="flex gap-1 md:gap-2">
-                            <button className="p-2 hover:bg-gray-100 rounded-lg"><Edit size={14} className="text-slate-600" /></button>
-                            <button className="p-2 hover:bg-gray-100 rounded-lg"><Trash2 size={14} className="text-red-500" /></button>
+                            <button onClick={() => setShowProductModal(true)} className="p-2 hover:bg-gray-100 rounded-lg"><Edit size={14} className="text-slate-600" /></button>
+                            <button onClick={() => handleDeleteProduct(product.id)} className="p-2 hover:bg-gray-100 rounded-lg"><Trash2 size={14} className="text-red-500" /></button>
                           </div>
                         </td>
                       </tr>
@@ -664,14 +954,18 @@ export const CRMDashboardFull = () => {
               
               <div className="flex gap-2 md:gap-4 mb-4 md:mb-6 overflow-x-auto hide-scrollbar">
                 {['All', 'Pending', 'Completed'].map((filter) => (
-                  <button key={filter} className={`px-3 md:px-4 py-2 rounded-xl font-medium text-sm whitespace-nowrap ${filter === 'All' ? 'bg-teal-500 text-white' : 'bg-white/90 text-slate-600'}`}>
+                  <button
+                    key={filter}
+                    onClick={() => setPoFilter(filter)}
+                    className={`px-3 md:px-4 py-2 rounded-xl font-medium text-sm whitespace-nowrap transition-all ${poFilter === filter ? 'bg-teal-500 text-white' : 'bg-white/90 text-slate-600 hover:bg-teal-50'}`}
+                  >
                     {filter}
                   </button>
                 ))}
               </div>
 
               <div className="space-y-4">
-                {mockPOs.map((po) => (
+                {purchaseOrders.filter(po => poFilter === 'All' || po.status === poFilter).map((po) => (
                   <div key={po.id} className="bg-white/90 backdrop-blur rounded-2xl shadow-sm p-6">
                     <div className="flex justify-between items-start mb-4">
                       <div>
@@ -705,10 +999,20 @@ export const CRMDashboardFull = () => {
                         </div>
                       </div>
                     </div>
-                    <button className="flex items-center gap-2 text-teal-500 hover:text-teal-600 font-medium">
-                      <Download size={16} />
-                      Download PDF
-                    </button>
+                    <div className="flex items-center justify-between">
+                      <button onClick={() => alert(`Downloading ${po.id}.pdf...`)} className="flex items-center gap-2 text-teal-500 hover:text-teal-600 font-medium">
+                        <Download size={16} />
+                        Download PDF
+                      </button>
+                      {po.status === 'Pending' && (
+                        <button
+                          onClick={() => setPurchaseOrders(purchaseOrders.map(o => o.id === po.id ? { ...o, status: 'Completed' } : o))}
+                          className="px-3 py-1.5 bg-green-500 text-white rounded-lg text-xs font-medium hover:bg-green-600"
+                        >
+                          Mark Completed
+                        </button>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -812,7 +1116,7 @@ export const CRMDashboardFull = () => {
                       <p className="text-sm text-slate-500">Comprehensive market trends analysis</p>
                     </div>
                   </div>
-                  <button className="w-full py-3 bg-teal-500 text-white rounded-xl font-medium hover:bg-teal-600 flex items-center justify-center gap-2">
+                  <button onClick={() => alert('Downloading Monthly_Market_Report.pdf...')} className="w-full py-3 bg-teal-500 text-white rounded-xl font-medium hover:bg-teal-600 flex items-center justify-center gap-2">
                     <Download size={18} />
                     Download Report
                   </button>
@@ -828,7 +1132,7 @@ export const CRMDashboardFull = () => {
                       <p className="text-sm text-slate-500">Marketing campaign materials</p>
                     </div>
                   </div>
-                  <button className="w-full py-3 border-2 border-teal-500 text-teal-500 rounded-xl font-medium hover:bg-teal-50 flex items-center justify-center gap-2">
+                  <button onClick={() => alert('Downloading Promotional_Ad_Assets.zip...')} className="w-full py-3 border-2 border-teal-500 text-teal-500 rounded-xl font-medium hover:bg-teal-50 flex items-center justify-center gap-2">
                     <Download size={18} />
                     Download Assets
                   </button>
@@ -841,8 +1145,8 @@ export const CRMDashboardFull = () => {
           {activeTab === 'analytics' && (
             <div>
               <div className="flex items-baseline justify-between mb-6 md:mb-8">
-                <h2 className="text-2xl md:text-3xl font-bold text-slate-900">Financing Status</h2>
-                <p className="text-sm text-slate-400">حالة التمويل</p>
+                <h2 className="text-2xl md:text-3xl font-bold text-slate-900">Financing Eligibility</h2>
+                <p className="text-sm text-slate-400">أحقية التمويل</p>
               </div>
 
               <div className="bg-gradient-to-br from-teal-500 to-teal-700 rounded-2xl shadow-sm p-4 sm:p-6 md:p-8 text-white">
@@ -889,180 +1193,103 @@ export const CRMDashboardFull = () => {
                   </div>
                 </div>
               </div>
+
+              {/* Company Profile Score */}
+              <div className="bg-white/90 backdrop-blur rounded-2xl shadow-sm p-4 md:p-6 mt-4 md:mt-6">
+                <CompanyScoreSummary />
+              </div>
+
+              {/* Enhance Your Score */}
+              <div className="bg-white/90 backdrop-blur rounded-2xl shadow-sm p-4 md:p-6 mt-4 md:mt-6">
+                <CompanyProfileTabs />
+              </div>
             </div>
           )}
 
-          {/* Workspace & Team */}
-          {activeTab === 'tasks' && (
+          {/* Torbiona Payments */}
+          {activeTab === 'torbiona' && (
             <div>
-              <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-6 md:mb-8">Workspace & Team</h2>
-              
-              {/* Inner Tab Navigation */}
-              <div className="flex gap-2 mb-6 bg-white/70 backdrop-blur-md rounded-xl p-1 shadow-sm">
-                <button
-                  onClick={() => setInnerTab('tasks')}
-                  className={`flex-1 py-3 px-4 rounded-lg text-sm font-semibold transition-all flex items-center justify-center gap-2 ${
-                    innerTab === 'tasks'
-                      ? 'bg-gradient-to-r from-teal-400 to-teal-600 text-white shadow-md'
-                      : 'text-slate-600 hover:bg-slate-50'
-                  }`}
-                >
-                  <CheckSquare size={16} />
-                  Tasks & Goals
-                </button>
-                <button
-                  onClick={() => setInnerTab('access')}
-                  className={`flex-1 py-3 px-4 rounded-lg text-sm font-semibold transition-all flex items-center justify-center gap-2 ${
-                    innerTab === 'access'
-                      ? 'bg-gradient-to-r from-teal-400 to-teal-600 text-white shadow-md'
-                      : 'text-slate-600 hover:bg-slate-50'
-                  }`}
-                >
-                  <Shield size={16} />
-                  Access & Roles
-                </button>
+              <div className="flex items-baseline justify-between mb-6 md:mb-8">
+                <h2 className="text-2xl md:text-3xl font-bold text-slate-900">Torbiona Payments</h2>
+                <p className="text-sm text-slate-400">مدفوعات تُربيونة</p>
               </div>
 
-              {/* Tasks & Goals Content */}
-              {innerTab === 'tasks' && (
-                <div>
-                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-                    <h3 className="text-xl font-bold text-slate-900">Tasks & Goals</h3>
-                    <button className="w-full md:w-auto px-6 py-3 bg-teal-500 text-white rounded-xl font-medium hover:bg-teal-600 flex items-center justify-center gap-2">
-                      <Plus size={20} />
-                      Add New Task
-                    </button>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-                    <div>
-                      <h4 className="text-lg font-bold text-slate-900 mb-4">Pending</h4>
-                      <div className="space-y-4">
-                        <div className="bg-white/90 backdrop-blur rounded-2xl shadow-sm p-6">
-                          <h5 className="text-lg font-bold text-slate-900 mb-2">Increase Monthly Sales</h5>
-                          <p className="text-sm text-slate-600 mb-4">Achieve sales target of 50,000 SAR</p>
-                          <div className="flex items-center gap-3 mb-4">
-                            <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
-                              <Users className="text-purple-500" size={18} />
-                            </div>
-                            <div>
-                              <p className="text-sm font-medium text-slate-900">فاطمة الأحمد</p>
-                              <p className="text-xs text-slate-500">Assigned to</p>
-                            </div>
-                          </div>
-                          <div className="flex items-center justify-between mb-4">
-                            <div>
-                              <p className="text-xs text-slate-500">Reward</p>
-                              <p className="text-lg font-bold text-teal-500">2,000 SAR</p>
-                            </div>
-                            <div>
-                              <p className="text-xs text-slate-500">Due Date</p>
-                              <p className="text-sm font-medium text-slate-900">2024-12-31</p>
-                            </div>
-                          </div>
-                          <button className="w-full py-2 bg-teal-500 text-white rounded-xl text-sm font-medium hover:bg-teal-600">
-                            Mark Complete
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div>
-                      <h4 className="text-lg font-bold text-slate-900 mb-4">Completed</h4>
-                      <div className="space-y-4">
-                        <div className="bg-white/90 backdrop-blur rounded-2xl shadow-sm p-6 border-2 border-green-200">
-                          <div className="flex items-start justify-between mb-2">
-                            <h5 className="text-lg font-bold text-slate-900">Improve Customer Service</h5>
-                            <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
-                              <Check className="text-green-600" size={18} />
-                            </div>
-                          </div>
-                          <p className="text-sm text-slate-600 mb-4">Respond within 24hrs</p>
-                          <div className="flex items-center gap-3 mb-4">
-                            <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
-                              <Users className="text-blue-500" size={18} />
-                            </div>
-                            <div>
-                              <p className="text-sm font-medium text-slate-900">عمر الزهراني</p>
-                              <p className="text-xs text-slate-500">Completed by</p>
-                            </div>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <p className="text-xs text-slate-500">Reward Paid</p>
-                              <p className="text-lg font-bold text-green-600">1,500 SAR</p>
-                            </div>
-                            <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">✓ Completed</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+              {/* Repayment Progress */}
+              <div className="bg-gradient-to-br from-teal-500 to-teal-700 rounded-2xl shadow-sm p-4 sm:p-6 md:p-8 text-white mb-6 md:mb-8">
+                <div className="flex items-center gap-2 mb-6">
+                  <CreditCard size={18} className="flex-shrink-0" />
+                  <span className="text-sm font-semibold">Torbiona Facility — 6 Monthly Installments</span>
                 </div>
-              )}
-
-              {/* Access & Roles Content */}
-              {innerTab === 'access' && (
-                <AccessControlContent
-                  roles={roles}
-                  setRoles={setRoles}
-                  selectedRole={selectedRole}
-                  setSelectedRole={setSelectedRole}
-                  teamMembers={teamMembers}
-                  selectedMember={selectedMember}
-                  setSelectedMember={setSelectedMember}
-                  customPermissionsEnabled={customPermissionsEnabled}
-                  setCustomPermissionsEnabled={setCustomPermissionsEnabled}
-                />
-              )}
-            </div>
-          )}
-
-          {/* Department Management */}
-          {activeTab === 'departments' && (
-            <div>
-              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 md:mb-8">
-                <h2 className="text-2xl md:text-3xl font-bold text-slate-900">Department Management</h2>
-                <button className="w-full md:w-auto px-6 py-3 bg-teal-500 text-white rounded-xl font-medium hover:bg-teal-600 flex items-center justify-center gap-2">
-                  <Plus size={20} />
-                  Add New Department
-                </button>
+                {(() => {
+                  const total = payments.reduce((s, p) => s + p.amount, 0);
+                  const paid = payments.filter(p => p.status === 'Paid').reduce((s, p) => s + p.amount, 0);
+                  const remaining = total - paid;
+                  const paidCount = payments.filter(p => p.status === 'Paid').length;
+                  const pct = Math.round((paid / total) * 100);
+                  return (
+                    <>
+                      <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-6">
+                        <div>
+                          <p className="text-[11px] sm:text-xs text-white/70 mb-1">Total Financed</p>
+                          <p className="text-base sm:text-xl md:text-2xl font-bold leading-tight">{total.toLocaleString()}<span className="block sm:inline text-[10px] sm:text-xs text-white/70"> SAR</span></p>
+                        </div>
+                        <div>
+                          <p className="text-[11px] sm:text-xs text-white/70 mb-1">Paid So Far</p>
+                          <p className="text-base sm:text-xl md:text-2xl font-bold leading-tight">{paid.toLocaleString()}<span className="block sm:inline text-[10px] sm:text-xs text-white/70"> SAR</span></p>
+                        </div>
+                        <div>
+                          <p className="text-[11px] sm:text-xs text-white/70 mb-1">Remaining</p>
+                          <p className="text-base sm:text-xl md:text-2xl font-bold leading-tight">{remaining.toLocaleString()}<span className="block sm:inline text-[10px] sm:text-xs text-white/70"> SAR</span></p>
+                        </div>
+                      </div>
+                      <div className="h-2 bg-white/20 rounded-full overflow-hidden">
+                        <div className="h-full bg-white rounded-full transition-all" style={{ width: `${pct}%` }} />
+                      </div>
+                      <p className="text-xs text-white/70 mt-2">{paidCount} of {payments.length} installments paid</p>
+                    </>
+                  );
+                })()}
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-                {[
-                  { name: 'Executive Management', employees: [{ name: 'محمد العمري', role: 'CEO' }], color: 'teal' },
-                  { name: 'Finance & Accounting', employees: [{ name: 'عبدالله السعد', role: 'CFO' }], color: 'blue' },
-                  { name: 'Human Resources', employees: [{ name: 'فاطمة الأحمد', role: 'HR Manager' }], color: 'purple' },
-                  { name: 'Marketing', employees: [], color: 'pink' },
-                  { name: 'Sales', employees: [{ name: 'سارة المحمد', role: 'Sales Lead' }], color: 'orange' },
-                  { name: 'Operations', employees: [], color: 'green' },
-                ].map((dept, idx) => (
-                  <div key={idx} className="bg-white/90 backdrop-blur rounded-2xl shadow-sm p-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-lg font-bold text-slate-900">{dept.name}</h3>
-                      <button className="p-2 hover:bg-gray-100 rounded-lg">
-                        <Plus size={18} className="text-teal-500" />
-                      </button>
-                    </div>
-                    <div className="space-y-2">
-                      {dept.employees.map((emp, i) => (
-                        <div key={i} className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
-                          <div className={`w-10 h-10 rounded-full bg-${dept.color}-100 flex items-center justify-center`}>
-                            <Users className={`text-${dept.color}-500`} size={18} />
-                          </div>
-                          <div>
-                            <p className="font-medium text-slate-900 text-sm">{emp.name}</p>
-                            <p className="text-xs text-slate-500">{emp.role}</p>
-                          </div>
+              {/* Payment Schedule */}
+              <div className="bg-white/90 backdrop-blur rounded-2xl shadow-sm p-4 md:p-6 mb-6 md:mb-8">
+                <h3 className="text-lg font-bold text-slate-900 mb-4">Payment Schedule</h3>
+                <div className="space-y-3">
+                  {payments.map((p) => (
+                    <div key={p.id} className="flex items-center justify-between gap-3 p-3 md:p-4 bg-gray-50 rounded-xl">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${p.status === 'Paid' ? 'bg-emerald-100' : 'bg-amber-100'}`}>
+                          {p.status === 'Paid' ? (
+                            <CheckCircle2 size={18} className="text-emerald-600" />
+                          ) : (
+                            <Clock size={18} className="text-amber-600" />
+                          )}
                         </div>
-                      ))}
-                      {dept.employees.length === 0 && (
-                        <p className="text-sm text-slate-400 text-center py-4">No employees yet</p>
-                      )}
+                        <div>
+                          <p className="text-sm font-semibold text-slate-900">{p.id}</p>
+                          <p className="text-xs text-slate-500">
+                            {p.status === 'Paid' ? `Paid on ${p.paidDate}` : `Due ${p.dueDate}`}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <span className="text-sm font-bold text-slate-900">{p.amount.toLocaleString()} SAR</span>
+                        {p.status === 'Paid' ? (
+                          <span className="px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap bg-emerald-100 text-emerald-700">
+                            Paid
+                          </span>
+                        ) : (
+                          <button
+                            onClick={() => handlePayInstallment(p.id)}
+                            className="px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap bg-amber-500 text-white hover:bg-amber-600 transition-all"
+                          >
+                            Pay Now
+                          </button>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
           )}
@@ -1089,9 +1316,15 @@ export const CRMDashboardFull = () => {
                       <span className="text-sm text-slate-600">Advertising image in interface</span>
                     </li>
                   </ul>
-                  <button className="w-full py-3 border-2 border-teal-500 text-teal-500 rounded-xl font-medium hover:bg-teal-50">
-                    Purchase Package
-                  </button>
+                  {purchasedPackage === 'Daily Priority' ? (
+                    <button disabled className="w-full py-3 bg-emerald-100 text-emerald-700 rounded-xl font-medium flex items-center justify-center gap-2">
+                      <Check size={18} /> Active
+                    </button>
+                  ) : (
+                    <button onClick={() => setPurchasedPackage('Daily Priority')} className="w-full py-3 border-2 border-teal-500 text-teal-500 rounded-xl font-medium hover:bg-teal-50">
+                      Purchase Package
+                    </button>
+                  )}
                 </div>
 
                 <div className="bg-white/90 backdrop-blur rounded-2xl shadow-sm p-6 border-2 border-teal-500 relative">
@@ -1117,9 +1350,15 @@ export const CRMDashboardFull = () => {
                       <span className="text-sm text-slate-600">Ad image in interface</span>
                     </li>
                   </ul>
-                  <button className="w-full py-3 bg-teal-500 text-white rounded-xl font-medium hover:bg-teal-600">
-                    Purchase Package
-                  </button>
+                  {purchasedPackage === 'Weekly Priority' ? (
+                    <button disabled className="w-full py-3 bg-emerald-100 text-emerald-700 rounded-xl font-medium flex items-center justify-center gap-2">
+                      <Check size={18} /> Active
+                    </button>
+                  ) : (
+                    <button onClick={() => setPurchasedPackage('Weekly Priority')} className="w-full py-3 bg-teal-500 text-white rounded-xl font-medium hover:bg-teal-600">
+                      Purchase Package
+                    </button>
+                  )}
                 </div>
 
                 <div className="bg-white/90 backdrop-blur rounded-2xl shadow-sm p-6">
@@ -1149,9 +1388,15 @@ export const CRMDashboardFull = () => {
                       <span className="text-sm text-slate-600">Detailed analytics</span>
                     </li>
                   </ul>
-                  <button className="w-full py-3 border-2 border-teal-500 text-teal-500 rounded-xl font-medium hover:bg-teal-50">
-                    Purchase Package
-                  </button>
+                  {purchasedPackage === 'Monthly Priority' ? (
+                    <button disabled className="w-full py-3 bg-emerald-100 text-emerald-700 rounded-xl font-medium flex items-center justify-center gap-2">
+                      <Check size={18} /> Active
+                    </button>
+                  ) : (
+                    <button onClick={() => setPurchasedPackage('Monthly Priority')} className="w-full py-3 border-2 border-teal-500 text-teal-500 rounded-xl font-medium hover:bg-teal-50">
+                      Purchase Package
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
@@ -1163,37 +1408,13 @@ export const CRMDashboardFull = () => {
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 md:mb-8 sticky top-16 md:top-20 bg-cream py-4 z-30">
                 <h2 className="text-2xl md:text-3xl font-bold text-slate-900">Company Page Management</h2>
                 <div className="flex flex-col md:flex-row gap-3 w-full md:w-auto">
-                  <button className="px-6 py-3 border-2 border-teal-500 text-teal-500 rounded-xl font-medium hover:bg-teal-50">
+                  <button onClick={() => setCurrentView('company-profile')} className="px-6 py-3 border-2 border-teal-500 text-teal-500 rounded-xl font-medium hover:bg-teal-50">
                     Preview Public Page
                   </button>
-                  <button className="px-6 py-3 bg-teal-500 text-white rounded-xl font-medium hover:bg-teal-600">
+                  <button onClick={() => alert('Company page changes saved!')} className="px-6 py-3 bg-teal-500 text-white rounded-xl font-medium hover:bg-teal-600">
                     Save Changes
                   </button>
                 </div>
-              </div>
-
-              {/* Data Integrations Banner */}
-              <div className="bg-teal-50 border border-teal-200 rounded-xl p-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-                <div className="flex items-start gap-3 flex-1">
-                  <div className="w-10 h-10 rounded-xl bg-teal-500/20 flex items-center justify-center flex-shrink-0">
-                    <Zap size={20} className="text-teal-600" />
-                  </div>
-                  <div>
-                    <p className="text-sm md:text-base font-semibold text-slate-900 mb-1">
-                      🚀 Boost your credit limit up to 500,000 SAR by connecting your ERP, SIMAH, and Bank accounts.
-                    </p>
-                    <p className="text-xs text-slate-600">
-                      Connect 5 data sources to unlock maximum financing potential with Torbiona AI
-                    </p>
-                  </div>
-                </div>
-                <button
-                  onClick={() => setCurrentView('data-integrations')}
-                  className="w-full md:w-auto px-6 py-3 bg-gradient-to-r from-teal-500 to-teal-600 text-white rounded-xl font-bold hover:shadow-lg transition-all flex items-center justify-center gap-2 whitespace-nowrap"
-                >
-                  <Zap size={18} />
-                  Go to Data & Integrations
-                </button>
               </div>
 
               <div className="space-y-6">
@@ -1315,30 +1536,41 @@ export const CRMDashboardFull = () => {
             </div>
           )}
 
-          {/* Team & Access Control */}
-          {activeTab === 'access-control' && (
+          {/* Team, Access & Workspace (also covers Department Management + Workspace & Team) */}
+          {(activeTab === 'access-control' || activeTab === 'departments' || activeTab === 'tasks') && (
             <div>
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl md:text-3xl font-bold text-slate-900">Team & Access Management</h2>
-                <button
-                  onClick={() => setCurrentView('access-control')}
-                  className="px-6 py-3 bg-gradient-to-r from-teal-400 to-teal-600 text-white rounded-xl font-medium hover:shadow-lg transition-all flex items-center gap-2"
-                >
-                  <ShieldCheck size={20} />
-                  Open Full View
-                </button>
-              </div>
-              <div className="bg-white/90 backdrop-blur rounded-2xl shadow-sm p-6">
-                <p className="text-slate-600 mb-4">Manage team members, roles, and permissions from the dedicated access control panel.</p>
-                <button
-                  onClick={() => setCurrentView('access-control')}
-                  className="w-full py-3 bg-teal-500 text-white rounded-xl font-medium hover:bg-teal-600"
-                >
-                  Go to Access Control Manager
-                </button>
-              </div>
+              <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-6 md:mb-8">
+                {teamAccessTab === 'tasks' ? 'Workspace & Team' : 'Team & Access'}
+              </h2>
+              <AccessControlContent
+                roles={roles}
+                setRoles={setRoles}
+                selectedRole={selectedRole}
+                setSelectedRole={setSelectedRole}
+                teamMembers={teamMembers}
+                setTeamMembers={setTeamMembers}
+                selectedMember={selectedMember}
+                setSelectedMember={setSelectedMember}
+                customPermissionsEnabled={customPermissionsEnabled}
+                setCustomPermissionsEnabled={setCustomPermissionsEnabled}
+                accessTab={teamAccessTab}
+                setAccessTab={setTeamAccessTab}
+                departments={departments}
+                onAddDepartment={handleAddDepartment}
+                onAddEmployee={handleAddEmployee}
+                pendingTasks={pendingTasks}
+                completedTasks={completedTasks}
+                onAddTask={handleAddTask}
+                onMarkTaskComplete={handleMarkTaskComplete}
+              />
             </div>
           )}
+
+          {/* Digital Contracts */}
+          {activeTab === 'contracts-portal' && <ContractsPortalContent />}
+
+          {/* Data & Integrations */}
+          {activeTab === 'data-integrations' && <DataIntegrationsContent />}
         </div>
       </div>
 
@@ -1391,7 +1623,7 @@ export const CRMDashboardFull = () => {
                 return (
                   <button
                     key={item.id}
-                    onClick={() => { item.externalView ? setCurrentView(item.externalView) : setActiveTab(item.id); setShowMoreMenu(false); }}
+                    onClick={() => { handleNavClick(item); setShowMoreMenu(false); }}
                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
                       activeTab === item.id ? 'bg-teal-500 text-white' : 'text-slate-600 hover:bg-gray-100'
                     }`}
@@ -1401,13 +1633,6 @@ export const CRMDashboardFull = () => {
                   </button>
                 );
               })}
-              <button
-                onClick={() => { setCurrentView('b2b-platform'); setShowMoreMenu(false); }}
-                className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-teal-400 to-teal-600 text-white rounded-xl font-medium mt-4"
-              >
-                <span>←</span>
-                Back to B2B Platform
-              </button>
             </div>
           </div>
         </div>
