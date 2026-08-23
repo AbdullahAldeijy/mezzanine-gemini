@@ -142,7 +142,7 @@ export const TorbionaModal = () => {
                     <Settings2 size={17} className={showTerms ? 'text-white' : 'text-teal-500'} />
                   </div>
                   <div className="text-right" dir="rtl">
-                    <p className={`text-sm font-bold ${showTerms ? 'text-teal-700' : 'text-darkslate'}`}>إضافة شروط التحكم بالتمويل</p>
+                    <p className={`text-sm font-bold ${showTerms ? 'text-teal-700' : 'text-darkslate'}`}>شروط التحكم بالتمويل</p>
                     <p className="text-[10px] text-gray-400">Financing Control Terms</p>
                   </div>
                 </div>
@@ -152,9 +152,9 @@ export const TorbionaModal = () => {
               {showTerms && (
                 <div className="px-4 pb-4 pt-3 bg-white space-y-3">
                   {[
-                    { key: 'requireApproval', ar: 'موافقة المدير للصرف', en: 'Require manager approval' },
-                    { key: 'notifyEach', ar: 'إشعار عند كل صرف', en: 'Notify on each disbursement' },
-                    { key: 'freezeOnMiss', ar: 'تجميد عند التأخر', en: 'Freeze on missed payment' },
+                    { key: 'requireApproval', ar: 'دفعة مقدمة', en: 'Require manager approval' },
+                    { key: 'notifyEach', ar: 'التحصيل التبادلي', en: 'Notify on each disbursement' },
+                    { key: 'freezeOnMiss', ar: 'استقطاع من حساب الطوارئ', en: 'Freeze on missed payment' },
                   ].map(({ key, ar, en }) => (
                     <button
                       key={key}
