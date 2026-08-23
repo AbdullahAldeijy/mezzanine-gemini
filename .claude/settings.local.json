@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls -la /c/Users/Abdullah/Desktop/mezzanine-gemini/src/components/*.jsx)",
+      "Bash(npm run:*)"
+    ]
+  }
+}
