@@ -1,6 +1,27 @@
 import { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { X, FileText, TrendingUp } from 'lucide-react';
+import { X, FileText, TrendingUp, Megaphone, Package, FileSignature, Lock, ShieldAlert, CheckSquare, Square } from 'lucide-react';
+
+const COVENANTS = [
+  {
+    icon: Megaphone,
+    ar: 'زيادة العروض التسويقية',
+    en: 'Increase Marketing Offers',
+    desc: 'Maintain active marketing campaigns on the platform throughout the credit period.',
+  },
+  {
+    icon: Package,
+    ar: 'زيادة المنتجات',
+    en: 'Increase Products',
+    desc: 'Grow your product catalogue on Mezzanine during the financing term.',
+  },
+  {
+    icon: FileSignature,
+    ar: 'العقود',
+    en: 'Contracts',
+    desc: 'Execute and fulfil contracts via the platform while the credit is active.',
+  },
+];
 
 export const FinancingRequestModal = () => {
   const { selectedProduct, closeFinancingRequest, submitFinancingRequest } = useApp();
@@ -10,6 +31,7 @@ export const FinancingRequestModal = () => {
   const [beneficiary, setBeneficiary] = useState(selectedProduct?.seller || '');
   const [repaymentSource, setRepaymentSource] = useState('Sales Receivables');
   const [guarantees, setGuarantees] = useState('Trade Receivables Assignment');
+  const [acknowledged, setAcknowledged] = useState(false);
 
   if (!selectedProduct) return null;
 
@@ -37,6 +59,66 @@ export const FinancingRequestModal = () => {
               <p className="text-xs text-gray-500 uppercase font-semibold">Linked Opportunity / Offer</p>
               <p className="font-bold text-darkslate">{selectedProduct.name}</p>
             </div>
+          </div>
+
+          {/* Credit Period Covenants */}
+          <div>
+            {/* Header */}
+            <div className="flex items-center gap-2 mb-1">
+              <ShieldAlert size={16} className="text-amber-500 flex-shrink-0" />
+              <p className="text-sm font-bold text-darkslate">شروط الالتزام خلال فترة التمويل</p>
+            </div>
+            <p className="text-xs text-gray-500 mb-3">Credit Period Mandatory Covenants — enforced automatically by Torbiona</p>
+
+            {/* Warning banner */}
+            <div className="flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 mb-4">
+              <Lock size={14} className="text-amber-500 mt-0.5 flex-shrink-0" />
+              <p className="text-xs text-amber-700 leading-relaxed">
+                These obligations are <span className="font-bold">binding conditions</span> tied to your credit. Non-compliance is automatically detected and will impact your Torbiona score and available credit limit.
+              </p>
+            </div>
+
+            {/* Covenant cards — always enforced, not toggleable */}
+            <div className="grid grid-cols-3 gap-3 mb-4">
+              {COVENANTS.map(({ icon: Icon, ar, en, desc }) => (
+                <div
+                  key={en}
+                  className="flex flex-col gap-3 rounded-2xl border-2 border-teal-400 bg-gradient-to-b from-teal-50 to-teal-100 p-4 shadow-sm"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-teal-400 to-teal-600 flex items-center justify-center shadow">
+                      <Icon size={16} className="text-white" />
+                    </div>
+                    <span className="text-[9px] font-bold text-teal-600 bg-teal-100 border border-teal-300 rounded-full px-2 py-0.5 uppercase tracking-wide">
+                      Enforced
+                    </span>
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-teal-800 leading-tight mb-1" dir="rtl">{ar}</p>
+                    <p className="text-[10px] font-semibold text-teal-600 mb-1">{en}</p>
+                    <p className="text-[10px] text-gray-500 leading-snug">{desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Acknowledgment checkbox */}
+            <button
+              type="button"
+              onClick={() => setAcknowledged((p) => !p)}
+              className={`w-full flex items-center gap-3 rounded-xl border-2 px-4 py-3 transition-all ${
+                acknowledged
+                  ? 'border-teal-500 bg-teal-50'
+                  : 'border-gray-200 bg-lightgray hover:border-teal-300'
+              }`}
+            >
+              {acknowledged
+                ? <CheckSquare size={18} className="text-teal-500 flex-shrink-0" />
+                : <Square size={18} className="text-gray-300 flex-shrink-0" />}
+              <p className={`text-xs text-left leading-snug ${acknowledged ? 'text-teal-700 font-medium' : 'text-gray-500'}`}>
+                I understand and accept these mandatory covenants. I commit to maintaining them throughout the entire financing period.
+              </p>
+            </button>
           </div>
 
           {/* Request Form */}
@@ -154,9 +236,14 @@ export const FinancingRequestModal = () => {
           <div className="flex gap-4">
             <button
               onClick={submitFinancingRequest}
-              className="flex-1 py-4 bg-gradient-to-r from-teal-400 to-teal-600 text-white rounded-xl font-medium shadow-lg hover:shadow-xl transition-all"
+              disabled={!acknowledged}
+              className={`flex-1 py-4 rounded-xl font-medium shadow-lg transition-all ${
+                acknowledged
+                  ? 'bg-gradient-to-r from-teal-400 to-teal-600 text-white hover:shadow-xl'
+                  : 'bg-gray-200 text-gray-400 cursor-not-allowed shadow-none'
+              }`}
             >
-              Continue to AI Credit Analysis
+              {acknowledged ? 'Continue to AI Credit Analysis' : 'Accept Covenants to Continue'}
             </button>
             <button
               onClick={closeFinancingRequest}

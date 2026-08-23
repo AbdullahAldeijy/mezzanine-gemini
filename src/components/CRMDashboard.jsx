@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { LayoutDashboard, Package, FileText, FileCheck, BarChart3, TrendingUp, ShoppingBag, Megaphone, Building2, CheckSquare, Briefcase, DollarSign, Users, Clock } from 'lucide-react';
+import { LayoutDashboard, Package, FileText, FileCheck, BarChart3, TrendingUp, ShoppingBag, Megaphone, Building2, CheckSquare, Briefcase, DollarSign, Users, Clock, Menu, X } from 'lucide-react';
 
 export const CRMDashboard = () => {
   const { setCurrentView } = useApp();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const menuItems = [
     { icon: LayoutDashboard, label: 'Dashboard', active: true },
@@ -21,13 +23,23 @@ export const CRMDashboard = () => {
 
   return (
     <div className="flex min-h-screen bg-cream">
+      {/* Mobile backdrop */}
+      {sidebarOpen && (
+        <div className="md:hidden fixed inset-0 bg-black/50 z-40" onClick={() => setSidebarOpen(false)} />
+      )}
+
       {/* Sidebar */}
-      <div className="w-64 bg-white shadow-lg fixed left-0 top-0 h-screen overflow-y-auto">
-        <div className="p-6 border-b border-gray-200">
-          <h1 className="text-2xl font-bold bg-gradient-to-r from-teal-400 to-teal-600 bg-clip-text text-transparent">
-            Mezzanine
-          </h1>
-          <p className="text-xs text-gray-600 mt-1">CRM Dashboard</p>
+      <div className={`w-64 bg-white shadow-lg fixed left-0 top-0 h-screen overflow-y-auto z-50 transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0`}>
+        <div className="p-6 border-b border-gray-200 flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-teal-400 to-teal-600 bg-clip-text text-transparent">
+              Mezzanine
+            </h1>
+            <p className="text-xs text-gray-600 mt-1">CRM Dashboard</p>
+          </div>
+          <button onClick={() => setSidebarOpen(false)} className="md:hidden p-1 hover:bg-gray-100 rounded-lg text-slate-500">
+            <X size={20} />
+          </button>
         </div>
         <nav className="p-4">
           {menuItems.map((item, idx) => {
@@ -35,7 +47,7 @@ export const CRMDashboard = () => {
             return (
               <div
                 key={idx}
-                onClick={item.action}
+                onClick={() => { item.action && item.action(); setSidebarOpen(false); }}
                 className={`flex items-center gap-3 px-4 py-3 rounded-xl mb-2 cursor-pointer transition-all ${
                   item.active
                     ? 'bg-gradient-to-r from-teal-400 to-teal-600 text-white shadow-md'
@@ -51,7 +63,15 @@ export const CRMDashboard = () => {
       </div>
 
       {/* Main Content */}
-      <div className="ml-64 flex-1 p-8">
+      <div className="md:ml-64 flex-1 w-full min-w-0">
+        {/* Mobile top bar */}
+        <div className="md:hidden sticky top-0 z-30 bg-white shadow-sm px-4 py-3 flex items-center gap-3">
+          <button onClick={() => setSidebarOpen(true)} className="p-2 hover:bg-gray-100 rounded-lg text-slate-600">
+            <Menu size={22} />
+          </button>
+          <h1 className="text-xl font-bold bg-gradient-to-r from-teal-400 to-teal-600 bg-clip-text text-transparent">Mezzanine</h1>
+        </div>
+        <div className="p-4 md:p-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-darkslate mb-2">Dashboard Overview</h1>
           <p className="text-gray-600">Welcome back! Here's what's happening with your business.</p>
@@ -141,6 +161,7 @@ export const CRMDashboard = () => {
               </div>
             ))}
           </div>
+        </div>
         </div>
       </div>
     </div>

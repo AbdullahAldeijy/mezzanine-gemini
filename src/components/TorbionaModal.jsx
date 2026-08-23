@@ -1,8 +1,24 @@
+import { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { X, CheckCircle } from 'lucide-react';
+import { X, CheckCircle, Settings2, Layers, ChevronDown, ChevronUp, CheckSquare, Square, Lock, CalendarClock } from 'lucide-react';
+
+const SYSTEM_INSTALLMENTS = [
+  { label: 'Month 4',  amount: 166667 },
+  { label: 'Month 8',  amount: 166667 },
+  { label: 'Month 12', amount: 166666 },
+];
 
 export const TorbionaModal = () => {
   const { closeTorbiona, completePurchase, setCurrentView } = useApp();
+  const [showTerms, setShowTerms] = useState(false);
+  const [showInstallments, setShowInstallments] = useState(false);
+  const [terms, setTerms] = useState({
+    requireApproval: false,
+    notifyEach: true,
+    freezeOnMiss: false,
+  });
+
+  const toggleTerm = (key) => setTerms((p) => ({ ...p, [key]: !p[key] }));
 
   const scores = {
     behavioral: 61,
@@ -110,6 +126,120 @@ export const TorbionaModal = () => {
                 </div>
               </div>
             </div>
+          </div>
+
+          {/* Financing Control Cards */}
+          <div className="grid md:grid-cols-2 gap-4 mb-6">
+
+            {/* Card 1 — إضافة شروط التحكم بالتمويل */}
+            <div className={`rounded-2xl border-2 transition-all duration-300 overflow-hidden ${showTerms ? 'border-teal-500 shadow-md' : 'border-gray-200'}`}>
+              <button
+                onClick={() => setShowTerms((p) => !p)}
+                className={`w-full flex items-center justify-between gap-3 p-4 transition-colors ${showTerms ? 'bg-gradient-to-r from-teal-50 to-teal-100' : 'bg-lightgray hover:bg-teal-50/40'}`}
+              >
+                <div className="flex items-center gap-3">
+                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${showTerms ? 'bg-gradient-to-br from-teal-400 to-teal-600 shadow' : 'bg-white shadow-sm'}`}>
+                    <Settings2 size={17} className={showTerms ? 'text-white' : 'text-teal-500'} />
+                  </div>
+                  <div className="text-right" dir="rtl">
+                    <p className={`text-sm font-bold ${showTerms ? 'text-teal-700' : 'text-darkslate'}`}>إضافة شروط التحكم بالتمويل</p>
+                    <p className="text-[10px] text-gray-400">Financing Control Terms</p>
+                  </div>
+                </div>
+                {showTerms ? <ChevronUp size={16} className="text-teal-500 flex-shrink-0" /> : <ChevronDown size={16} className="text-gray-400 flex-shrink-0" />}
+              </button>
+
+              {showTerms && (
+                <div className="px-4 pb-4 pt-3 bg-white space-y-3">
+                  {[
+                    { key: 'requireApproval', ar: 'موافقة المدير للصرف', en: 'Require manager approval' },
+                    { key: 'notifyEach', ar: 'إشعار عند كل صرف', en: 'Notify on each disbursement' },
+                    { key: 'freezeOnMiss', ar: 'تجميد عند التأخر', en: 'Freeze on missed payment' },
+                  ].map(({ key, ar, en }) => (
+                    <button
+                      key={key}
+                      onClick={() => toggleTerm(key)}
+                      className={`w-full flex items-center justify-between gap-3 px-3 py-2.5 rounded-xl border transition-all ${terms[key] ? 'border-teal-400 bg-teal-50' : 'border-gray-100 bg-lightgray hover:border-teal-200'}`}
+                    >
+                      <div dir="rtl" className="text-right">
+                        <p className={`text-xs font-semibold ${terms[key] ? 'text-teal-700' : 'text-darkslate'}`}>{ar}</p>
+                        <p className="text-[10px] text-gray-400">{en}</p>
+                      </div>
+                      {terms[key]
+                        ? <CheckSquare size={16} className="text-teal-500 flex-shrink-0" />
+                        : <Square size={16} className="text-gray-300 flex-shrink-0" />}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Card 2 — الصرف على دفعات */}
+            <div className={`rounded-2xl border-2 transition-all duration-300 overflow-hidden ${showInstallments ? 'border-teal-500 shadow-md' : 'border-gray-200'}`}>
+              <button
+                onClick={() => setShowInstallments((p) => !p)}
+                className={`w-full flex items-center justify-between gap-3 p-4 transition-colors ${showInstallments ? 'bg-gradient-to-r from-teal-50 to-teal-100' : 'bg-lightgray hover:bg-teal-50/40'}`}
+              >
+                <div className="flex items-center gap-3">
+                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${showInstallments ? 'bg-gradient-to-br from-teal-400 to-teal-600 shadow' : 'bg-white shadow-sm'}`}>
+                    <Layers size={17} className={showInstallments ? 'text-white' : 'text-teal-500'} />
+                  </div>
+                  <div className="text-right" dir="rtl">
+                    <p className={`text-sm font-bold ${showInstallments ? 'text-teal-700' : 'text-darkslate'}`}>الصرف على دفعات</p>
+                    <p className="text-[10px] text-gray-400">Disbursement in Installments</p>
+                  </div>
+                </div>
+                {showInstallments ? <ChevronUp size={16} className="text-teal-500 flex-shrink-0" /> : <ChevronDown size={16} className="text-gray-400 flex-shrink-0" />}
+              </button>
+
+              {showInstallments && (
+                <div className="px-4 pb-4 pt-3 bg-white">
+                  {/* System badge */}
+                  <div className="flex items-center gap-1.5 mb-4 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2">
+                    <Lock size={11} className="text-slate-400 flex-shrink-0" />
+                    <p className="text-[10px] text-slate-500">
+                      <span className="font-semibold text-slate-600">System Generated</span> · Calculated from project timeline & risk profile
+                    </p>
+                  </div>
+
+                  {/* Header row */}
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-1.5">
+                      <CalendarClock size={13} className="text-teal-500" />
+                      <p className="text-xs font-bold text-darkslate" dir="rtl">عدد الدفعات</p>
+                    </div>
+                    <span className="text-xs font-bold text-teal-600 bg-teal-50 border border-teal-200 rounded-full px-2.5 py-0.5">
+                      {SYSTEM_INSTALLMENTS.length} Installments
+                    </span>
+                  </div>
+
+                  {/* Timeline */}
+                  <div className="relative flex items-stretch gap-0 mb-3">
+                    {SYSTEM_INSTALLMENTS.map((inst, i) => (
+                      <div key={i} className="flex-1 flex flex-col items-center gap-0">
+                        {/* Dot + line */}
+                        <div className="flex items-center w-full">
+                          <div className={`h-px flex-1 ${i === 0 ? 'bg-transparent' : 'bg-gradient-to-r from-teal-300 to-teal-400'}`} />
+                          <div className="w-3 h-3 rounded-full bg-gradient-to-br from-teal-400 to-teal-600 shadow flex-shrink-0 ring-2 ring-teal-100" />
+                          <div className={`h-px flex-1 ${i === SYSTEM_INSTALLMENTS.length - 1 ? 'bg-transparent' : 'bg-gradient-to-r from-teal-400 to-teal-300'}`} />
+                        </div>
+                        {/* Card */}
+                        <div className="mt-2 w-full bg-teal-50 border border-teal-200 rounded-xl px-2 py-2.5 flex flex-col items-center gap-1">
+                          <p className="text-[10px] text-teal-500 font-semibold">{inst.label}</p>
+                          <p className="text-sm font-bold text-darkslate">{inst.amount.toLocaleString()}</p>
+                          <p className="text-[9px] text-gray-400">SAR</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <p className="text-[10px] text-gray-400 text-center">
+                    Total: <span className="font-semibold text-darkslate">500,000 SAR</span> · Disbursed across {SYSTEM_INSTALLMENTS.length} equal payments
+                  </p>
+                </div>
+              )}
+            </div>
+
           </div>
 
           {/* Action Buttons */}

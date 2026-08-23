@@ -264,6 +264,96 @@ export const B2BPlatform = () => {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-8">
+
+        {/* ── Sukuk Marketing Banner ── */}
+        <div
+          onClick={() => setCurrentView('sukuk-portal')}
+          className="relative mb-10 rounded-3xl overflow-hidden cursor-pointer group"
+          style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 40%, #1c1917 100%)' }}
+        >
+          {/* Background decorative elements */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            {/* Large glow */}
+            <div className="absolute -top-20 -right-20 w-80 h-80 rounded-full bg-amber-500/10 blur-3xl" />
+            <div className="absolute -bottom-20 -left-20 w-80 h-80 rounded-full bg-teal-500/10 blur-3xl" />
+            {/* Grid lines */}
+            <svg className="absolute inset-0 w-full h-full opacity-5" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <pattern id="sk-grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                  <path d="M40 0L0 0 0 40" fill="none" stroke="#f59e0b" strokeWidth="0.5"/>
+                </pattern>
+              </defs>
+              <rect width="100%" height="100%" fill="url(#sk-grid)" />
+            </svg>
+            {/* Floating dots */}
+            {[[8,20],[92,15],[15,80],[88,75],[50,10],[50,90]].map(([x,y],i) => (
+              <div key={i} className="absolute w-1.5 h-1.5 rounded-full bg-amber-400/30" style={{left:`${x}%`,top:`${y}%`}} />
+            ))}
+          </div>
+
+          <div className="relative px-5 md:px-10 py-6 md:py-10 flex flex-col md:flex-row items-center gap-5 md:gap-10">
+
+            {/* Top row on mobile: icon + badge side by side */}
+            <div className="flex-shrink-0 flex md:flex-col items-center gap-3">
+              <div className="w-14 h-14 md:w-20 md:h-20 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-2xl shadow-amber-900/50 group-hover:scale-110 transition-transform duration-500">
+                <Star size={26} className="text-white fill-white md:hidden" />
+                <Star size={32} className="text-white fill-white hidden md:block" />
+              </div>
+              <span className="text-[9px] font-bold border border-amber-500/40 bg-amber-500/10 text-amber-400 rounded-full px-3 py-1 uppercase tracking-widest whitespace-nowrap">
+                طرح خاص · Private Offering
+              </span>
+            </div>
+
+            {/* Center: copy */}
+            <div className="flex-1 text-center md:text-right">
+              <p className="text-[10px] font-semibold text-amber-500/80 uppercase tracking-widest mb-1.5 hidden md:block">
+                Mezzanine Investment · للمستثمرين المؤهلين والمؤسسيين
+              </p>
+              <h2 className="text-xl md:text-3xl font-bold text-white mb-2 leading-tight" dir="rtl">
+                استثمر في{' '}
+                <span className="bg-gradient-to-r from-amber-400 to-amber-300 bg-clip-text text-transparent">
+                  صكوك ميزانين
+                </span>
+              </h2>
+              <p className="hidden md:block text-sm text-slate-400 leading-relaxed max-w-xl mx-auto md:mx-0" dir="rtl">
+                صكوك متوافقة مع الشريعة الإسلامية، مدعومة بمحفظة متنوعة من مستحقات التجارة B2B
+                في المملكة العربية السعودية. عوائد مؤسسية تتجاوز المعدلات السيادية.
+              </p>
+
+              {/* Stat chips — scrollable row on mobile */}
+              <div className="flex gap-2 mt-3 overflow-x-auto pb-0.5 justify-center md:justify-start md:flex-wrap">
+                {[
+                  { label: 'عائد سنوي',        value: '8.5%',                  color: 'text-amber-400 border-amber-500/30 bg-amber-500/10'    },
+                  { label: 'إجمالي الإصدارات', value: '112M SAR',               color: 'text-teal-400 border-teal-500/30 bg-teal-500/10'       },
+                  { label: 'مجمعات نشطة',       value: '3 Pools',               color: 'text-indigo-400 border-indigo-500/30 bg-indigo-500/10' },
+                  { label: 'تصنيف ائتماني',     value: 'A-',                    color: 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10' },
+                  { label: 'نوع الصك',          value: 'مرابحة · وكالة · إجارة', color: 'text-slate-300 border-slate-600 bg-slate-800/60'      },
+                ].map(({ label, value, color }) => (
+                  <div key={label} className={`flex-shrink-0 border rounded-xl px-3 py-1.5 text-center ${color}`}>
+                    <p className="text-[8px] opacity-70 mb-0.5">{label}</p>
+                    <p className="text-xs font-bold leading-tight">{value}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* CTA — full width on mobile */}
+            <div className="flex-shrink-0 flex flex-col items-center gap-2 w-full md:w-auto">
+              <button className="w-full md:w-auto px-6 py-3 bg-gradient-to-r from-amber-400 to-amber-600 text-white rounded-2xl font-bold text-sm shadow-xl shadow-amber-900/40 group-hover:shadow-amber-600/50 group-hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2 min-h-[48px]">
+                <Star size={16} className="fill-white" />
+                اكتشف الصكوك
+                <ArrowRight size={16} />
+              </button>
+              <p className="text-[9px] text-slate-600 text-center">
+                للمستثمرين المؤهلين فقط · Qualified Investors Only
+              </p>
+            </div>
+          </div>
+
+          {/* Bottom shimmer line */}
+          <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-amber-500/40 to-transparent" />
+        </div>
+
         {/* Featured Companies */}
         <div className="mb-8 md:mb-12">
           <h2 className="text-xl md:text-2xl font-bold text-slate-900 mb-4 md:mb-6">Top Suppliers & Contractors</h2>

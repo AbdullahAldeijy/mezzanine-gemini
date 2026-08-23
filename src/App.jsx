@@ -14,12 +14,21 @@ import { KYBVerification } from './components/KYBVerification';
 import { AccessControlManager } from './components/AccessControlManager';
 import { DataIntegrations } from './components/DataIntegrations';
 import { ContractsPortal } from './components/ContractsPortal';
+import { CompetitivePanel } from './components/CompetitivePanel';
+import { JointOperation } from './components/JointOperation';
+import { CreditControl } from './components/CreditControl';
+import { FuzzyLogic } from './components/FuzzyLogic';
+import { SukukPortal } from './components/SukukPortal';
+
+const HIDE_PANEL_VIEWS = ['auth', 'setup'];
 
 const AppContent = () => {
   const { currentView, showCheckout, showFinancingRequest, showTorbiona } = useApp();
+  const showPanel = !HIDE_PANEL_VIEWS.includes(currentView);
 
   return (
     <>
+      {showPanel && <CompetitivePanel />}
       {currentView === 'auth' && <Auth />}
       {currentView === 'setup' && <SetupWizard />}
       {currentView === 'b2b-platform' && <B2BPlatform />}
@@ -31,6 +40,10 @@ const AppContent = () => {
       {currentView === 'access-control' && <AccessControlManager />}
       {currentView === 'data-integrations' && <DataIntegrations />}
       {currentView === 'contracts-portal' && <ContractsPortal />}
+      {currentView === 'joint-operation' && <JointOperation />}
+      {currentView === 'credit-control' && <CreditControl />}
+      {currentView === 'fuzzy-logic' && <FuzzyLogic />}
+      {currentView === 'sukuk-portal' && <SukukPortal />}
       {showCheckout && <CheckoutPanel />}
       {showFinancingRequest && <FinancingRequestModal />}
       {showTorbiona && <TorbionaModal />}
