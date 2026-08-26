@@ -19,6 +19,7 @@ import { JointOperation } from './components/JointOperation';
 import { CreditControl } from './components/CreditControl';
 import { FuzzyLogic } from './components/FuzzyLogic';
 import { SukukPortal } from './components/SukukPortal';
+import { OperationsDashboard } from './components/OperationsDashboard';
 
 const HIDE_PANEL_VIEWS = ['auth', 'setup'];
 
@@ -44,6 +45,7 @@ const AppContent = () => {
       {currentView === 'credit-control' && <CreditControl />}
       {currentView === 'fuzzy-logic' && <FuzzyLogic />}
       {currentView === 'sukuk-portal' && <SukukPortal />}
+      {currentView === 'operations-dashboard' && <OperationsDashboard />}
       {showCheckout && <CheckoutPanel />}
       {showFinancingRequest && <FinancingRequestModal />}
       {showTorbiona && <TorbionaModal />}
