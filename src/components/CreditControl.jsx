@@ -5,7 +5,7 @@ import {
   TrendingUp, FileText, Megaphone, FileSignature, Lock,
   CheckSquare, Square, Settings2, Layers,
   AlertCircle, Download, Star, CheckCircle, MapPin, Calendar,
-  Zap, BadgeCheck, Landmark, ChevronRight, X,
+  Zap, BadgeCheck, Landmark, ChevronRight, ChevronDown, X,
   FileCheck, User, LayoutDashboard, LogIn, LogOut, ArrowRight,
   Menu, Send,
 } from 'lucide-react';
@@ -723,9 +723,19 @@ export const CreditControl = () => {
               <p className="text-xs text-blue-700 font-medium">This purchase will be financed through <strong>Mezzanine Finance</strong>. Complete a financing request in the next step.</p>
             </div>
 
-            <button onClick={goNext} className="w-full py-3.5 bg-gradient-to-r from-teal-400 to-teal-600 text-white rounded-xl font-bold shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2">
-              <Landmark size={18} /> Continue to Financing Request
-            </button>
+            <div className="flex gap-3">
+              <button
+                disabled
+                title="Buy Now is not available — this product requires Mezzanine Finance"
+                className="flex-1 py-3.5 rounded-xl font-bold text-sm border-2 border-slate-200 text-slate-400 bg-slate-100 cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                Buy Now
+                <span className="text-[10px] font-medium bg-slate-200 text-slate-500 px-2 py-0.5 rounded-full">Requires financing</span>
+              </button>
+              <button onClick={goNext} className="flex-1 py-3.5 bg-gradient-to-r from-teal-400 to-teal-600 text-white rounded-xl font-bold shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2">
+                <Landmark size={18} /> Finance with Mezzanine
+              </button>
+            </div>
           </div>
         )}
 
