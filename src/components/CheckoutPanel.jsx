@@ -21,7 +21,7 @@ export const CheckoutPanel = () => {
   const finalTotal = productTotal + deliveryFee;
 
   const handleCompletePurchase = () => {
-    if (payment === 'torbiona') {
+    if (payment === 'mezzanine-finance') {
       openFinancingRequest();
     } else {
       alert('Purchase completed with Pay Now!');
@@ -116,7 +116,7 @@ export const CheckoutPanel = () => {
 
               <label
                 className={`flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all ${
-                  payment === 'torbiona'
+                  payment === 'mezzanine-finance'
                     ? 'border-teal-500 bg-teal-50'
                     : 'border-gray-300 hover:border-teal-300'
                 }`}
@@ -124,14 +124,14 @@ export const CheckoutPanel = () => {
                 <input
                   type="radio"
                   name="payment"
-                  value="torbiona"
-                  checked={payment === 'torbiona'}
+                  value="mezzanine-finance"
+                  checked={payment === 'mezzanine-finance'}
                   onChange={(e) => setPayment(e.target.value)}
                   className="w-5 h-5 text-teal-500 focus:ring-teal-500"
                 />
                 <div className="ml-3 flex-1">
                   <div className="flex items-center gap-2">
-                    <span className="font-medium text-darkslate">Torbiona</span>
+                    <span className="font-medium text-darkslate">Mezzanine Finance</span>
                     <span className="px-2 py-1 text-xs bg-gradient-to-r from-teal-400 to-teal-600 text-white rounded-full">
                       Secure financing
                     </span>

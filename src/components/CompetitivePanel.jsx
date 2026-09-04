@@ -42,8 +42,13 @@ const features = [
 ];
 
 export const CompetitivePanel = () => {
-  const { currentView, setCurrentView } = useApp();
+  const { currentView, setCurrentView, startCreditControl } = useApp();
   const [visible, setVisible] = useState(true);
+
+  const handleFeatureClick = (view) => {
+    if (view === 'credit-control') startCreditControl();
+    else setCurrentView(view);
+  };
 
   return (
     <>
@@ -65,7 +70,7 @@ export const CompetitivePanel = () => {
             return (
               <button
                 key={f.view}
-                onClick={() => setCurrentView(f.view)}
+                onClick={() => handleFeatureClick(f.view)}
                 title={f.label}
                 className={`group flex flex-col items-center gap-1.5 w-[72px] py-4 px-2 rounded-2xl transition-all duration-300 border ${
                   isActive
@@ -109,7 +114,7 @@ export const CompetitivePanel = () => {
           return (
             <button
               key={f.view}
-              onClick={() => setCurrentView(f.view)}
+              onClick={() => handleFeatureClick(f.view)}
               className={`flex flex-col items-center gap-1 px-4 py-1.5 rounded-xl transition-all ${
                 isActive ? `bg-gradient-to-b ${f.gradient} shadow-md` : 'hover:bg-gray-50'
               }`}

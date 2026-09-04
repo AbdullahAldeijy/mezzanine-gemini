@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { X, FileText, TrendingUp, Megaphone, Package, FileSignature, Lock, ShieldAlert, CheckSquare, Square } from 'lucide-react';
+import { X, FileText, TrendingUp, Megaphone, Package, FileSignature, Lock, ShieldAlert, CheckSquare, Square, Shield } from 'lucide-react';
 
 const COVENANTS = [
   {
@@ -25,6 +25,7 @@ const COVENANTS = [
 
 export const FinancingRequestModal = () => {
   const { selectedProduct, closeFinancingRequest, submitFinancingRequest } = useApp();
+  const [creditReportConsent, setCreditReportConsent] = useState(false);
   const [amount, setAmount] = useState(1000000);
   const [purpose, setPurpose] = useState('Inventory Purchase');
   const [duration, setDuration] = useState('12 Months');
@@ -61,6 +62,30 @@ export const FinancingRequestModal = () => {
             </div>
           </div>
 
+          {/* Credit Report Consent */}
+          <div className={`rounded-2xl border-2 p-4 transition-all ${creditReportConsent ? 'border-teal-500 bg-teal-50' : 'border-amber-300 bg-amber-50'}`}>
+            <div className="flex items-start gap-3 mb-3">
+              <Shield className={creditReportConsent ? 'text-teal-600' : 'text-amber-500'} size={18} />
+              <div>
+                <p className="font-bold text-sm text-darkslate">Credit Report Data Sharing Authorization</p>
+                <p className="text-xs text-gray-500 mt-0.5">Required to generate your assessment score</p>
+              </div>
+            </div>
+            <p className="text-xs text-gray-600 leading-relaxed mb-3">
+              Mezzanine Finance will use your <strong>Joint Operation credit report</strong> — including your verified business identity, regulatory documents, products, team structure, customers, projects, and financial data — to evaluate this financing request.
+            </p>
+            <button
+              type="button"
+              onClick={() => setCreditReportConsent(p => !p)}
+              className={`w-full flex items-center gap-3 rounded-xl border-2 px-4 py-3 transition-all ${creditReportConsent ? 'border-teal-500 bg-white' : 'border-amber-300 bg-white hover:border-teal-300'}`}
+            >
+              {creditReportConsent ? <CheckSquare size={18} className="text-teal-500 flex-shrink-0" /> : <Square size={18} className="text-amber-400 flex-shrink-0" />}
+              <p className={`text-xs text-left leading-snug ${creditReportConsent ? 'text-teal-700 font-medium' : 'text-gray-600'}`}>
+                I authorize Mezzanine to share my Joint Operation credit report with the financing company to generate my assessment score.
+              </p>
+            </button>
+          </div>
+
           {/* Credit Period Covenants */}
           <div>
             {/* Header */}
@@ -68,13 +93,13 @@ export const FinancingRequestModal = () => {
               <ShieldAlert size={16} className="text-amber-500 flex-shrink-0" />
               <p className="text-sm font-bold text-darkslate">شروط الالتزام خلال فترة التمويل</p>
             </div>
-            <p className="text-xs text-gray-500 mb-3">Credit Period Mandatory Covenants — enforced automatically by Torbiona</p>
+            <p className="text-xs text-gray-500 mb-3">Credit Period Mandatory Covenants — enforced automatically by Mezzanine Finance</p>
 
             {/* Warning banner */}
             <div className="flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 mb-4">
               <Lock size={14} className="text-amber-500 mt-0.5 flex-shrink-0" />
               <p className="text-xs text-amber-700 leading-relaxed">
-                These obligations are <span className="font-bold">binding conditions</span> tied to your credit. Non-compliance is automatically detected and will impact your Torbiona score and available credit limit.
+                These obligations are <span className="font-bold">binding conditions</span> tied to your credit. Non-compliance is automatically detected and will impact your Mezzanine Finance score and available credit limit.
               </p>
             </div>
 
@@ -208,7 +233,7 @@ export const FinancingRequestModal = () => {
               <h3 className="text-lg font-bold text-darkslate">Creditworthiness & Financing Capacity</h3>
             </div>
             <p className="text-sm text-gray-700 mb-4">
-              Torbiona AI improves creditworthiness over time using verified platform activity, invoices, and repayment history — increasing the financed portion available on future requests.
+              Mezzanine Finance AI improves creditworthiness over time using verified platform activity, invoices, and repayment history — increasing the financed portion available on future requests.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-center mb-4">
               <div className="bg-white rounded-xl p-3">

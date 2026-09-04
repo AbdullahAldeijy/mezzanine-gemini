@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { X, CheckCircle, Settings2, Layers, ChevronDown, ChevronUp, CheckSquare, Square, Lock, CalendarClock } from 'lucide-react';
+import { X, CheckCircle, Settings2, Layers, ChevronDown, ChevronUp, CheckSquare, Square, Lock, CalendarClock, Star, Check } from 'lucide-react';
 
 const SYSTEM_INSTALLMENTS = [
   { label: 'Month 4',  amount: 166667 },
@@ -8,10 +8,24 @@ const SYSTEM_INSTALLMENTS = [
   { label: 'Month 12', amount: 166666 },
 ];
 
+const ENHANCE_ACTIONS = [
+  [
+    { label: 'Upload Q1 financial statement', done: false },
+    { label: 'Add 2 new products to marketplace', done: false },
+    { label: 'Complete at least 1 active contract', done: false },
+  ],
+  [
+    { label: 'Submit invoice reconciliation report', done: false },
+    { label: 'Maintain 3+ active customer contracts', done: false },
+    { label: 'Achieve 90%+ platform engagement score', done: false },
+  ],
+];
+
 export const TorbionaModal = () => {
-  const { closeTorbiona, completePurchase, setCurrentView } = useApp();
+  const { closeTorbiona, proceedFromCalculator } = useApp();
   const [showTerms, setShowTerms] = useState(false);
   const [showInstallments, setShowInstallments] = useState(false);
+  const [enhanceActions, setEnhanceActions] = useState(ENHANCE_ACTIONS);
   const [terms, setTerms] = useState({
     requireApproval: false,
     notifyEach: true,
@@ -49,7 +63,7 @@ export const TorbionaModal = () => {
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <div className="bg-white/90 backdrop-blur-md rounded-2xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-y-auto">
         <div className="sticky top-0 bg-white/90 backdrop-blur-md p-4 md:p-6 border-b border-gray-200 flex justify-between items-center">
-          <h2 className="text-xl md:text-2xl font-bold text-darkslate">Torbiona Credit Calculator</h2>
+          <h2 className="text-xl md:text-2xl font-bold text-darkslate">Mezzanine Finance Credit Calculator</h2>
           <button onClick={closeTorbiona} className="text-gray-500 hover:text-darkslate transition-all">
             <X size={24} />
           </button>
@@ -116,7 +130,7 @@ export const TorbionaModal = () => {
                   ✅ Approved! Congratulations!
                 </h3>
                 <p className="text-gray-700 mb-4">
-                  You are eligible for the Torbiona payment method.
+                  You are eligible for Mezzanine Finance.
                 </p>
                 <div className="bg-white rounded-xl p-4 inline-block">
                   <p className="text-sm text-gray-600 mb-1">Available Credit Limit</p>
@@ -213,22 +227,45 @@ export const TorbionaModal = () => {
                     </span>
                   </div>
 
-                  {/* Timeline */}
-                  <div className="relative flex items-stretch gap-0 mb-3">
+                  {/* Timeline with enhance score between installments */}
+                  <div className="space-y-2 mb-3">
                     {SYSTEM_INSTALLMENTS.map((inst, i) => (
-                      <div key={i} className="flex-1 flex flex-col items-center gap-0">
-                        {/* Dot + line */}
-                        <div className="flex items-center w-full">
-                          <div className={`h-px flex-1 ${i === 0 ? 'bg-transparent' : 'bg-gradient-to-r from-teal-300 to-teal-400'}`} />
-                          <div className="w-3 h-3 rounded-full bg-gradient-to-br from-teal-400 to-teal-600 shadow flex-shrink-0 ring-2 ring-teal-100" />
-                          <div className={`h-px flex-1 ${i === SYSTEM_INSTALLMENTS.length - 1 ? 'bg-transparent' : 'bg-gradient-to-r from-teal-400 to-teal-300'}`} />
+                      <div key={i}>
+                        <div className="flex items-center gap-2">
+                          <div className="w-3 h-3 rounded-full bg-gradient-to-br from-teal-400 to-teal-600 flex-shrink-0 ring-2 ring-teal-100" />
+                          <div className="flex-1 bg-teal-50 border border-teal-200 rounded-xl px-3 py-2 flex items-center justify-between">
+                            <p className="text-[10px] text-teal-500 font-semibold">{inst.label}</p>
+                            <p className="text-sm font-bold text-darkslate">SAR {inst.amount.toLocaleString()}</p>
+                          </div>
                         </div>
-                        {/* Card */}
-                        <div className="mt-2 w-full bg-teal-50 border border-teal-200 rounded-xl px-2 py-2.5 flex flex-col items-center gap-1">
-                          <p className="text-[10px] text-teal-500 font-semibold">{inst.label}</p>
-                          <p className="text-sm font-bold text-darkslate">{inst.amount.toLocaleString()}</p>
-                          <p className="text-[9px] text-gray-400">SAR</p>
-                        </div>
+                        {i < SYSTEM_INSTALLMENTS.length - 1 && (
+                          <div className="ml-1.5 mt-1.5 mb-1.5">
+                            <div className="w-px h-2 bg-teal-200 ml-1" />
+                            <div className="bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-xl p-2.5">
+                              <div className="flex items-center gap-1.5 mb-1.5">
+                                <Star size={11} className="text-purple-500" />
+                                <p className="text-[10px] font-bold text-purple-700">Enhance Score Before Next Disbursement</p>
+                              </div>
+                              <div className="space-y-1">
+                                {enhanceActions[i]?.map((action, ai) => (
+                                  <button key={ai}
+                                    onClick={() => setEnhanceActions(prev => prev.map((g, gi) =>
+                                      gi === i ? g.map((a, aii) => aii === ai ? { ...a, done: !a.done } : a) : g
+                                    ))}
+                                    className={`w-full flex items-center gap-2 text-left px-2 py-1 rounded-lg border transition-all text-[10px] ${
+                                      action.done ? 'border-purple-300 bg-white text-purple-700 font-medium' : 'border-gray-200 bg-white/60 text-slate-500 hover:border-purple-200'
+                                    }`}>
+                                    <div className={`w-3 h-3 rounded-full flex-shrink-0 flex items-center justify-center border ${action.done ? 'bg-purple-500 border-purple-500' : 'border-gray-300'}`}>
+                                      {action.done && <Check size={8} className="text-white" />}
+                                    </div>
+                                    {action.label}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                            <div className="w-px h-2 bg-teal-200 ml-1" />
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>
@@ -245,13 +282,10 @@ export const TorbionaModal = () => {
           {/* Action Buttons */}
           <div className="flex gap-4">
             <button
-              onClick={() => {
-                closeTorbiona();
-                setCurrentView('investor-report');
-              }}
+              onClick={proceedFromCalculator}
               className="flex-1 py-4 bg-gradient-to-r from-teal-400 to-teal-600 text-white rounded-xl font-medium shadow-lg hover:shadow-xl transition-all"
             >
-              Proceed with Torbiona
+              Proceed with Mezzanine Finance
             </button>
             <button
               onClick={closeTorbiona}
