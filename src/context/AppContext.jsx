@@ -26,6 +26,47 @@ export const AppProvider = ({ children }) => {
     setCurrentView('b2b-platform');
   };
 
+  const navigateToStep = (num) => {
+    setCreditControlStep(num);
+    setShowFinancingRequest(false);
+    setShowTorbiona(false);
+    switch (num) {
+      case 1:
+        setShowCheckout(false);
+        setCurrentView('b2b-platform');
+        break;
+      case 2:
+        setCurrentView('b2b-platform');
+        if (selectedProduct) setShowCheckout(true);
+        else { setShowCheckout(false); setCreditControlStep(1); }
+        break;
+      case 3:
+        setShowCheckout(false);
+        setCurrentView('b2b-platform');
+        setShowFinancingRequest(true);
+        break;
+      case 4:
+        setShowCheckout(false);
+        setCurrentView('credit-assessment');
+        break;
+      case 5:
+        setShowCheckout(false);
+        setCurrentView('b2b-platform');
+        setShowTorbiona(true);
+        break;
+      case 6:
+        setShowCheckout(false);
+        setCurrentView('credit-disbursement');
+        break;
+      case 7:
+        setShowCheckout(false);
+        setCurrentView('credit-contract');
+        break;
+      default:
+        break;
+    }
+  };
+
   const exitCreditControl = () => {
     setCreditControlMode(false);
     setCreditControlStep(1);
@@ -146,7 +187,7 @@ export const AppProvider = ({ children }) => {
       userData, completeRegistration,
       companyData, setCompanyData,
       creditControlMode, creditControlStep, setCreditControlStep,
-      startCreditControl, exitCreditControl,
+      startCreditControl, exitCreditControl, navigateToStep,
     }}>
       {children}
     </AppContext.Provider>

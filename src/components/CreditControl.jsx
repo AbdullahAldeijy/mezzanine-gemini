@@ -329,144 +329,190 @@ export const CreditDisbursement = () => {
   );
 };
 
-// ── Step 7: Digital Contract ───────────────────────────────────────────────────
-const INSTALLMENTS = [
-  { label: 'Month 4', amount: 166667, date: 'Apr 2025', done: true },
-  { label: 'Month 8', amount: 166667, date: 'Aug 2025', done: false },
-  { label: 'Month 12', amount: 166666, date: 'Dec 2025', done: false },
-];
+// ── Step 7: Digital Contract (matches ContractsPortal Active Contracts style) ──
+
+const JourneyContract = {
+  id: 'CF-2025-0041',
+  type: 'Credit Facility',
+  title: 'Credit Facility Agreement',
+  counterparty: 'Mezzanine Finance Co.',
+  amount: '500,000 SAR',
+  issueDate: '01 Jan 2025',
+  expiryDate: '01 Jan 2026',
+  status: 'Active',
+  description: 'Revolving credit facility for procurement financing — generated from your Credit Control journey.',
+  pages: 12,
+};
+
+const StatusBadge = ({ status }) => {
+  const color = status === 'Active' ? 'bg-emerald-100 text-emerald-700 border border-emerald-200' : 'bg-amber-100 text-amber-700 border border-amber-200';
+  const dot = status === 'Active' ? 'bg-emerald-500' : 'bg-amber-500';
+  return (
+    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${color}`}>
+      <span className={`w-1.5 h-1.5 rounded-full ${dot}`} />
+      {status}
+    </span>
+  );
+};
+
+const TypePill = ({ type }) => {
+  const map = {
+    'Credit Facility': 'bg-blue-900/10 text-blue-900',
+    'Promissory Note': 'bg-purple-100 text-purple-700',
+    'Murabaha': 'bg-teal-100 text-teal-700',
+  };
+  return <span className={`px-2 py-0.5 rounded-md text-xs font-medium ${map[type] ?? 'bg-slate-100 text-slate-600'}`}>{type}</span>;
+};
 
 export const CreditContract = () => {
   const { exitCreditControl, selectedProduct } = useApp();
 
   return (
     <div className="min-h-screen bg-[#f7f4e8] pb-28">
-      <div className="max-w-3xl mx-auto px-4 pt-6 pb-2">
+      <div className="max-w-5xl mx-auto px-4 pt-6 pb-2">
         <button onClick={exitCreditControl} className="flex items-center gap-2 text-teal-500 font-medium text-sm hover:gap-3 transition-all">
           <ArrowLeft size={16} /> Exit Journey
         </button>
       </div>
 
-      <div className="max-w-3xl mx-auto px-4">
-        <div className="bg-white/80 backdrop-blur-md rounded-2xl shadow-xl p-6 md:p-8 border border-white/60">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h2 className="text-2xl font-bold text-slate-900">Digital Contract</h2>
-              <p className="text-slate-500 text-sm">Active financing agreement</p>
-            </div>
-            <span className="text-xs font-bold text-emerald-700 bg-emerald-100 px-3 py-1.5 rounded-full flex items-center gap-1.5">
-              <CheckCircle size={13} /> Active
-            </span>
-          </div>
+      <div className="max-w-5xl mx-auto px-4">
+        {/* Journey banner */}
+        <div className="flex items-center gap-3 mb-5 bg-teal-600 text-white px-5 py-3 rounded-2xl shadow-lg">
+          <CheckCircle size={18} className="flex-shrink-0" />
+          <p className="text-sm font-semibold">Credit Control Journey — Active Contracts</p>
+          <span className="ml-auto text-xs text-teal-200">Generated from your financing request</span>
+        </div>
 
-          {/* Contract header */}
-          <div className="bg-gradient-to-r from-teal-600 to-teal-800 rounded-2xl p-6 mb-5 text-white">
-            <div className="flex items-start justify-between mb-4">
-              <div>
-                <p className="text-teal-200 text-xs font-semibold uppercase tracking-wider mb-1">Mezzanine Finance</p>
-                <h3 className="text-xl font-bold">Credit Facility Agreement</h3>
-                <p className="text-teal-300 text-sm">Murabaha-based financing structure</p>
-              </div>
-              <div className="text-right">
-                <p className="text-teal-300 text-xs">Contract ID</p>
-                <p className="font-bold text-lg">CF-2025-0041</p>
-              </div>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              {[
-                { label: 'Amount', value: 'SAR 500,000' },
-                { label: 'Duration', value: '12 Months' },
-                { label: 'Disbursements', value: '3 installments' },
-                { label: 'Issued', value: 'Jan 2025' },
-              ].map(s => (
-                <div key={s.label} className="bg-white/10 rounded-xl p-3">
-                  <p className="text-teal-300 text-xs mb-0.5">{s.label}</p>
-                  <p className="font-bold text-white text-sm">{s.value}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Parties */}
-          <div className="grid md:grid-cols-2 gap-4 mb-5">
-            <div className="bg-white border border-slate-200 rounded-xl p-5">
-              <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Financier</p>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-teal-100 flex items-center justify-center">
-                  <Landmark size={18} className="text-teal-600" />
-                </div>
-                <div>
-                  <p className="font-bold text-slate-900">Mezzanine Finance Co.</p>
-                  <p className="text-xs text-slate-500">Licensed Financial Institution</p>
-                </div>
-              </div>
-            </div>
-            <div className="bg-white border border-slate-200 rounded-xl p-5">
-              <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Borrower</p>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
-                  <Building2 size={18} className="text-blue-600" />
-                </div>
-                <div>
-                  <p className="font-bold text-slate-900">BuildTech Construction Ltd.</p>
-                  <p className="text-xs text-slate-500">CR: 1010123456</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Terms */}
-          <div className="bg-white border border-slate-200 rounded-xl p-5 mb-5">
-            <p className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-4">Key Contract Terms</p>
-            <div className="space-y-2.5">
-              {[
-                { label: 'Financing Type', value: 'Murabaha (Cost-plus financing)' },
-                { label: 'Purpose', value: selectedProduct ? selectedProduct.name : 'Equipment Financing' },
-                { label: 'Profit Rate', value: '4.5% per annum' },
-                { label: 'Repayment Source', value: 'Sales Receivables' },
-                { label: 'Collateral', value: 'Trade Receivables Assignment' },
-                { label: 'Governing Law', value: 'Kingdom of Saudi Arabia' },
-              ].map(t => (
-                <div key={t.label} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
-                  <span className="text-sm text-slate-500">{t.label}</span>
-                  <span className="text-sm font-semibold text-slate-900">{t.value}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Disbursement schedule */}
-          <div className="bg-teal-50 border border-teal-200 rounded-xl p-5 mb-6">
-            <p className="text-xs font-bold text-teal-700 uppercase tracking-wider mb-3">Disbursement Schedule</p>
-            <div className="flex items-center">
-              {INSTALLMENTS.map((inst, i) => (
-                <div key={i} className="flex items-center flex-1">
-                  <div className="flex-1 flex flex-col items-center">
-                    <div className={`w-9 h-9 rounded-full flex items-center justify-center mb-2 shadow ${inst.done ? 'bg-emerald-500' : 'bg-teal-200'}`}>
-                      {inst.done ? <Check size={16} className="text-white" /> : <span className="text-sm font-bold text-teal-600">{i + 1}</span>}
-                    </div>
-                    <p className="text-xs font-bold text-teal-700">{inst.label}</p>
-                    <p className="text-xs text-slate-500">SAR {inst.amount.toLocaleString()}</p>
-                    <span className={`text-[10px] font-semibold mt-0.5 ${inst.done ? 'text-emerald-600' : 'text-slate-400'}`}>
-                      {inst.done ? 'Disbursed' : inst.date}
-                    </span>
-                  </div>
-                  {i < INSTALLMENTS.length - 1 && <div className="flex-shrink-0 h-px w-6 bg-teal-300 mx-1" />}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Actions */}
-          <div className="flex flex-col sm:flex-row gap-3">
-            <button className="flex-1 py-3.5 bg-gradient-to-r from-teal-400 to-teal-600 text-white rounded-xl font-bold shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2">
-              <Download size={18} /> Download Contract PDF
-            </button>
-            <button onClick={exitCreditControl} className="flex-1 py-3.5 border border-slate-200 text-slate-700 rounded-xl font-bold hover:bg-slate-50 transition-all flex items-center justify-center gap-2">
-              <ChevronRight size={18} /> Back to Marketplace
-            </button>
+        {/* Header matching ContractsPortal */}
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h2 className="text-2xl font-bold text-slate-900">Active Contracts</h2>
+            <p className="text-sm text-slate-500 mt-0.5">1 active contract from this journey</p>
           </div>
         </div>
+
+        {/* Contract detail card */}
+        <div className="bg-white/80 backdrop-blur-md rounded-2xl shadow-sm border border-white/60 overflow-hidden mb-5">
+          {/* Accent bar */}
+          <div className="h-1 w-full bg-emerald-400" />
+
+          <div className="p-6">
+            {/* Contract header row */}
+            <div className="flex items-start justify-between mb-5">
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <TypePill type={JourneyContract.type} />
+                  <span className="text-xs text-slate-400 font-mono">{JourneyContract.id}</span>
+                  <StatusBadge status={JourneyContract.status} />
+                </div>
+                <h3 className="text-xl font-bold text-slate-900">{JourneyContract.title}</h3>
+                <p className="text-sm text-slate-500 mt-1 flex items-center gap-1.5">
+                  <Building2 size={13} />
+                  {JourneyContract.counterparty}
+                  {selectedProduct && <span className="text-slate-400">· for {selectedProduct.name}</span>}
+                </p>
+                <p className="text-xs text-slate-400 mt-1">{JourneyContract.description}</p>
+              </div>
+              <div className="text-right flex-shrink-0 ml-4">
+                <p className="text-xs text-slate-400 mb-0.5">Contract Value</p>
+                <p className="text-2xl font-bold text-slate-900">{JourneyContract.amount}</p>
+              </div>
+            </div>
+
+            {/* Meta grid */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
+              {[
+                { label: 'Issue Date', value: JourneyContract.issueDate },
+                { label: 'Expiry Date', value: JourneyContract.expiryDate },
+                { label: 'Pages', value: `${JourneyContract.pages} pgs` },
+                { label: 'Profit Rate', value: '4.5% p.a.' },
+              ].map(m => (
+                <div key={m.label} className="bg-slate-50 rounded-xl p-3 text-center">
+                  <p className="text-xs text-slate-400 mb-0.5">{m.label}</p>
+                  <p className="text-sm font-bold text-slate-800">{m.value}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* Key terms */}
+            <div className="bg-slate-50 rounded-xl p-4 mb-5">
+              <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Key Contract Terms</p>
+              <div className="grid grid-cols-2 gap-x-8 gap-y-2">
+                {[
+                  { label: 'Financing Type', value: 'Murabaha (Cost-plus financing)' },
+                  { label: 'Repayment Source', value: 'Sales Receivables' },
+                  { label: 'Disbursements', value: '3 installments' },
+                  { label: 'Collateral', value: 'Trade Receivables Assignment' },
+                  { label: 'Duration', value: '12 Months' },
+                  { label: 'Governing Law', value: 'Kingdom of Saudi Arabia' },
+                ].map(t => (
+                  <div key={t.label} className="flex justify-between items-center py-1.5 border-b border-slate-100 last:border-0">
+                    <span className="text-xs text-slate-500">{t.label}</span>
+                    <span className="text-xs font-semibold text-slate-800">{t.value}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Actions — same style as ContractsPortal */}
+            <div className="flex gap-3">
+              <button className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 text-sm text-slate-600 hover:bg-slate-50 transition-all">
+                <X size={14} />
+                Preview
+              </button>
+              <button className="flex-1 flex items-center justify-center gap-2 px-5 py-2.5 bg-blue-900 hover:bg-blue-800 text-white rounded-xl text-sm font-semibold shadow-sm hover:shadow-md transition-all">
+                <Download size={15} />
+                Download Contract PDF
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Active contracts table — same as ContractsPortal */}
+        <div className="bg-white/80 backdrop-blur-md rounded-2xl shadow-sm overflow-hidden border border-white/60 mb-4">
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[720px]">
+              <thead>
+                <tr className="bg-slate-50 border-b-2 border-slate-100">
+                  {['Contract ID', 'Type', 'Counterparty', 'Amount', 'Issue Date', 'Expiry', 'Status', 'PDF'].map((h, i) => (
+                    <th key={h} className={`${i === 7 ? 'text-center' : 'text-left'} px-5 py-3.5 text-xs font-bold text-slate-500 uppercase tracking-wider`}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="hover:bg-blue-900/[0.025] transition-colors">
+                  <td className="px-5 py-4">
+                    <span className="font-mono text-xs font-semibold text-blue-900 bg-blue-900/8 px-2 py-1 rounded-lg">{JourneyContract.id}</span>
+                  </td>
+                  <td className="px-5 py-4"><TypePill type={JourneyContract.type} /></td>
+                  <td className="px-5 py-4">
+                    <div className="flex items-center gap-2">
+                      <div className="w-7 h-7 rounded-lg bg-blue-900/10 flex items-center justify-center flex-shrink-0">
+                        <Landmark size={13} className="text-blue-900" />
+                      </div>
+                      <span className="text-sm font-medium text-slate-900">{JourneyContract.counterparty}</span>
+                    </div>
+                  </td>
+                  <td className="px-5 py-4"><span className="text-sm font-bold text-slate-900">{JourneyContract.amount}</span></td>
+                  <td className="px-5 py-4"><span className="text-sm text-slate-600">{JourneyContract.issueDate}</span></td>
+                  <td className="px-5 py-4"><span className="text-sm text-slate-600">{JourneyContract.expiryDate}</span></td>
+                  <td className="px-5 py-4"><StatusBadge status={JourneyContract.status} /></td>
+                  <td className="px-5 py-4 text-center">
+                    <button title="Download PDF" className="inline-flex items-center justify-center w-8 h-8 rounded-lg border border-slate-200 text-slate-500 hover:bg-blue-900 hover:text-white hover:border-blue-900 transition-all">
+                      <Download size={14} />
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <p className="text-xs text-slate-400 text-right mb-6">Showing 1 of 1 active contract from this journey</p>
+
+        <button onClick={exitCreditControl} className="w-full py-3.5 border border-slate-200 text-slate-700 rounded-xl font-bold hover:bg-slate-50 transition-all flex items-center justify-center gap-2">
+          <ChevronRight size={18} /> Back to Marketplace
+        </button>
       </div>
     </div>
   );

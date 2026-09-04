@@ -27,7 +27,7 @@ const CC_STEPS = [
 ];
 
 const CreditControlBar = () => {
-  const { creditControlStep, setCreditControlStep, exitCreditControl } = useApp();
+  const { creditControlStep, navigateToStep, exitCreditControl } = useApp();
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-white border-t-2 border-teal-500 px-3 py-3 z-40 shadow-lg">
       <div className="max-w-4xl mx-auto flex items-center gap-2">
@@ -40,7 +40,7 @@ const CreditControlBar = () => {
               <div key={i} className="flex items-center flex-1">
                 <div className="flex flex-col items-center">
                   <button
-                    onClick={() => setCreditControlStep(num)}
+                    onClick={() => navigateToStep(num)}
                     className={`w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold transition-all hover:scale-110 ${
                       done ? 'bg-teal-500 text-white' :
                       active ? 'bg-teal-500 text-white ring-4 ring-teal-100' :
@@ -49,7 +49,7 @@ const CreditControlBar = () => {
                   >
                     {done ? <Check size={11} /> : num}
                   </button>
-                  <span className={`text-[8px] mt-0.5 text-center hidden sm:block max-w-[55px] leading-tight ${active ? 'text-teal-600 font-semibold' : 'text-gray-400'}`}>
+                  <span onClick={() => navigateToStep(num)} className={`text-[8px] mt-0.5 text-center hidden sm:block max-w-[55px] leading-tight cursor-pointer ${active ? 'text-teal-600 font-semibold' : 'text-gray-400 hover:text-slate-500'}`}>
                     {label}
                   </span>
                 </div>
