@@ -17,6 +17,7 @@ import { ContractsPortal } from './components/ContractsPortal';
 import { CompetitivePanel } from './components/CompetitivePanel';
 import { JointOperation } from './components/JointOperation';
 import { CreditControl } from './components/CreditControl';
+import { FinancingPayments } from './components/FinancingPayments';
 import { FuzzyLogic } from './components/FuzzyLogic';
 import { SukukPortal } from './components/SukukPortal';
 import { OperationsDashboard } from './components/OperationsDashboard';
@@ -44,6 +45,7 @@ const AppContent = () => {
       {currentView === 'contracts-portal' && <ContractsPortal />}
       {currentView === 'joint-operation' && <JointOperation />}
       {currentView === 'credit-control' && <CreditControl />}
+      {currentView === 'financing-payments' && <FinancingPayments />}
       {currentView === 'fuzzy-logic' && <FuzzyLogic />}
       {currentView === 'sukuk-portal' && <SukukPortal />}
       {currentView === 'operations-dashboard' && <OperationsDashboard />}

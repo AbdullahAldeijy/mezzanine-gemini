@@ -9,6 +9,7 @@ import {
   FileCheck, User, LayoutDashboard, LogIn, LogOut, ArrowRight,
   Menu, Send,
 } from 'lucide-react';
+import { PageContent } from './FinancingPayments';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -1028,56 +1029,17 @@ export const CreditControl = () => {
           </div>
         )}
 
-        {/* ── STEP 6: Disbursement ────────────────────────────────── */}
+        {/* ── STEP 6: Financing Payments (Disbursements + Repayments) ─ */}
         {step === 6 && (
-          <div className={card}>
-            <h2 className="text-2xl font-bold text-slate-900 mb-1">Disbursement Requirements</h2>
-            <p className="text-slate-500 text-sm mb-3">Your company will not receive funds until all requirements for each disbursement are verified by Mezzanine Finance.</p>
-            <div className="flex items-start gap-2 bg-blue-50 border border-blue-200 rounded-xl px-4 py-3 mb-6">
-              <Lock size={13} className="text-blue-500 mt-0.5 flex-shrink-0" />
-              <p className="text-xs text-blue-700">Each disbursement is <strong>locked</strong> until requirements are automatically verified by Mezzanine platform data.</p>
-            </div>
-            <div className="space-y-4">
-              {disb.map((d, di) => {
-                const allDone = d.reqs.every(r => r.done);
-                return (
-                  <div key={di} className={`bg-white rounded-2xl border-2 p-5 ${d.status === 'Disbursed' ? 'border-emerald-300' : d.status === 'Requirements Pending' ? 'border-amber-300' : 'border-slate-200'}`}>
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center gap-3">
-                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${d.status === 'Disbursed' ? 'bg-emerald-100' : d.status === 'Requirements Pending' ? 'bg-amber-100' : 'bg-slate-100'}`}>
-                          {d.status === 'Disbursed' ? <CheckCircle size={20} className="text-emerald-600" /> : d.status === 'Locked' ? <Lock size={20} className="text-slate-400" /> : <AlertCircle size={20} className="text-amber-500" />}
-                        </div>
-                        <div><p className="font-bold text-slate-900 text-sm">{d.label}</p><p className="text-xs text-slate-500">{fmt(d.amount)}</p></div>
-                      </div>
-                      <span className={`text-xs font-bold px-3 py-1.5 rounded-full ${d.status === 'Disbursed' ? 'bg-emerald-100 text-emerald-700' : d.status === 'Requirements Pending' ? 'bg-amber-100 text-amber-700' : 'bg-slate-100 text-slate-500'}`}>{d.status}</span>
-                    </div>
-                    <div className="space-y-2">
-                      {d.reqs.map((req, ri) => (
-                        <button key={ri} onClick={() => d.status !== 'Disbursed' && d.status !== 'Locked' && toggleDisb(di, ri)}
-                          disabled={d.status === 'Disbursed' || d.status === 'Locked'}
-                          className={`w-full flex items-center gap-3 p-3 rounded-xl border text-left transition-all ${req.done ? 'border-emerald-300 bg-emerald-50' : d.status === 'Locked' ? 'border-slate-100 bg-slate-50 opacity-50' : 'border-slate-200 bg-slate-50 hover:border-teal-300 hover:bg-teal-50'}`}>
-                          <div className={`w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center border-2 ${req.done ? 'bg-emerald-500 border-emerald-500' : d.status === 'Locked' ? 'bg-slate-200 border-slate-300' : 'bg-white border-slate-300'}`}>
-                            {req.done && <Check size={11} className="text-white" />}
-                            {d.status === 'Locked' && !req.done && <Lock size={9} className="text-slate-400" />}
-                          </div>
-                          <span className={`text-xs font-medium ${req.done ? 'text-emerald-700 line-through' : d.status === 'Locked' ? 'text-slate-400' : 'text-slate-700'}`}>{req.label}</span>
-                        </button>
-                      ))}
-                    </div>
-                    {d.status !== 'Disbursed' && allDone && (
-                      <div className="mt-3 flex items-center justify-between bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-2.5">
-                        <span className="text-xs font-semibold text-emerald-700 flex items-center gap-1.5"><CheckCircle size={13} /> All requirements met</span>
-                        <button className="text-xs font-bold text-white bg-emerald-500 px-3 py-1.5 rounded-lg hover:bg-emerald-600 transition-all">Request Release</button>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-            <button onClick={goNext} className="w-full mt-6 py-3.5 bg-gradient-to-r from-teal-400 to-teal-600 text-white rounded-xl font-bold shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2">
-              <FileSignature size={18} /> View Digital Contract
-            </button>
-          </div>
+          <PageContent
+            disb={disb}
+            onToggle={toggleDisb}
+            footer={
+              <button onClick={goNext} className="w-full py-3.5 bg-gradient-to-r from-teal-400 to-teal-600 text-white rounded-xl font-bold shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2">
+                <FileSignature size={18} /> View Digital Contract
+              </button>
+            }
+          />
         )}
 
         {/* ── STEP 7: Contract ────────────────────────────────────── */}
