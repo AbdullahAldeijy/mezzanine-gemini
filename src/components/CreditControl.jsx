@@ -9,7 +9,7 @@ import {
   FileCheck, User, LayoutDashboard, LogIn, LogOut, ArrowRight,
   Menu, Send,
 } from 'lucide-react';
-import { PageContent } from './FinancingPayments';
+import { FinancingPaymentsContent } from './FinancingPayments';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -1031,9 +1031,18 @@ export const CreditControl = () => {
 
         {/* ── STEP 6: Financing Payments (Disbursements + Repayments) ─ */}
         {step === 6 && (
-          <PageContent
+          <FinancingPaymentsContent
+            payments={[
+              { id: 'INST-01', amount: 150000, dueDate: 'Sep 15, 2026', status: 'Paid',     paidDate: 'Sep 14, 2026' },
+              { id: 'INST-02', amount: 150000, dueDate: 'Oct 15, 2026', status: 'Paid',     paidDate: 'Oct 15, 2026' },
+              { id: 'INST-03', amount: 150000, dueDate: 'Nov 15, 2026', status: 'Paid',     paidDate: 'Nov 13, 2026' },
+              { id: 'INST-04', amount: 150000, dueDate: 'Dec 15, 2026', status: 'Upcoming' },
+              { id: 'INST-05', amount: 150000, dueDate: 'Jan 15, 2027', status: 'Upcoming' },
+              { id: 'INST-06', amount: 150000, dueDate: 'Feb 15, 2027', status: 'Upcoming' },
+            ]}
+            onPay={() => {}}
             disb={disb}
-            onToggle={toggleDisb}
+            onToggleDisb={toggleDisb}
             footer={
               <button onClick={goNext} className="w-full py-3.5 bg-gradient-to-r from-teal-400 to-teal-600 text-white rounded-xl font-bold shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2">
                 <FileSignature size={18} /> View Digital Contract
