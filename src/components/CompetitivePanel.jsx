@@ -42,13 +42,10 @@ const features = [
 ];
 
 export const CompetitivePanel = () => {
-  const { currentView, setCurrentView, startCreditControl } = useApp();
+  const { currentView, setCurrentView } = useApp();
   const [visible, setVisible] = useState(true);
 
-  const handleFeatureClick = (view) => {
-    if (view === 'credit-control') startCreditControl();
-    else setCurrentView(view);
-  };
+  const handleFeatureClick = (view) => setCurrentView(view);
 
   return (
     <>

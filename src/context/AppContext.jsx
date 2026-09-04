@@ -16,93 +16,6 @@ export const AppProvider = ({ children }) => {
   const [userData, setUserData] = useState({});
   const [companyData, setCompanyData] = useState({});
 
-  // ── Credit Control journey state ──────────────────────────────────────────
-  const [creditControlMode, setCreditControlMode] = useState(false);
-  const [creditControlStep, setCreditControlStep] = useState(1);
-
-  const startCreditControl = () => {
-    setCreditControlMode(true);
-    setCreditControlStep(1);
-    setCurrentView('b2b-platform');
-  };
-
-  const navigateToStep = (num) => {
-    setCreditControlStep(num);
-    setShowFinancingRequest(false);
-    setShowTorbiona(false);
-    switch (num) {
-      case 1:
-        setShowCheckout(false);
-        setCurrentView('b2b-platform');
-        break;
-      case 2:
-        setCurrentView('b2b-platform');
-        if (selectedProduct) setShowCheckout(true);
-        else { setShowCheckout(false); setCreditControlStep(1); }
-        break;
-      case 3:
-        setShowCheckout(false);
-        setCurrentView('b2b-platform');
-        setShowFinancingRequest(true);
-        break;
-      case 4:
-        setShowCheckout(false);
-        setCurrentView('credit-assessment');
-        break;
-      case 5:
-        setShowCheckout(false);
-        setCurrentView('b2b-platform');
-        setShowTorbiona(true);
-        break;
-      case 6:
-        setShowCheckout(false);
-        setCurrentView('credit-disbursement');
-        break;
-      case 7:
-        setShowCheckout(false);
-        setCurrentView('credit-contract');
-        break;
-      default:
-        break;
-    }
-  };
-
-  const exitCreditControl = () => {
-    setCreditControlMode(false);
-    setCreditControlStep(1);
-    setShowCheckout(false);
-    setShowFinancingRequest(false);
-    setShowTorbiona(false);
-    setSelectedProduct(null);
-    setCurrentView('b2b-platform');
-  };
-
-  // Called from CreditAssessment to open the calculator (step 5)
-  const proceedToCalculator = () => {
-    setCreditControlStep(5);
-    setShowTorbiona(true);
-  };
-
-  // Called from TorbionaModal "Proceed" button
-  const proceedFromCalculator = () => {
-    setShowTorbiona(false);
-    setShowCheckout(false);
-    setSelectedProduct(null);
-    if (creditControlMode) {
-      setCurrentView('credit-disbursement');
-      setCreditControlStep(6);
-    } else {
-      setCurrentView('investor-report');
-    }
-  };
-
-  // Called from CreditDisbursement "View Contract" button
-  const goToContract = () => {
-    setCurrentView('credit-contract');
-    setCreditControlStep(7);
-  };
-
-  // ── Existing functions (modified to track CC steps) ───────────────────────
   const completeRegistration = (data) => {
     setUserData(data);
     setCurrentView('setup');
@@ -124,7 +37,6 @@ export const AppProvider = ({ children }) => {
     }
     setSelectedProduct(product);
     setShowCheckout(true);
-    if (creditControlMode) setCreditControlStep(2);
   };
 
   const login = () => setIsLoggedIn(true);
@@ -132,7 +44,6 @@ export const AppProvider = ({ children }) => {
   const logout = () => {
     setIsLoggedIn(false);
     setCurrentView('b2b-platform');
-    if (creditControlMode) exitCreditControl();
   };
 
   const closeCheckout = () => {
@@ -140,22 +51,12 @@ export const AppProvider = ({ children }) => {
     setSelectedProduct(null);
   };
 
-  const openFinancingRequest = () => {
-    setShowFinancingRequest(true);
-    if (creditControlMode) setCreditControlStep(3);
-  };
-
+  const openFinancingRequest = () => setShowFinancingRequest(true);
   const closeFinancingRequest = () => setShowFinancingRequest(false);
 
   const submitFinancingRequest = () => {
     setShowFinancingRequest(false);
-    setShowCheckout(false);
-    if (creditControlMode) {
-      setCreditControlStep(4);
-      setCurrentView('credit-assessment');
-    } else {
-      setShowTorbiona(true);
-    }
+    setShowTorbiona(true);
   };
 
   const openTorbiona = () => setShowTorbiona(true);
@@ -166,6 +67,13 @@ export const AppProvider = ({ children }) => {
     setShowCheckout(false);
     setSelectedProduct(null);
     alert('Purchase completed successfully!');
+  };
+
+  const proceedFromCalculator = () => {
+    setShowTorbiona(false);
+    setShowCheckout(false);
+    setSelectedProduct(null);
+    setCurrentView('investor-report');
   };
 
   return (
@@ -180,14 +88,9 @@ export const AppProvider = ({ children }) => {
       openTorbiona, closeTorbiona,
       openFinancingRequest, closeFinancingRequest,
       submitFinancingRequest,
-      completePurchase,
-      proceedFromCalculator,
-      proceedToCalculator,
-      goToContract,
+      completePurchase, proceedFromCalculator,
       userData, completeRegistration,
       companyData, setCompanyData,
-      creditControlMode, creditControlStep, setCreditControlStep,
-      startCreditControl, exitCreditControl, navigateToStep,
     }}>
       {children}
     </AppContext.Provider>
