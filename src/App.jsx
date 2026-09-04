@@ -21,7 +21,7 @@ import { FuzzyLogic } from './components/FuzzyLogic';
 import { SukukPortal } from './components/SukukPortal';
 import { OperationsDashboard } from './components/OperationsDashboard';
 
-const HIDE_PANEL_VIEWS = ['auth', 'setup'];
+const HIDE_PANEL_VIEWS = ['auth', 'setup', 'joint-operation'];
 
 const AppContent = () => {
   const { currentView, showCheckout, showFinancingRequest, showTorbiona } = useApp();
