@@ -4,6 +4,7 @@ import { useApp } from '../context/AppContext';
 import { CompanyScoreSummary, CompanyProfileTabs } from './SetupWizard';
 import { ContractsPortalContent } from './ContractsPortal';
 import { DataIntegrationsContent } from './DataIntegrations';
+import { FinancingPaymentsContent, INIT_DISB } from './FinancingPayments';
 
 const modules = [
   { id: 'orders', name: 'Orders' },
@@ -632,6 +633,7 @@ export const CRMDashboardFull = () => {
     { id: 'INST-05', amount: 150000, dueDate: 'Jan 15, 2027', status: 'Upcoming' },
     { id: 'INST-06', amount: 150000, dueDate: 'Feb 15, 2027', status: 'Upcoming' },
   ]);
+  const [disb, setDisb] = useState(INIT_DISB);
 
   const [departments, setDepartments] = useState([
     { name: 'Executive Management', employees: [{ name: 'محمد العمري', role: 'CEO' }], color: 'teal' },
@@ -680,6 +682,11 @@ export const CRMDashboardFull = () => {
     setPayments(payments.map(p => p.id === id ? { ...p, status: 'Paid', paidDate: 'Today' } : p));
   };
 
+  const handleToggleDisb = (di, ri) =>
+    setDisb(prev => prev.map((d, i) =>
+      i === di ? { ...d, reqs: d.reqs.map((r, j) => j === ri ? { ...r, done: !r.done } : r) } : d
+    ));
+
   const handleMarkTaskComplete = (task) => {
     setPendingTasks(pendingTasks.filter(t => t.id !== task.id));
     setCompletedTasks([{ ...task }, ...completedTasks]);
@@ -712,7 +719,7 @@ export const CRMDashboardFull = () => {
     { id: 'products', icon: Package, label: 'My Products' },
     { id: 'orders', icon: FileText, label: 'Purchase Orders' },
     { id: 'analytics', icon: DollarSign, label: 'Financing Eligibility' },
-    { id: 'torbiona', icon: CreditCard, label: 'Torbiona Payments' },
+    { id: 'torbiona', icon: CreditCard, label: 'Fund Disbursements' },
     { id: 'suppliers', icon: Users, label: 'Supplier Performance' },
     { id: 'market', icon: TrendingUp, label: 'Market Analytics' },
     { id: 'advertising', icon: Megaphone, label: 'Advertising Packages' },
@@ -803,7 +810,7 @@ export const CRMDashboardFull = () => {
                 <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
               </button>
               {showNotifications && (
-                <div className="absolute right-0 top-12 w-72 bg-white rounded-2xl shadow-xl border border-gray-100 z-50 overflow-hidden">
+                <div className="absolute right-0 top-12 w-72 max-w-[calc(100vw-1rem)] bg-white rounded-2xl shadow-xl border border-gray-100 z-50 overflow-hidden">
                   <div className="p-3 border-b border-gray-100 font-bold text-sm text-slate-900">Notifications</div>
                   {notifications.map((n, idx) => (
                     <div key={idx} className="p-3 border-b border-gray-50 last:border-0 hover:bg-gray-50">
@@ -1206,92 +1213,14 @@ export const CRMDashboardFull = () => {
             </div>
           )}
 
-          {/* Torbiona Payments */}
+          {/* Fund Disbursements */}
           {activeTab === 'torbiona' && (
-            <div>
-              <div className="flex items-baseline justify-between mb-6 md:mb-8">
-                <h2 className="text-2xl md:text-3xl font-bold text-slate-900">Torbiona Payments</h2>
-                <p className="text-sm text-slate-400">مدفوعات تُربيونة</p>
-              </div>
-
-              {/* Repayment Progress */}
-              <div className="bg-gradient-to-br from-teal-500 to-teal-700 rounded-2xl shadow-sm p-4 sm:p-6 md:p-8 text-white mb-6 md:mb-8">
-                <div className="flex items-center gap-2 mb-6">
-                  <CreditCard size={18} className="flex-shrink-0" />
-                  <span className="text-sm font-semibold">Torbiona Facility — 6 Monthly Installments</span>
-                </div>
-                {(() => {
-                  const total = payments.reduce((s, p) => s + p.amount, 0);
-                  const paid = payments.filter(p => p.status === 'Paid').reduce((s, p) => s + p.amount, 0);
-                  const remaining = total - paid;
-                  const paidCount = payments.filter(p => p.status === 'Paid').length;
-                  const pct = Math.round((paid / total) * 100);
-                  return (
-                    <>
-                      <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-6">
-                        <div>
-                          <p className="text-[11px] sm:text-xs text-white/70 mb-1">Total Financed</p>
-                          <p className="text-base sm:text-xl md:text-2xl font-bold leading-tight">{total.toLocaleString()}<span className="block sm:inline text-[10px] sm:text-xs text-white/70"> SAR</span></p>
-                        </div>
-                        <div>
-                          <p className="text-[11px] sm:text-xs text-white/70 mb-1">Paid So Far</p>
-                          <p className="text-base sm:text-xl md:text-2xl font-bold leading-tight">{paid.toLocaleString()}<span className="block sm:inline text-[10px] sm:text-xs text-white/70"> SAR</span></p>
-                        </div>
-                        <div>
-                          <p className="text-[11px] sm:text-xs text-white/70 mb-1">Remaining</p>
-                          <p className="text-base sm:text-xl md:text-2xl font-bold leading-tight">{remaining.toLocaleString()}<span className="block sm:inline text-[10px] sm:text-xs text-white/70"> SAR</span></p>
-                        </div>
-                      </div>
-                      <div className="h-2 bg-white/20 rounded-full overflow-hidden">
-                        <div className="h-full bg-white rounded-full transition-all" style={{ width: `${pct}%` }} />
-                      </div>
-                      <p className="text-xs text-white/70 mt-2">{paidCount} of {payments.length} installments paid</p>
-                    </>
-                  );
-                })()}
-              </div>
-
-              {/* Payment Schedule */}
-              <div className="bg-white/90 backdrop-blur rounded-2xl shadow-sm p-4 md:p-6 mb-6 md:mb-8">
-                <h3 className="text-lg font-bold text-slate-900 mb-4">Payment Schedule</h3>
-                <div className="space-y-3">
-                  {payments.map((p) => (
-                    <div key={p.id} className="flex items-center justify-between gap-3 p-3 md:p-4 bg-gray-50 rounded-xl">
-                      <div className="flex items-center gap-3">
-                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${p.status === 'Paid' ? 'bg-emerald-100' : 'bg-amber-100'}`}>
-                          {p.status === 'Paid' ? (
-                            <CheckCircle2 size={18} className="text-emerald-600" />
-                          ) : (
-                            <Clock size={18} className="text-amber-600" />
-                          )}
-                        </div>
-                        <div>
-                          <p className="text-sm font-semibold text-slate-900">{p.id}</p>
-                          <p className="text-xs text-slate-500">
-                            {p.status === 'Paid' ? `Paid on ${p.paidDate}` : `Due ${p.dueDate}`}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <span className="text-sm font-bold text-slate-900">{p.amount.toLocaleString()} SAR</span>
-                        {p.status === 'Paid' ? (
-                          <span className="px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap bg-emerald-100 text-emerald-700">
-                            Paid
-                          </span>
-                        ) : (
-                          <button
-                            onClick={() => handlePayInstallment(p.id)}
-                            className="px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap bg-amber-500 text-white hover:bg-amber-600 transition-all"
-                          >
-                            Pay Now
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
+            <FinancingPaymentsContent
+              payments={payments}
+              onPay={handlePayInstallment}
+              disb={disb}
+              onToggleDisb={handleToggleDisb}
+            />
           )}
 
           {/* Advertising Packages */}
@@ -1575,34 +1504,34 @@ export const CRMDashboardFull = () => {
       </div>
 
       {/* Mobile Bottom Navigation */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50">
-        <div className="grid grid-cols-5 gap-1 px-2 py-2">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 safe-bottom">
+        <div className="grid grid-cols-5 gap-0 px-1 py-1">
           {[
-            { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-            { id: 'products', icon: Package, label: 'Products' },
-            { id: 'orders', icon: FileText, label: 'Orders' },
-            { id: 'analytics', icon: BarChart3, label: 'Analytics' },
+            { id: 'dashboard', icon: LayoutDashboard, label: 'Home' },
+            { id: 'products',  icon: Package,         label: 'Products' },
+            { id: 'orders',    icon: FileText,         label: 'Orders' },
+            { id: 'torbiona',  icon: CreditCard,       label: 'Funds' },
           ].map((item) => {
             const Icon = item.icon;
             return (
               <button
                 key={item.id}
                 onClick={() => setActiveTab(item.id)}
-                className={`flex flex-col items-center justify-center py-2 px-1 rounded-lg transition-all ${
-                  activeTab === item.id ? 'text-teal-500' : 'text-slate-600'
+                className={`flex flex-col items-center justify-center py-2.5 rounded-lg transition-all min-h-[52px] ${
+                  activeTab === item.id ? 'text-teal-500' : 'text-slate-500'
                 }`}
               >
-                <Icon size={20} />
-                <span className="text-xs mt-1">{item.label}</span>
+                <Icon size={19} />
+                <span className="text-[10px] mt-0.5 font-medium">{item.label}</span>
               </button>
             );
           })}
           <button
             onClick={() => setShowMoreMenu(!showMoreMenu)}
-            className="flex flex-col items-center justify-center py-2 px-1 rounded-lg text-slate-600"
+            className={`flex flex-col items-center justify-center py-2.5 rounded-lg min-h-[52px] ${showMoreMenu ? 'text-teal-500' : 'text-slate-500'}`}
           >
-            <MoreHorizontal size={20} />
-            <span className="text-xs mt-1">More</span>
+            <MoreHorizontal size={19} />
+            <span className="text-[10px] mt-0.5 font-medium">More</span>
           </button>
         </div>
       </div>

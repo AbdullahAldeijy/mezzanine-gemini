@@ -127,14 +127,6 @@ export const B2BPlatform = () => {
                 <span className="hidden lg:inline whitespace-nowrap">AI Growth Engine</span>
               </button>
               <button
-                onClick={() => setCurrentView('financing-payments')}
-                title="My Financing Payments"
-                className="flex items-center gap-2 px-3 py-2 bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100 rounded-xl font-medium text-sm transition-all"
-              >
-                <CreditCard size={16} />
-                <span className="hidden lg:inline whitespace-nowrap">مدفوعاتي</span>
-              </button>
-              <button
                 onClick={() => setCurrentView('admin-risk-portal')}
                 title="Admin Risk Portal"
                 className="p-2 hover:bg-gray-100 rounded-xl transition-all"
@@ -215,13 +207,6 @@ export const B2BPlatform = () => {
             >
               <TrendingUp size={18} />
               AI Growth Engine
-            </button>
-            <button
-              onClick={() => { setCurrentView('financing-payments'); setShowMobileMenu(false); }}
-              className="w-full py-2 px-4 bg-blue-50 text-blue-700 border border-blue-200 rounded-xl font-medium flex items-center justify-center gap-2"
-            >
-              <CreditCard size={18} />
-              مدفوعاتي · My Financing
             </button>
             <button
               onClick={() => { setCurrentView('admin-risk-portal'); setShowMobileMenu(false); }}

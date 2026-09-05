@@ -381,6 +381,286 @@ const autoRejectedApps = [
   },
 ];
 
+const creditPortfolioData = [
+  // ── Active (approved = in progress — tranches released as شروط are met) ──
+  {
+    id: 'CP-001', company: 'BuildTech Construction', nameAr: 'بيلدتك للإنشاءات',
+    sector: 'Construction', region: 'Riyadh', amount: 500000, ecl: 1.2, mezzanineIndex: 742,
+    status: 'active', approvedDate: 'Jan 15, 2025', purpose: 'Operating Capital',
+    disbursements: [
+      {
+        label: 'Disbursement 1 — Month 4', labelAr: 'الدفعة الأولى', amount: 166667, date: 'Apr 2025', disbStatus: 'Disbursed',
+        conditions: [
+          { label: 'KYB identity verified', labelAr: 'التحقق من الهوية', done: true },
+          { label: 'Digital contract signed', labelAr: 'توقيع العقد الرقمي', done: true },
+          { label: 'Escrow account activated', labelAr: 'تفعيل حساب الضمان', done: true },
+        ],
+      },
+      {
+        label: 'Disbursement 2 — Month 8', labelAr: 'الدفعة الثانية', amount: 166667, date: 'Aug 2025', disbStatus: 'Conditions Pending',
+        conditions: [
+          { label: 'Q1 financial statements uploaded', labelAr: 'رفع كشوف الربع الأول', done: false },
+          { label: 'Min. 2 new products added to marketplace', labelAr: 'إضافة منتجين للسوق', done: true },
+          { label: 'At least 1 active contract executed', labelAr: 'عقد نشط على الأقل', done: false },
+        ],
+      },
+      {
+        label: 'Disbursement 3 — Month 12', labelAr: 'الدفعة الثالثة', amount: 166666, date: 'Dec 2025', disbStatus: 'Locked',
+        conditions: [
+          { label: 'Invoice reconciliation submitted', labelAr: 'تقديم تسوية الفواتير', done: false },
+          { label: '3+ active customer contracts maintained', labelAr: '٣ عقود نشطة على الأقل', done: false },
+          { label: 'Platform engagement score ≥ 90%', labelAr: 'نشاط المنصة ≥ ٩٠٪', done: false },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'CP-002', company: 'Riyadh Steel Works', nameAr: 'أعمال الرياض للصلب',
+    sector: 'Manufacturing', region: 'Riyadh', amount: 380000, ecl: 0.9, mezzanineIndex: 798,
+    status: 'active', approvedDate: 'Mar 1, 2025', purpose: 'Raw Materials',
+    disbursements: [
+      {
+        label: 'Disbursement 1 — Month 3', labelAr: 'الدفعة الأولى', amount: 127000, date: 'May 2025', disbStatus: 'Disbursed',
+        conditions: [
+          { label: 'KYB identity verified', labelAr: 'التحقق من الهوية', done: true },
+          { label: 'Digital contract signed', labelAr: 'توقيع العقد الرقمي', done: true },
+          { label: 'Bank account linked', labelAr: 'ربط الحساب البنكي', done: true },
+        ],
+      },
+      {
+        label: 'Disbursement 2 — Month 6', labelAr: 'الدفعة الثانية', amount: 127000, date: 'Aug 2025', disbStatus: 'Disbursed',
+        conditions: [
+          { label: 'Supplier invoice submitted', labelAr: 'تقديم فاتورة المورد', done: true },
+          { label: 'ERP sync confirmed', labelAr: 'تأكيد مزامنة ERP', done: true },
+          { label: 'Goods delivery receipt', labelAr: 'إيصال تسليم البضاعة', done: true },
+        ],
+      },
+      {
+        label: 'Disbursement 3 — Month 10', labelAr: 'الدفعة الثالثة', amount: 126000, date: 'Dec 2025', disbStatus: 'Conditions Pending',
+        conditions: [
+          { label: 'H1 financial statements', labelAr: 'كشوف النصف الأول', done: true },
+          { label: 'Credit bureau re-check clear', labelAr: 'إعادة فحص البيورو', done: false },
+          { label: 'Platform score ≥ 85%', labelAr: 'نشاط المنصة ≥ ٨٥٪', done: false },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'CP-003', company: 'Dammam Logistics Hub', nameAr: 'مركز الدمام للخدمات اللوجستية',
+    sector: 'Logistics', region: 'Dammam', amount: 620000, ecl: 2.8, mezzanineIndex: 601,
+    status: 'active', approvedDate: 'Jul 1, 2025', purpose: 'Fleet Expansion',
+    disbursements: [
+      {
+        label: 'Disbursement 1 — Month 4', labelAr: 'الدفعة الأولى', amount: 206667, date: 'Oct 2025', disbStatus: 'Disbursed',
+        conditions: [
+          { label: 'KYB identity verified', labelAr: 'التحقق من الهوية', done: true },
+          { label: 'Fleet registration submitted', labelAr: 'تقديم تسجيل الأسطول', done: true },
+          { label: 'Insurance certificate uploaded', labelAr: 'رفع شهادة التأمين', done: true },
+        ],
+      },
+      {
+        label: 'Disbursement 2 — Month 8', labelAr: 'الدفعة الثانية', amount: 206667, date: 'Feb 2026', disbStatus: 'Conditions Pending',
+        conditions: [
+          { label: 'Q3 revenue report uploaded', labelAr: 'رفع تقرير إيرادات الربع الثالث', done: false },
+          { label: 'Milestone certificate signed', labelAr: 'توقيع شهادة الإنجاز', done: false },
+          { label: 'At least 5 active delivery contracts', labelAr: '٥ عقود توصيل نشطة على الأقل', done: true },
+        ],
+      },
+      {
+        label: 'Disbursement 3 — Month 12', labelAr: 'الدفعة الثالثة', amount: 206666, date: 'Jun 2026', disbStatus: 'Locked',
+        conditions: [
+          { label: 'Annual audit report submitted', labelAr: 'تقديم تقرير المراجعة السنوية', done: false },
+          { label: 'ECL maintained below 3.5%', labelAr: 'الحفاظ على ECL أقل من ٣.٥٪', done: false },
+          { label: 'Full ERP integration active', labelAr: 'تفعيل تكامل ERP الكامل', done: false },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'CP-004', company: 'Qassim Heavy Metals', nameAr: 'قصيم للمعادن الثقيلة',
+    sector: 'Manufacturing', region: 'Qassim', amount: 800000, ecl: 4.7, mezzanineIndex: 612,
+    status: 'active', approvedDate: 'Sep 5, 2025', purpose: 'Equipment Financing',
+    disbursements: [
+      {
+        label: 'Disbursement 1 — Month 4', labelAr: 'الدفعة الأولى', amount: 266667, date: 'Jan 2026', disbStatus: 'Conditions Pending',
+        conditions: [
+          { label: 'KYB identity verified', labelAr: 'التحقق من الهوية', done: true },
+          { label: 'Digital contract signed', labelAr: 'توقيع العقد الرقمي', done: true },
+          { label: 'Equipment purchase invoice', labelAr: 'فاتورة شراء المعدات', done: false },
+          { label: 'Bureau compliance pending clearance', labelAr: 'إخلاء الالتزام من البيورو', done: false },
+        ],
+      },
+      {
+        label: 'Disbursement 2 — Month 8', labelAr: 'الدفعة الثانية', amount: 266667, date: 'May 2026', disbStatus: 'Locked',
+        conditions: [
+          { label: 'Equipment delivery confirmed', labelAr: 'تأكيد تسليم المعدات', done: false },
+          { label: 'Q1 operational report', labelAr: 'تقرير التشغيل للربع الأول', done: false },
+          { label: 'ECL improvement to < 4%', labelAr: 'تحسين ECL إلى أقل من ٤٪', done: false },
+        ],
+      },
+      {
+        label: 'Disbursement 3 — Month 12', labelAr: 'الدفعة الثالثة', amount: 266666, date: 'Sep 2026', disbStatus: 'Locked',
+        conditions: [
+          { label: 'Full audit trail submitted', labelAr: 'تقديم مسار المراجعة الكامل', done: false },
+          { label: 'No new bureau defaults', labelAr: 'لا توجد تخلفات جديدة في البيورو', done: false },
+          { label: 'Platform engagement ≥ 80%', labelAr: 'نشاط المنصة ≥ ٨٠٪', done: false },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'CP-005', company: 'Al-Noor Trading Co.', nameAr: 'شركة النور للتجارة',
+    sector: 'Trading', region: 'Jeddah', amount: 700000, ecl: 3.2, mezzanineIndex: 588,
+    status: 'active', approvedDate: 'Oct 12, 2025', purpose: 'Inventory Purchase',
+    disbursements: [
+      {
+        label: 'Disbursement 1 — Month 3', labelAr: 'الدفعة الأولى', amount: 350000, date: 'Jan 2026', disbStatus: 'Disbursed',
+        conditions: [
+          { label: 'KYB identity verified', labelAr: 'التحقق من الهوية', done: true },
+          { label: 'CPA-signed financials received', labelAr: 'استلام البيانات المالية الموقعة', done: true },
+          { label: 'Purchase order uploaded', labelAr: 'رفع أمر الشراء', done: true },
+        ],
+      },
+      {
+        label: 'Disbursement 2 — Month 6', labelAr: 'الدفعة الثانية', amount: 350000, date: 'Apr 2026', disbStatus: 'Conditions Pending',
+        conditions: [
+          { label: 'Goods receipt note submitted', labelAr: 'تقديم إيصال استلام البضاعة', done: false },
+          { label: 'Sales report — Q1 2026', labelAr: 'تقرير المبيعات الربع الأول ٢٠٢٦', done: false },
+          { label: 'No new credit bureau flags', labelAr: 'لا تنبيهات جديدة في البيورو', done: true },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'CP-006', company: 'National Contracting Corp.', nameAr: 'الشركة الوطنية للمقاولات',
+    sector: 'Construction', region: 'Riyadh', amount: 950000, ecl: 2.1, mezzanineIndex: 724,
+    status: 'active', approvedDate: 'Aug 20, 2025', purpose: 'Project Financing',
+    disbursements: [
+      {
+        label: 'Disbursement 1 — Month 3', labelAr: 'الدفعة الأولى', amount: 237500, date: 'Nov 2025', disbStatus: 'Disbursed',
+        conditions: [
+          { label: 'KYB identity verified', labelAr: 'التحقق من الهوية', done: true },
+          { label: 'Project contract signed', labelAr: 'توقيع عقد المشروع', done: true },
+          { label: 'Escrow account activated', labelAr: 'تفعيل حساب الضمان', done: true },
+        ],
+      },
+      {
+        label: 'Disbursement 2 — Month 6', labelAr: 'الدفعة الثانية', amount: 237500, date: 'Feb 2026', disbStatus: 'Disbursed',
+        conditions: [
+          { label: 'Phase 1 milestone certificate', labelAr: 'شهادة إنجاز المرحلة الأولى', done: true },
+          { label: 'Quantity surveyor report', labelAr: 'تقرير مسّاح الكميات', done: true },
+          { label: '2+ subcontractor POs issued', labelAr: 'إصدار أوامر شراء للمقاولين الفرعيين', done: true },
+        ],
+      },
+      {
+        label: 'Disbursement 3 — Month 9', labelAr: 'الدفعة الثالثة', amount: 237500, date: 'May 2026', disbStatus: 'Conditions Pending',
+        conditions: [
+          { label: 'Phase 2 milestone certificate', labelAr: 'شهادة إنجاز المرحلة الثانية', done: true },
+          { label: 'Updated project timeline submitted', labelAr: 'تقديم الجدول الزمني المحدث', done: false },
+          { label: 'No unresolved site violations', labelAr: 'لا مخالفات موقع معلقة', done: false },
+        ],
+      },
+      {
+        label: 'Disbursement 4 — Month 12', labelAr: 'الدفعة الرابعة', amount: 237500, date: 'Aug 2026', disbStatus: 'Locked',
+        conditions: [
+          { label: 'Project completion certificate', labelAr: 'شهادة إتمام المشروع', done: false },
+          { label: 'Final audit report', labelAr: 'تقرير المراجعة النهائي', done: false },
+          { label: 'Client acceptance sign-off', labelAr: 'موافقة العميل النهائية', done: false },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'CP-007', company: 'Al-Madinah Steel', nameAr: 'حديد المدينة',
+    sector: 'Manufacturing', region: 'Madinah', amount: 480000, ecl: 1.4, mezzanineIndex: 709,
+    status: 'active', approvedDate: 'Sep 15, 2025', purpose: 'Raw Materials',
+    disbursements: [
+      {
+        label: 'Disbursement 1 — Month 3', labelAr: 'الدفعة الأولى', amount: 160000, date: 'Dec 2025', disbStatus: 'Disbursed',
+        conditions: [
+          { label: 'KYB identity verified', labelAr: 'التحقق من الهوية', done: true },
+          { label: 'Digital contract signed', labelAr: 'توقيع العقد الرقمي', done: true },
+          { label: 'Supplier invoice — Steel batch 1', labelAr: 'فاتورة مورد الصلب', done: true },
+        ],
+      },
+      {
+        label: 'Disbursement 2 — Month 6', labelAr: 'الدفعة الثانية', amount: 160000, date: 'Mar 2026', disbStatus: 'Disbursed',
+        conditions: [
+          { label: 'Goods receipt — batch 1', labelAr: 'إيصال استلام الدفعة الأولى', done: true },
+          { label: 'ERP sync report', labelAr: 'تقرير مزامنة ERP', done: true },
+          { label: 'No ECL deterioration', labelAr: 'لا تدهور في ECL', done: true },
+        ],
+      },
+      {
+        label: 'Disbursement 3 — Month 9', labelAr: 'الدفعة الثالثة', amount: 160000, date: 'Jun 2026', disbStatus: 'Conditions Pending',
+        conditions: [
+          { label: 'Supplier invoice — Steel batch 2', labelAr: 'فاتورة مورد الصلب - الدفعة الثانية', done: false },
+          { label: 'Platform engagement ≥ 88%', labelAr: 'نشاط المنصة ≥ ٨٨٪', done: true },
+          { label: 'No outstanding buyer disputes', labelAr: 'لا نزاعات مع المشترين معلقة', done: false },
+        ],
+      },
+    ],
+  },
+  // ── Collected (fully repaid) ─────────────────────────────────────────
+  {
+    id: 'CP-010', company: 'Global Materials', nameAr: 'المواد العالمية',
+    sector: 'Trading', region: 'Jeddah', amount: 1200000, ecl: 0.7, mezzanineIndex: 815,
+    status: 'collected', startDate: 'Feb 2024', endDate: 'Feb 2025', installments: '12/12',
+    purpose: 'Bulk Inventory',
+    note: 'Flagship case — highest volume collected. Zero late payments.',
+  },
+  {
+    id: 'CP-011', company: 'Riyadh Steel Works (Prior Facility)', nameAr: 'أعمال الرياض للصلب — تسهيل سابق',
+    sector: 'Manufacturing', region: 'Riyadh', amount: 380000, ecl: 0.9, mezzanineIndex: 798,
+    status: 'collected', startDate: 'Mar 2024', endDate: 'Jan 2025', installments: '10/10',
+    purpose: 'Raw Materials',
+    note: 'Early settlement in month 9. ECL remained below 1% throughout.',
+  },
+  {
+    id: 'CP-012', company: 'Eastern Logistics Group', nameAr: 'مجموعة الشرقية للخدمات',
+    sector: 'Logistics', region: 'Dammam', amount: 320000, ecl: 1.9, mezzanineIndex: 681,
+    status: 'collected', startDate: 'Jun 2024', endDate: 'Dec 2024', installments: '6/6',
+    purpose: 'Fleet Upgrade',
+    note: 'Early settlement in month 5. Clean credit record maintained.',
+  },
+  {
+    id: 'CP-013', company: 'Jeddah Trade Hub', nameAr: 'مركز جدة للتجارة',
+    sector: 'Trading', region: 'Jeddah', amount: 290000, ecl: 1.6, mezzanineIndex: 695,
+    status: 'collected', startDate: 'May 2024', endDate: 'Nov 2024', installments: '6/6',
+    purpose: 'Inventory Financing',
+    note: 'Short-term cycle. Platform engagement score 94% throughout.',
+  },
+  {
+    id: 'CP-014', company: 'Gulf Engineering Co. (Prior)', nameAr: 'شركة الخليج للهندسة — سابق',
+    sector: 'Engineering', region: 'Riyadh', amount: 550000, ecl: 1.3, mezzanineIndex: 731,
+    status: 'collected', startDate: 'Jan 2024', endDate: 'Oct 2024', installments: '9/9',
+    purpose: 'Project Financing',
+    note: 'Completed all tranches. Re-financed for a second facility.',
+  },
+  // ── Rejected ─────────────────────────────────────────────────────────
+  {
+    id: 'CP-015', company: 'Hail Textiles Co.', nameAr: 'شركة حائل للنسيج',
+    sector: 'Manufacturing', region: 'Hail', amount: 150000, ecl: 8.4, mezzanineIndex: 412,
+    status: 'rejected', rejectedDate: 'Jan 15, 2025', purpose: 'Working Capital',
+    reason: 'ECL Exceeds Threshold (8.4% > 6% max)',
+    note: '2 bureau defaults detected. Non-compliant Gov API. Auto-rejected by Torbiona.',
+  },
+  {
+    id: 'CP-016', company: 'Najd Retail Co.', nameAr: 'شركة نجد للتجزئة',
+    sector: 'Trading', region: 'Riyadh', amount: 200000, ecl: 6.8, mezzanineIndex: 445,
+    status: 'rejected', rejectedDate: 'Feb 3, 2025', purpose: 'Store Expansion',
+    reason: 'Insufficient Credit Bureau History',
+    note: 'Less than 6 months of bureau data. Eligible to reapply after 12 months.',
+  },
+  {
+    id: 'CP-017', company: 'Al-Sharq Catering', nameAr: 'الشرق للضيافة',
+    sector: 'Services', region: 'Jeddah', amount: 90000, ecl: 7.2, mezzanineIndex: 390,
+    status: 'rejected', rejectedDate: 'Mar 10, 2025', purpose: 'Equipment Purchase',
+    reason: 'Out-of-Scope Sector — Services not covered',
+    note: 'Mezzanine Finance does not cover the Services sector. Referred to partner.',
+  },
+];
+
 const decisionOptions = [
   { id: 'approve', icon: CheckCircle2, label: 'Approval', labelAr: 'موافقة', accent: 'emerald' },
   { id: 'conditional', icon: AlertTriangle, label: 'Conditional Approval', labelAr: 'موافقة بشروط', accent: 'teal' },
@@ -427,6 +707,9 @@ export const AdminRiskPortal = () => {
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [companySearch, setCompanySearch] = useState('');
   const [expandedSections, setExpandedSections] = useState({ team: true, financing: false, orders: false, contracts: false, relationships: false, risk: false });
+  const [expandedCreditCards, setExpandedCreditCards] = useState({});
+  const toggleCreditCard = (id) => setExpandedCreditCards(p => ({ ...p, [id]: !p[id] }));
+  const [creditPortfolioTab, setCreditPortfolioTab] = useState('all');
   const toggleSection = (key) => setExpandedSections((p) => ({ ...p, [key]: !p[key] }));
   const filteredCompanies = REGISTERED_COMPANIES.filter((c) =>
     c.name.toLowerCase().includes(companySearch.toLowerCase()) ||
@@ -1063,7 +1346,7 @@ export const AdminRiskPortal = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
               {/* ── Column 1: Sectors that got credit & succeeded ── */}
               <div className="bg-slate-900 rounded-2xl border border-slate-700 overflow-hidden">
@@ -1334,6 +1617,280 @@ export const AdminRiskPortal = () => {
           </div>
         </div>
       )}
+
+      {/* ── Credit Portfolio ── */}
+      {hubTab === 'credit-risk' && (
+        <div className="bg-slate-950 border-b border-slate-700 px-4 py-5">
+          <div className="max-w-7xl mx-auto">
+
+            {/* Header + summary stats */}
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow">
+                <Database size={15} className="text-white" />
+              </div>
+              <div>
+                <p className="text-sm font-bold text-white">Credit Portfolio <span className="text-indigo-400">· محفظة التمويل</span></p>
+                <p className="text-[10px] text-slate-500">All credit facilities — approved, active, collected, and rejected</p>
+              </div>
+            </div>
+
+            {/* Summary KPI strip */}
+            <div className="grid grid-cols-3 gap-2 mb-4">
+              {[
+                { label: 'Active', labelAr: 'معتمدة · جارية', count: creditPortfolioData.filter(c => c.status === 'active').length, color: 'text-[#56afb6]', bg: 'bg-[#56afb6]/10 border-[#56afb6]/30', tab: 'active' },
+                { label: 'Collected', labelAr: 'محصّلة', count: creditPortfolioData.filter(c => c.status === 'collected').length, color: 'text-emerald-400', bg: 'bg-emerald-500/10 border-emerald-800/40', tab: 'collected' },
+                { label: 'Rejected', labelAr: 'مرفوضة', count: creditPortfolioData.filter(c => c.status === 'rejected').length, color: 'text-red-400', bg: 'bg-red-500/10 border-red-800/40', tab: 'rejected' },
+              ].map(s => (
+                <button key={s.tab} onClick={() => setCreditPortfolioTab(creditPortfolioTab === s.tab ? 'all' : s.tab)}
+                  className={`rounded-xl border p-3 text-center transition-all ${s.bg} ${creditPortfolioTab === s.tab ? 'ring-1 ring-white/20' : 'opacity-70 hover:opacity-100'}`}>
+                  <p className={`text-lg font-bold ${s.color}`}>{s.count}</p>
+                  <p className="text-[9px] text-slate-400 font-semibold">{s.label}</p>
+                  <p className="text-[8px] text-slate-600">{s.labelAr}</p>
+                </button>
+              ))}
+            </div>
+
+            {/* Filter tabs */}
+            <div className="flex gap-1 mb-4 bg-slate-900/60 rounded-xl p-1 overflow-x-auto">
+              {[
+                { id: 'all',       label: 'All',       labelMobile: 'All' },
+                { id: 'active',    label: 'Active · شروط الصرف', labelMobile: 'Active' },
+                { id: 'collected', label: 'Collected',  labelMobile: 'Collected' },
+                { id: 'rejected',  label: 'Rejected',   labelMobile: 'Rejected' },
+              ].map(t => (
+                <button key={t.id} onClick={() => setCreditPortfolioTab(t.id)}
+                  className={`flex-shrink-0 sm:flex-1 py-2 px-3 rounded-lg text-[10px] font-semibold transition-all whitespace-nowrap ${
+                    creditPortfolioTab === t.id
+                      ? 'bg-[#56afb6]/15 text-[#56afb6] ring-1 ring-[#56afb6]/30'
+                      : 'text-slate-500 hover:text-slate-300'
+                  }`}>
+                  <span className="sm:hidden">{t.labelMobile}</span>
+                  <span className="hidden sm:inline">{t.label}</span>
+                </button>
+              ))}
+            </div>
+
+            {/* Company list */}
+            <div className="space-y-2">
+              {creditPortfolioData
+                .filter(c => creditPortfolioTab === 'all' || c.status === creditPortfolioTab)
+                .map((c) => {
+                  const isOpen = !!expandedCreditCards[c.id];
+                  const eclColor = c.ecl < 2 ? 'text-emerald-400' : c.ecl < 4 ? 'text-amber-400' : 'text-red-400';
+                  const idxColor = c.mezzanineIndex >= 700 ? 'text-emerald-400' : c.mezzanineIndex >= 580 ? 'text-amber-400' : 'text-red-400';
+                  const disbursed = c.status === 'active' ? c.disbursements.filter(d => d.disbStatus === 'Disbursed').length : 0;
+                  const totalDisb = c.status === 'active' ? c.disbursements.length : 0;
+                  const disbPct = totalDisb > 0 ? Math.round((disbursed / totalDisb) * 100) : 0;
+                  const statusMeta = {
+                    active:    { label: `Active · ${disbursed}/${totalDisb} disbursed`, bg: c.ecl >= 4 ? 'bg-amber-500/10 text-amber-400 border-amber-800/50' : 'bg-[#56afb6]/10 text-[#56afb6] border-[#56afb6]/30', row: c.ecl >= 4 ? 'border-amber-900/30' : 'border-[#56afb6]/15' },
+                    collected: { label: 'Collected ✓', bg: 'bg-emerald-500/10 text-emerald-400 border-emerald-800/50', row: 'border-emerald-900/20' },
+                    rejected:  { label: 'Rejected ✗', bg: 'bg-red-500/10 text-red-400 border-red-800/50', row: 'border-red-900/20' },
+                  }[c.status];
+
+                  return (
+                    <div key={c.id} className={`bg-slate-900 border rounded-xl overflow-hidden transition-all ${statusMeta.row}`}>
+                      {/* Row — always visible */}
+                      <button className="w-full text-left" onClick={() => toggleCreditCard(c.id)}>
+                        <div className="flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-3">
+                          {/* Icon */}
+                          <div className="w-8 h-8 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center flex-shrink-0">
+                            <Building2 size={14} className="text-slate-400" />
+                          </div>
+                          {/* Name */}
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs font-bold text-white leading-tight truncate">{c.company}</p>
+                            <p className="text-[9px] text-slate-500 truncate">{c.sector} · {c.region}</p>
+                          </div>
+                          {/* Amount */}
+                          <div className="text-right flex-shrink-0 hidden sm:block">
+                            <p className="text-sm font-bold text-white">{(c.amount / 1000).toFixed(0)}K</p>
+                            <p className="text-[9px] text-slate-600">SAR</p>
+                          </div>
+                          {/* ECL */}
+                          <div className="text-right flex-shrink-0 hidden md:block w-12">
+                            <p className={`text-xs font-bold ${eclColor}`}>{c.ecl}%</p>
+                            <p className="text-[8px] text-slate-600">ECL</p>
+                          </div>
+                          {/* Status badge */}
+                          <span className={`text-[9px] font-bold border rounded-full px-2 py-0.5 flex-shrink-0 whitespace-nowrap hidden xs:inline sm:inline ${statusMeta.bg}`}>{statusMeta.label}</span>
+                          {/* Progress bar (active only) */}
+                          {c.status === 'active' && (
+                            <div className="w-16 hidden lg:block">
+                              <div className="h-1 bg-slate-700 rounded-full overflow-hidden">
+                                <div className={`h-full rounded-full ${c.ecl >= 4 ? 'bg-amber-500' : 'bg-[#56afb6]'}`} style={{ width: `${disbPct}%` }} />
+                              </div>
+                              <p className="text-[8px] text-slate-600 mt-0.5 text-center">{disbursed}/{totalDisb}</p>
+                            </div>
+                          )}
+                          {c.ecl >= 4 && c.status === 'active' && <AlertTriangle size={12} className="text-amber-400 flex-shrink-0" />}
+                          <ChevronDown size={13} className={`text-slate-500 flex-shrink-0 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+                        </div>
+                      </button>
+
+                      {/* Expanded panel */}
+                      {isOpen && (
+                        <div className="border-t border-slate-800 px-4 pb-4 pt-3 bg-slate-900/60">
+
+                          {/* ── ACTIVE: disbursements + per-tranche شروط ── */}
+                          {c.status === 'active' && (
+                            <div>
+                              {/* Summary strip */}
+                              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
+                                <div className="bg-slate-800 rounded-lg p-2 text-center">
+                                  <p className="text-[8px] text-slate-500 mb-0.5">Approved</p>
+                                  <p className="text-[9px] font-bold text-white">{c.approvedDate}</p>
+                                </div>
+                                <div className="bg-slate-800 rounded-lg p-2 text-center">
+                                  <p className="text-[8px] text-slate-500 mb-0.5">Tranches</p>
+                                  <p className="text-[10px] font-bold text-[#56afb6]">{disbursed}/{totalDisb}</p>
+                                </div>
+                                <div className="bg-slate-800 rounded-lg p-2 text-center">
+                                  <p className="text-[8px] text-slate-500 mb-0.5">Index</p>
+                                  <p className={`text-[9px] font-bold ${idxColor}`}>{c.mezzanineIndex}/1000</p>
+                                </div>
+                                <div className="bg-slate-800 rounded-lg p-2 text-center">
+                                  <p className="text-[8px] text-slate-500 mb-0.5">ECL</p>
+                                  <p className={`text-[9px] font-bold ${eclColor}`}>{c.ecl}%</p>
+                                </div>
+                              </div>
+
+                              {/* Disbursement tranches */}
+                              <div className="space-y-3">
+                                {c.disbursements.map((d, di) => {
+                                  const allDone = d.conditions.every(r => r.done);
+                                  const disbColor = {
+                                    'Disbursed':          { border: 'border-emerald-800/50', bg: 'bg-emerald-950/30', icon: <CheckCircle2 size={14} className="text-emerald-400" />, badge: 'bg-emerald-500/10 text-emerald-400 border-emerald-800', dot: 'bg-emerald-500' },
+                                    'Conditions Pending': { border: 'border-amber-800/50',   bg: 'bg-amber-950/20',   icon: <AlertTriangle size={14} className="text-amber-400" />,  badge: 'bg-amber-500/10 text-amber-400 border-amber-800',   dot: 'bg-amber-500'  },
+                                    'Locked':             { border: 'border-slate-700/50',   bg: 'bg-slate-800/40',   icon: <Lock size={14} className="text-slate-500" />,           badge: 'bg-slate-700 text-slate-500 border-slate-600',      dot: 'bg-slate-600'  },
+                                  }[d.disbStatus];
+                                  return (
+                                    <div key={di} className={`rounded-xl border ${disbColor.border} overflow-hidden`}>
+                                      {/* Tranche header */}
+                                      <div className={`flex items-center gap-3 px-3 py-2.5 ${disbColor.bg}`}>
+                                        {disbColor.icon}
+                                        <div className="flex-1 min-w-0">
+                                          <p className="text-[10px] font-bold text-white leading-tight">{d.label}</p>
+                                          <p className="text-[8px] text-slate-500">{d.labelAr} · {d.date}</p>
+                                        </div>
+                                        <div className="text-right flex-shrink-0">
+                                          <p className="text-xs font-bold text-white">{(d.amount / 1000).toFixed(0)}K SAR</p>
+                                          <span className={`text-[8px] font-bold border rounded-full px-1.5 py-0.5 ${disbColor.badge}`}>{d.disbStatus}</span>
+                                        </div>
+                                      </div>
+                                      {/* Conditions */}
+                                      {d.disbStatus !== 'Locked' && (
+                                        <div className="px-3 pb-3 pt-2 bg-slate-900/40 space-y-1.5">
+                                          <p className="text-[8px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">الشروط المطلوبة · Conditions Required</p>
+                                          {d.conditions.map((req, ri) => (
+                                            <div key={ri} className={`flex items-center gap-2 p-2 rounded-lg border ${req.done ? 'bg-emerald-950/30 border-emerald-900/40' : 'bg-slate-800/60 border-slate-700/60'}`}>
+                                              <div className={`w-4 h-4 rounded-full flex-shrink-0 flex items-center justify-center border ${req.done ? 'bg-emerald-500 border-emerald-500' : 'bg-slate-700 border-slate-600'}`}>
+                                                {req.done
+                                                  ? <CheckCircle2 size={9} className="text-white" />
+                                                  : <span className="w-1.5 h-1.5 rounded-full bg-slate-500" />}
+                                              </div>
+                                              <div className="flex-1 min-w-0">
+                                                <p className={`text-[9px] font-medium leading-tight ${req.done ? 'text-emerald-400 line-through' : 'text-slate-300'}`}>{req.label}</p>
+                                                <p className="text-[8px] text-slate-600 leading-tight">{req.labelAr}</p>
+                                              </div>
+                                              <span className={`text-[7px] font-bold rounded-full px-1.5 py-0.5 flex-shrink-0 border ${req.done ? 'bg-emerald-500/10 text-emerald-400 border-emerald-800' : 'bg-slate-700 text-slate-500 border-slate-600'}`}>
+                                                {req.done ? '✓' : '—'}
+                                              </span>
+                                            </div>
+                                          ))}
+                                          {allDone && d.disbStatus === 'Conditions Pending' && (
+                                            <div className="flex items-center justify-between bg-emerald-950/50 border border-emerald-800/50 rounded-lg px-2.5 py-1.5 mt-1">
+                                              <span className="text-[9px] font-semibold text-emerald-400 flex items-center gap-1"><CheckCircle2 size={9} /> جميع الشروط مستوفاة</span>
+                                              <button className="text-[8px] font-bold text-white bg-emerald-600 px-2.5 py-1 rounded-lg hover:bg-emerald-500 transition-all">Release Funds</button>
+                                            </div>
+                                          )}
+                                        </div>
+                                      )}
+                                      {/* Locked placeholder */}
+                                      {d.disbStatus === 'Locked' && (
+                                        <div className="px-3 py-2 text-center">
+                                          <p className="text-[8px] text-slate-600 italic">🔒 Locked — unlock after previous tranche is disbursed</p>
+                                        </div>
+                                      )}
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* ── COLLECTED: completion summary ── */}
+                          {c.status === 'collected' && (
+                            <div>
+                              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-3">
+                                <div className="bg-emerald-950/40 border border-emerald-900/30 rounded-lg p-2.5 text-center">
+                                  <p className="text-[8px] text-slate-500 mb-0.5">Total Collected</p>
+                                  <p className="text-sm font-bold text-emerald-400">{(c.amount / 1000).toFixed(0)}K</p>
+                                  <p className="text-[8px] text-slate-600">SAR</p>
+                                </div>
+                                <div className="bg-slate-800 rounded-lg p-2.5 text-center">
+                                  <p className="text-[8px] text-slate-500 mb-0.5">Installments</p>
+                                  <p className="text-sm font-bold text-emerald-400">{c.installments}</p>
+                                  <p className="text-[8px] text-slate-600">all paid</p>
+                                </div>
+                                <div className="bg-slate-800 rounded-lg p-2.5 text-center">
+                                  <p className="text-[8px] text-slate-500 mb-0.5">Final ECL</p>
+                                  <p className={`text-sm font-bold ${eclColor}`}>{c.ecl}%</p>
+                                </div>
+                                <div className="bg-slate-800 rounded-lg p-2.5 text-center">
+                                  <p className="text-[8px] text-slate-500 mb-0.5">Index</p>
+                                  <p className={`text-sm font-bold ${idxColor}`}>{c.mezzanineIndex}</p>
+                                </div>
+                              </div>
+                              <div className="flex items-center justify-between text-[9px] text-slate-500 mb-3">
+                                <span className="flex items-center gap-1"><Clock size={9} />{c.startDate}</span>
+                                <div className="flex-1 mx-3 h-1.5 bg-emerald-900/40 rounded-full overflow-hidden">
+                                  <div className="h-full w-full bg-emerald-500 rounded-full" />
+                                </div>
+                                <span className="flex items-center gap-1 text-emerald-400"><CheckCircle2 size={9} />{c.endDate}</span>
+                              </div>
+                              <p className="text-[9px] text-slate-500 italic leading-relaxed">{c.note}</p>
+                            </div>
+                          )}
+
+                          {/* ── REJECTED ── */}
+                          {c.status === 'rejected' && (
+                            <div>
+                              <div className="flex items-start gap-2.5 bg-red-950/40 border border-red-900/40 rounded-lg p-3 mb-3">
+                                <XCircle size={14} className="text-red-400 flex-shrink-0 mt-0.5" />
+                                <div>
+                                  <p className="text-[10px] font-bold text-red-400 mb-0.5">Rejection Reason</p>
+                                  <p className="text-[10px] text-slate-300">{c.reason}</p>
+                                </div>
+                              </div>
+                              <div className="grid grid-cols-3 gap-2 mb-2">
+                                <div className="bg-slate-800 rounded-lg p-2 text-center">
+                                  <p className="text-[8px] text-slate-500">Rejected</p>
+                                  <p className="text-[9px] font-bold text-white">{c.rejectedDate}</p>
+                                </div>
+                                <div className="bg-slate-800 rounded-lg p-2 text-center">
+                                  <p className="text-[8px] text-slate-500">ECL</p>
+                                  <p className="text-[10px] font-bold text-red-400">{c.ecl}%</p>
+                                </div>
+                                <div className="bg-slate-800 rounded-lg p-2 text-center">
+                                  <p className="text-[8px] text-slate-500">Index</p>
+                                  <p className="text-[10px] font-bold text-red-400">{c.mezzanineIndex}/1000</p>
+                                </div>
+                              </div>
+                              <p className="text-[9px] text-slate-500 italic leading-relaxed">{c.note}</p>
+                            </div>
+                          )}
+
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+            </div>
+
+          </div>
+        </div>
+      )}
+
 
       {/* Main Content - Master-Detail Pattern */}
       {hubTab === 'credit-risk' && (
