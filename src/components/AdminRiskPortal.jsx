@@ -3,7 +3,7 @@ import { useApp } from '../context/AppContext';
 import {
   ArrowLeft, Shield, CheckCircle2, AlertTriangle, Building2,
   Database, Activity, CreditCard, Download, Zap, Clock, TrendingUp, Users, Briefcase,
-  LayoutDashboard, Network, Bell, Percent, ArrowUpRight, FileText, CheckSquare,
+  LayoutDashboard, Network, Bell, Megaphone, Percent, ArrowUpRight, FileText, CheckSquare,
   Lock, DollarSign, ClipboardCheck, Eye, Edit3, HelpCircle, XCircle, X, Search, Package, ChevronDown
 } from 'lucide-react';
 
@@ -699,6 +699,440 @@ const AdminIdentityBanner = ({ company, companyAr, role, description, manages, g
   </div>
 );
 
+/* ══════════════════════════════════════════════════════════════════════════
+   Fuzzy Logic — one section, four company lenses. Mezzanine Capital is the
+   shared AI policy engine: Marketing feeds the market picture in, Capital
+   sets the standard & policies, and Tech / Finance / Investment each act on
+   the same fuzzy targeting map in their own way.
+   ══════════════════════════════════════════════════════════════════════════ */
+const FX_TONE = {
+  good: 'bg-emerald-500/10 text-emerald-400 border-emerald-800/50',
+  mid:  'bg-amber-500/10 text-amber-400 border-amber-800/50',
+  warn: 'bg-red-500/10 text-red-400 border-red-800/50',
+};
+const FX_C1 = {
+  emerald: { bar: 'bg-emerald-500', text: 'text-emerald-400', border: 'border-emerald-800' },
+  teal:    { bar: 'bg-teal-400',    text: 'text-teal-400',    border: 'border-teal-800' },
+};
+const FX_T = {
+  amber:  { ring: 'ring-amber-700/40 bg-amber-950/40',  badge: 'bg-amber-500 text-white',  conf: 'text-amber-400',  bar: 'bg-amber-500' },
+  purple: { ring: 'ring-purple-800/40 bg-purple-950/40', badge: 'bg-purple-500 text-white', conf: 'text-purple-400', bar: 'bg-purple-500' },
+  slate:  { ring: 'ring-slate-700/40 bg-slate-800/60',  badge: 'bg-slate-600 text-white',  conf: 'text-slate-400',  bar: 'bg-slate-500' },
+};
+
+const FUZZY_LENSES = {
+  tech: {
+    label: 'Mezzanine Tech', ar: 'ميزانين تِك', Icon: LayoutDashboard,
+    tagline: 'monitors every company and turns behaviour into recommendations',
+    col1Note: 'Sectors Tech keeps synced, monitored & healthy',
+    col3Note: 'Recommendations Tech sends up to Capital',
+    reasoning: (
+      <>
+        Pattern: companies with ERP synced, &gt;3 platform POs and ECL &lt; 2% stay stable. Tech recommends deeper data integration for <span className="text-purple-300 font-semibold">look-alike companies</span> and escalates data gaps to <span className="text-purple-300 font-semibold">Capital</span>.
+      </>
+    ),
+    col1: [
+      { name: 'Construction', ar: 'الإنشاءات', metric: '99% synced', pct: 99, a: '45 companies', b: '0 alerts', foot: '22.4M SAR tracked', color: 'emerald' },
+      { name: 'Trading', ar: 'التجارة', metric: '97% synced', pct: 97, a: '22 companies', b: '1 alert', foot: '9.8M SAR tracked', color: 'emerald' },
+      { name: 'Manufacturing', ar: 'التصنيع', metric: '93% synced', pct: 93, a: '12 companies', b: '2 alerts', foot: '6.1M SAR tracked', color: 'teal' },
+      { name: 'Logistics', ar: 'اللوجستيات', metric: '88% synced', pct: 88, a: '8 companies', b: '3 alerts', foot: '3.2M SAR tracked', color: 'teal' },
+    ],
+    targets: [
+      { title: 'Deep-integrate Construction cohort', ar: 'دمج بيانات — الإنشاءات', pct: 94, meta: '18 companies · data completeness < 60%', note: 'Recommend to Capital as onboarding priority' },
+      { title: 'Add SIMAH webhook — Building Materials', ar: 'ربط سمة — مواد البناء', pct: 80, meta: '11 companies · bureau latency ~4d', note: 'Gives Finance fresher scores' },
+      { title: 'Fleet telematics feed — Logistics', ar: 'تتبع الأسطول — اللوجستيات', pct: 69, meta: '7 companies · GPS coverage 40%', note: 'Closes monitoring blind spots' },
+    ],
+    effects: [
+      { co: 'BuildTech Construction', tag: 'Healthy', tone: 'good', text: 'ERP synced · 12 POs · ECL 1.2% → recommend for expansion' },
+      { co: 'Al-Rajhi Building Materials', tag: 'Onboarding', tone: 'mid', text: 'Partial ERP · 4 POs → recommend full integration' },
+      { co: 'Dammam Logistics Hub', tag: 'Data gap', tone: 'warn', text: '2 missed ERP syncs → alert escalated to Capital' },
+    ],
+  },
+  marketing: {
+    label: 'Mezzanine Marketing', ar: 'ميزانين للتسويق', Icon: Megaphone,
+    tagline: 'studies the market and uploads demand & risk signals to Capital',
+    col1Note: 'Categories with proven demand and low return risk',
+    col3Note: 'Signals Marketing uploads to Capital',
+    reasoning: (
+      <>
+        Marketing watches order flow, search demand and return rates. Rising, low-risk categories are pushed to <span className="text-purple-300 font-semibold">Capital</span> as green signals; volatile or high-return products are flagged <span className="text-red-300 font-semibold">red</span>.
+      </>
+    ),
+    col1: [
+      { name: 'Cement & Aggregates', ar: 'الأسمنت والركام', metric: '+34% QoQ', pct: 92, a: '1,240 orders', b: '2.1% returns', foot: '18.6M SAR GMV', color: 'emerald' },
+      { name: 'Local Steel Rebar', ar: 'حديد تسليح محلي', metric: '+21% QoQ', pct: 83, a: '980 orders', b: '3.0% returns', foot: '12.2M SAR GMV', color: 'emerald' },
+      { name: 'Safety Equipment', ar: 'معدات السلامة', metric: '+9% QoQ', pct: 64, a: '610 orders', b: '1.4% returns', foot: '3.4M SAR GMV', color: 'teal' },
+      { name: 'Heavy Welding Rigs', ar: 'معدات لحام ثقيلة', metric: '−12% QoQ', pct: 30, a: '120 orders', b: '8.7% returns', foot: '2.0M SAR GMV', color: 'teal' },
+    ],
+    targets: [
+      { title: 'RISING — Building Materials demand', ar: 'صاعد — مواد البناء', pct: 88, meta: '+34% QoQ orders · 2.1% returns', note: 'Upload to Capital: widen credit appetite here' },
+      { title: 'STEADY — Construction services', ar: 'ثابت — خدمات الإنشاء', pct: 72, meta: '+6% QoQ · 61% repeat buyers', note: 'Hold current policy' },
+      { title: 'HIGH-RISK — Imported rebar', ar: 'مخاطر — حديد مستورد', pct: 34, meta: 'price volatility 22% · 8.7% return rate', note: 'Warn Capital: cap exposure, shorten tenor' },
+    ],
+    effects: [
+      { co: 'BuildTech Construction', tag: 'Buys the rising SKU', tone: 'good', text: 'Heavy cement + rebar buyer — categories up 34% → strong repayment source' },
+      { co: 'Al-Rajhi Building Materials', tag: 'Sells the rising SKU', tone: 'good', text: 'Supplies cement & blocks — GMV +28% → healthy receivables' },
+      { co: 'Dammam Logistics Hub', tag: 'Volatile lane', tone: 'warn', text: 'Freight tied to imported steel — price swings reported to Capital' },
+    ],
+  },
+  finance: {
+    label: 'Mezzanine Finance', ar: 'ميزانين للتمويل', Icon: Shield,
+    tagline: "decides who gets credit and who doesn't, within Capital's policy",
+    col1Note: 'Sectors already inside the approved credit book',
+    col3Note: 'Credit verdicts — grant / conditional / decline',
+    reasoning: (
+      <>
+        Pattern detected: <span className="text-emerald-400 font-semibold">Construction</span> companies with ECL &lt; 2% and &gt;3 platform POs have a 96% success rate. Finance grants credit to look-alikes inside <span className="text-purple-300 font-semibold">Capital's band</span> and declines anything outside it.
+      </>
+    ),
+    col1: [
+      { name: 'Construction', ar: 'الإنشاءات', metric: '96% success', pct: 96, a: '45 cos.', b: 'ECL 1.1%', foot: '22.4M SAR', color: 'emerald' },
+      { name: 'Trading', ar: 'التجارة', metric: '91% success', pct: 91, a: '22 cos.', b: 'ECL 1.4%', foot: '9.8M SAR', color: 'emerald' },
+      { name: 'Manufacturing', ar: 'التصنيع', metric: '82% success', pct: 82, a: '12 cos.', b: 'ECL 2.1%', foot: '6.1M SAR', color: 'teal' },
+      { name: 'Logistics', ar: 'اللوجستيات', metric: '78% success', pct: 78, a: '8 cos.', b: 'ECL 2.4%', foot: '3.2M SAR', color: 'teal' },
+    ],
+    targets: [
+      { title: 'GRANT — Construction (Expansion)', ar: 'منح — إنشاءات توسّع', pct: 94, meta: '18 companies · ECL < 1.8% · auto-approve band', note: 'STP approve · 3-tranche disbursement' },
+      { title: 'CONDITIONAL — Building Materials', ar: 'بشروط — مواد البناء', pct: 81, meta: '11 companies · ECL < 2.5%', note: 'Approve with escrow + GRN per tranche' },
+      { title: 'DECLINE — Services / ECL > 6%', ar: 'رفض — خدمات / مخاطر عالية', pct: 18, meta: 'out-of-scope sector · bureau defaults', note: 'Auto-reject · refer to partner' },
+    ],
+    effects: [
+      { co: 'BuildTech Construction', tag: 'Credit granted', tone: 'good', text: 'ECL 1.2% · 45K SAR auto-approved · monitored disbursement' },
+      { co: 'Al-Rajhi Building Materials', tag: 'Conditional', tone: 'mid', text: 'ECL 2.3% · approved with escrow + per-tranche documents' },
+      { co: 'Dammam Logistics Hub', tag: 'On hold', tone: 'warn', text: 'ECL 2.8% rising · tranche 2 frozen pending Q3 report' },
+    ],
+  },
+  investment: {
+    label: 'Mezzanine Investment', ar: 'ميزانين للاستثمار', Icon: TrendingUp,
+    tagline: 'packages already-controlled companies into Sukuk for investors',
+    col1Note: 'Controlled companies grouped into Sukuk-ready pools',
+    col3Note: 'Sukuk issuance instructions from Capital',
+    reasoning: (
+      <>
+        Capital confirms which companies are <span className="text-emerald-400 font-semibold">fully controlled</span> — credit granted, monitored, and repaying. Investment is told to <span className="text-purple-300 font-semibold">securitize only those</span> into Sharia-compliant Sukuk.
+      </>
+    ),
+    col1: [
+      { name: 'Riyadh Construction Pool', ar: 'مجمع الرياض للإنشاءات', metric: 'yield 8.7%', pct: 92, a: '45 cos.', b: 'ECL 1.1%', foot: '5.0M SAR', color: 'emerald' },
+      { name: 'Trade Receivables Pool', ar: 'مجمع مستحقات التجارة', metric: 'yield 8.4%', pct: 88, a: '28 cos.', b: 'ECL 1.4%', foot: '3.8M SAR', color: 'emerald' },
+      { name: 'Qassim Industrial Pool', ar: 'مجمع القصيم الصناعي', metric: 'yield 9.0%', pct: 80, a: '12 cos.', b: 'ECL 1.8%', foot: '2.4M SAR', color: 'teal' },
+      { name: 'Logistics Pool (forming)', ar: 'مجمع اللوجستيات — تكوين', metric: 'not ready', pct: 45, a: '6 cos.', b: 'ECL 2.4%', foot: 'held', color: 'teal' },
+    ],
+    targets: [
+      { title: 'ISSUE — Construction Sukuk Series II', ar: 'إصدار — صكوك إنشاءات ٢', pct: 92, meta: '18 controlled cos · 2+ collections each · ECL < 1.8%', note: 'Ready for institutional offering · 8.5% profit rate' },
+      { title: 'BUILD — Building Materials pool', ar: 'تكوين — مجمع مواد البناء', pct: 78, meta: '11 cos · 1 collection cycle done', note: 'Add ~4 collections before issuing' },
+      { title: 'HOLD — Logistics pool', ar: 'تأجيل — مجمع اللوجستيات', pct: 54, meta: 'ECL 2.4% · thin track record', note: 'Do not securitize until ECL < 2%' },
+    ],
+    effects: [
+      { co: 'BuildTech Construction', tag: 'In Sukuk pool', tone: 'good', text: 'Controlled + 2 collections → Construction Series II' },
+      { co: 'Al-Rajhi Building Materials', tag: 'Pool forming', tone: 'mid', text: 'Controlled · 1 collection → queued for Building Materials pool' },
+      { co: 'Dammam Logistics Hub', tag: 'Excluded', tone: 'warn', text: 'ECL 2.8% + hold → kept out of Sukuk issuance for now' },
+    ],
+  },
+};
+
+const MARKET_MOVES = [
+  { cat: 'Cement & Aggregates', ar: 'الأسمنت والركام', trend: '▲ +34%', dir: 'up', orders: '1,240', search: 'High', ret: '2.1%', risk: 'Low', signal: 'Widen credit appetite' },
+  { cat: 'Local Steel Rebar', ar: 'حديد تسليح محلي', trend: '▲ +21%', dir: 'up', orders: '980', search: 'High', ret: '3.0%', risk: 'Low', signal: 'Widen credit appetite' },
+  { cat: 'Ready-Mix Concrete', ar: 'خرسانة جاهزة', trend: '▲ +12%', dir: 'up', orders: '760', search: 'Rising', ret: '1.8%', risk: 'Low', signal: 'Keep policy' },
+  { cat: 'Safety Equipment', ar: 'معدات السلامة', trend: '▲ +9%', dir: 'up', orders: '610', search: 'Steady', ret: '1.4%', risk: 'Low', signal: 'Keep policy' },
+  { cat: 'Electrical & Plumbing', ar: 'كهرباء وسباكة', trend: '▬ +2%', dir: 'flat', orders: '430', search: 'Flat', ret: '4.2%', risk: 'Medium', signal: 'Hold' },
+  { cat: 'Prefab Site Cabins', ar: 'كبائن مواقع جاهزة', trend: '▼ −18%', dir: 'down', orders: '70', search: 'Low', ret: '5.4%', risk: 'Medium', signal: 'Trim exposure' },
+  { cat: 'Imported Rebar', ar: 'حديد مستورد', trend: '▼ −8%', dir: 'down', orders: '190', search: 'Falling', ret: '8.7%', risk: 'High', signal: 'Cap exposure · shorten tenor' },
+  { cat: 'Heavy Welding Rigs', ar: 'معدات لحام ثقيلة', trend: '▼ −12%', dir: 'down', orders: '120', search: 'Low', ret: '6.1%', risk: 'High', signal: 'Reduce credit appetite' },
+];
+
+const FuzzyCapitalBand = ({ lens }) => (
+  <div className="mb-4 rounded-2xl border border-purple-800/50 bg-gradient-to-r from-purple-950/70 via-slate-900 to-slate-900 p-4">
+    <div className="flex flex-col lg:flex-row lg:items-center gap-3">
+      <div className="flex items-start gap-3 flex-1">
+        <div className="w-9 h-9 rounded-xl bg-purple-500/20 border border-purple-500/40 flex items-center justify-center flex-shrink-0">
+          <Zap size={16} className="text-purple-300" />
+        </div>
+        <div>
+          <p className="text-xs font-bold text-white">Mezzanine Capital · <span className="text-purple-300">رأس المال</span></p>
+          <p className="text-[10px] text-slate-400 leading-relaxed max-w-xl">
+            AI Policy Engine — aggregates every company's signals and sets the standard &amp; policies all four companies operate under.
+            Marketing feeds the market picture in; Capital hands policy out to Tech, Finance &amp; Investment.
+          </p>
+        </div>
+      </div>
+      <div className="flex items-center gap-1 flex-wrap">
+        {[['marketing', 'Marketing'], ['capital', 'Capital'], ['tech', 'Tech'], ['finance', 'Finance'], ['investment', 'Investment']].map(([k, label], i) => (
+          <div key={k} className="flex items-center gap-1">
+            <span className={`text-[9px] font-bold rounded-full px-2 py-1 border ${
+              k === 'capital'
+                ? 'bg-purple-500/20 text-purple-200 border-purple-500/50'
+                : k === lens
+                ? 'bg-[#56afb6]/15 text-[#56afb6] border-[#56afb6]/40'
+                : 'bg-slate-800 text-slate-500 border-slate-700'
+            }`}>{label}</span>
+            {i < 4 && <span className="text-slate-600 text-[10px]">→</span>}
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+);
+
+const FuzzyLogicSection = ({ lens }) => {
+  const L = FUZZY_LENSES[lens];
+  const LensIcon = L.Icon;
+  return (
+    <div className="bg-slate-950 border border-slate-800 rounded-2xl mx-4 my-4 px-4 py-5">
+      <div className="max-w-7xl mx-auto">
+
+        {/* Header */}
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-purple-500 to-violet-700 flex items-center justify-center shadow-lg">
+            <Zap size={15} className="text-white" />
+          </div>
+          <div>
+            <p className="text-sm font-bold text-white">Fuzzy Logic · <span className="text-purple-400">مساحة ضبابية يستهدفها الذكاء</span></p>
+            <p className="text-[10px] text-slate-500">AI learns from approved sectors and predicts the next credit targets using pattern similarity</p>
+            <p className="text-[10px] text-[#56afb6] font-semibold mt-0.5 flex items-center gap-1">
+              <LensIcon size={11} /> {L.label} lens · {L.tagline}
+            </p>
+          </div>
+        </div>
+
+        <FuzzyCapitalBand lens={lens} />
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+          {/* ── Column 1: Confirmed Zone (per-lens meaning) ── */}
+          <div className="bg-slate-900 rounded-2xl border border-slate-700 overflow-hidden">
+            <div className="px-4 py-3 border-b border-slate-700">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-emerald-400" />
+                <p className="text-xs font-bold text-emerald-400 uppercase tracking-wide">Confirmed Zone · المنطقة المؤكدة</p>
+              </div>
+              <p className="text-[9px] text-slate-500 mt-1">{L.col1Note}</p>
+            </div>
+            <div className="p-4 space-y-3">
+              {L.col1.map((s) => {
+                const c = FX_C1[s.color];
+                return (
+                  <div key={s.name} className={`rounded-xl border ${c.border} bg-slate-800/60 p-3`}>
+                    <div className="flex items-center justify-between mb-2">
+                      <div>
+                        <p className="text-xs font-bold text-white">{s.name}</p>
+                        <p className="text-[9px] text-slate-500">{s.ar}</p>
+                      </div>
+                      <span className={`text-[10px] font-bold ${c.text}`}>{s.metric}</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-slate-700 rounded-full mb-2">
+                      <div className={`h-full ${c.bar} rounded-full`} style={{ width: `${s.pct}%` }} />
+                    </div>
+                    <div className="flex items-center gap-3 text-[9px] text-slate-500">
+                      <span>{s.a}</span>
+                      <span>{s.b}</span>
+                      <span className="ml-auto font-semibold text-slate-300">{s.foot}</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* ── Column 2: Fuzzy Zone radial map (shared — Capital's map) ── */}
+          <div className="bg-slate-900 rounded-2xl border border-purple-900/60 overflow-hidden flex flex-col">
+            <div className="px-4 py-3 border-b border-purple-900/60 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
+                <p className="text-xs font-bold text-purple-400 uppercase tracking-wide">Fuzzy Zone · مساحة ضبابية</p>
+              </div>
+              <span className="text-[9px] text-slate-600 italic">AI radial targeting map</span>
+            </div>
+
+            <div className="flex-1 flex flex-col p-3 gap-3">
+              <div className="flex items-center justify-center">
+                <svg viewBox="0 0 300 280" className="w-full max-w-[280px]">
+                  <defs>
+                    <filter id="fz-blur" x="-30%" y="-30%" width="160%" height="160%">
+                      <feGaussianBlur stdDeviation="3.5" result="blur" />
+                      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                    </filter>
+                    <filter id="fz-glow">
+                      <feGaussianBlur stdDeviation="2.5" result="glow" />
+                      <feMerge><feMergeNode in="glow" /><feMergeNode in="SourceGraphic" /></feMerge>
+                    </filter>
+                    <radialGradient id="fz-inner" cx="50%" cy="50%" r="50%">
+                      <stop offset="0%"   stopColor="#10b981" stopOpacity="0.25" />
+                      <stop offset="100%" stopColor="#10b981" stopOpacity="0.06" />
+                    </radialGradient>
+                    <radialGradient id="fz-fuzzy" cx="50%" cy="50%" r="50%">
+                      <stop offset="0%"   stopColor="#a855f7" stopOpacity="0.20" />
+                      <stop offset="100%" stopColor="#7c3aed" stopOpacity="0.04" />
+                    </radialGradient>
+                    <radialGradient id="fz-outer" cx="50%" cy="50%" r="50%">
+                      <stop offset="0%"   stopColor="#1e293b" stopOpacity="0.6" />
+                      <stop offset="100%" stopColor="#0f172a" stopOpacity="0.9" />
+                    </radialGradient>
+                    <marker id="fz-arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                      <path d="M0,0 L0,6 L6,3 z" fill="#a855f7" opacity="0.55" />
+                    </marker>
+                  </defs>
+
+                  <circle cx="150" cy="138" r="128" fill="url(#fz-outer)" stroke="#1e293b" strokeWidth="1" />
+                  <text x="150" y="15"  textAnchor="middle" fill="#334155" fontSize="7.5" fontWeight="600" letterSpacing="2">UNKNOWN · مجهول</text>
+
+                  {[[55,40],[250,35],[268,140],[240,235],[60,235],[22,130],[150,20]].map(([x,y],i) => (
+                    <circle key={i} cx={x} cy={y} r="3" fill="#334155" opacity="0.5" />
+                  ))}
+
+                  <circle cx="150" cy="138" r="98" fill="url(#fz-fuzzy)" filter="url(#fz-blur)" />
+                  <circle cx="150" cy="138" r="98" fill="none" stroke="#7c3aed" strokeWidth="1.5" strokeDasharray="6 4" opacity="0.6" />
+                  <text x="150" y="247" textAnchor="middle" fill="#7c3aed" fontSize="7" fontWeight="700" letterSpacing="1" opacity="0.8">FUZZY ZONE · ضبابي</text>
+
+                  <circle cx="150" cy="138" r="62" fill="url(#fz-inner)" stroke="#10b981" strokeWidth="1.2" opacity="0.9" />
+                  <text x="150" y="193" textAnchor="middle" fill="#10b981" fontSize="6.5" fontWeight="700" letterSpacing="1" opacity="0.7">CONFIRMED · مؤكد</text>
+
+                  <circle cx="150" cy="138" r="20" fill="#1e1b4b" stroke="#7c3aed" strokeWidth="1.5" />
+                  <circle cx="150" cy="138" r="20" fill="none" stroke="#a855f7" strokeWidth="0.5" opacity="0.4">
+                    <animate attributeName="r" values="20;24;20" dur="3s" repeatCount="indefinite" />
+                    <animate attributeName="opacity" values="0.4;0.1;0.4" dur="3s" repeatCount="indefinite" />
+                  </circle>
+                  <text x="150" y="135" textAnchor="middle" fill="#c084fc" fontSize="8"  fontWeight="800">AI</text>
+                  <text x="150" y="145" textAnchor="middle" fill="#7c3aed" fontSize="6.5" fontWeight="600">ذكاء</text>
+
+                  <g filter="url(#fz-glow)"><circle cx="150" cy="85" r="7" fill="#10b981" /></g>
+                  <line x1="150" y1="118" x2="150" y2="93"  stroke="#10b981" strokeWidth="0.8" strokeDasharray="3 2" opacity="0.4" />
+                  <text x="150" y="76" textAnchor="middle" fill="#6ee7b7" fontSize="7" fontWeight="700">Construction</text>
+
+                  <g filter="url(#fz-glow)"><circle cx="203" cy="155" r="7" fill="#10b981" /></g>
+                  <line x1="170" y1="143" x2="197" y2="152" stroke="#10b981" strokeWidth="0.8" strokeDasharray="3 2" opacity="0.4" />
+                  <text x="218" y="158" textAnchor="start" fill="#6ee7b7" fontSize="7" fontWeight="700">Trading</text>
+
+                  <g filter="url(#fz-glow)"><circle cx="110" cy="168" r="6" fill="#2dd4bf" /></g>
+                  <line x1="133" y1="152" x2="115" y2="163" stroke="#2dd4bf" strokeWidth="0.8" strokeDasharray="3 2" opacity="0.4" />
+                  <text x="65" y="172" textAnchor="middle" fill="#5eead4" fontSize="6.5" fontWeight="700">Manufact.</text>
+
+                  <g filter="url(#fz-glow)">
+                    <circle cx="185" cy="96" r="6" fill="#f59e0b" />
+                    <circle cx="185" cy="96" r="10" fill="none" stroke="#f59e0b" strokeWidth="0.8" opacity="0.3">
+                      <animate attributeName="r" values="7;12;7" dur="2.5s" repeatCount="indefinite" />
+                      <animate attributeName="opacity" values="0.3;0;0.3" dur="2.5s" repeatCount="indefinite" />
+                    </circle>
+                  </g>
+                  <text x="197" y="94" textAnchor="start" fill="#fbbf24" fontSize="6.5" fontWeight="700">Logistics</text>
+
+                  <line x1="155" y1="119" x2="160" y2="78"  stroke="#a855f7" strokeWidth="1" strokeDasharray="4 3" opacity="0.45" markerEnd="url(#fz-arrow)" />
+                  <line x1="164" y1="128" x2="205" y2="95"  stroke="#a855f7" strokeWidth="1" strokeDasharray="4 3" opacity="0.45" markerEnd="url(#fz-arrow)" />
+                  <line x1="138" y1="130" x2="100" y2="106" stroke="#a855f7" strokeWidth="1" strokeDasharray="4 3" opacity="0.45" markerEnd="url(#fz-arrow)" />
+
+                  <circle cx="160" cy="62" r="5.5" fill="#a855f7" opacity="0.85">
+                    <animate attributeName="r"       values="5.5;8;5.5" dur="2s"   repeatCount="indefinite" />
+                    <animate attributeName="opacity" values="0.85;0.3;0.85" dur="2s" repeatCount="indefinite" />
+                  </circle>
+                  <text x="175" y="57" textAnchor="start" fill="#c084fc" fontSize="6.5" fontWeight="700">Bldg. Materials</text>
+                  <text x="175" y="66" textAnchor="start" fill="#7c3aed" fontSize="6">مواد البناء</text>
+
+                  <circle cx="215" cy="88" r="5" fill="#a855f7" opacity="0.8">
+                    <animate attributeName="r"       values="5;7.5;5"   dur="2.8s" repeatCount="indefinite" />
+                    <animate attributeName="opacity" values="0.8;0.25;0.8" dur="2.8s" repeatCount="indefinite" />
+                  </circle>
+                  <text x="228" y="83" textAnchor="start" fill="#c084fc" fontSize="6.5" fontWeight="700">Logistics+</text>
+
+                  <circle cx="98" cy="93" r="4.5" fill="#a855f7" opacity="0.75">
+                    <animate attributeName="r"       values="4.5;7;4.5"   dur="3.2s" repeatCount="indefinite" />
+                    <animate attributeName="opacity" values="0.75;0.2;0.75" dur="3.2s" repeatCount="indefinite" />
+                  </circle>
+                  <text x="50" y="91" textAnchor="middle" fill="#c084fc" fontSize="6.5" fontWeight="700">Engineering</text>
+                  <text x="50" y="100" textAnchor="middle" fill="#7c3aed" fontSize="6">هندسة</text>
+                </svg>
+              </div>
+
+              <div className="grid grid-cols-3 gap-2">
+                <div className="bg-emerald-950/40 border border-emerald-900/40 rounded-xl p-2 text-center">
+                  <p className="text-[9px] text-emerald-600 uppercase font-semibold mb-0.5">Confirmed</p>
+                  <p className="text-sm font-bold text-emerald-400">4</p>
+                  <p className="text-[8px] text-slate-600">sectors</p>
+                </div>
+                <div className="bg-purple-950/40 border border-purple-900/40 rounded-xl p-2 text-center">
+                  <p className="text-[9px] text-purple-500 uppercase font-semibold mb-0.5">Fuzzy</p>
+                  <p className="text-sm font-bold text-purple-400">3</p>
+                  <p className="text-[8px] text-slate-600">AI targets</p>
+                </div>
+                <div className="bg-slate-800/40 border border-slate-700/40 rounded-xl p-2 text-center">
+                  <p className="text-[9px] text-slate-600 uppercase font-semibold mb-0.5">Unknown</p>
+                  <p className="text-sm font-bold text-slate-500">∞</p>
+                  <p className="text-[8px] text-slate-600">unexplored</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* ── Column 3: AI Next Targets (per-lens verdicts) ── */}
+          <div className="bg-slate-900 rounded-2xl border border-amber-900/50 overflow-hidden flex flex-col">
+            <div className="px-4 py-3 border-b border-amber-900/50">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+                <p className="text-xs font-bold text-amber-400 uppercase tracking-wide">AI Next Targets · التوقعات القادمة</p>
+              </div>
+              <p className="text-[9px] text-slate-500 mt-1">{L.col3Note}</p>
+            </div>
+
+            <div className="p-4 space-y-3 flex-1">
+              <div className="bg-purple-950/60 border border-purple-800/40 rounded-xl px-3 py-2.5">
+                <p className="text-[9px] text-purple-400 font-semibold uppercase mb-1">AI Reasoning</p>
+                <p className="text-[10px] text-slate-300 leading-relaxed">{L.reasoning}</p>
+              </div>
+
+              {L.targets.map((t, i) => {
+                const color = ['amber', 'purple', 'slate'][i];
+                const c = FX_T[color];
+                return (
+                  <div key={t.title} className={`rounded-xl ring-1 ${c.ring} p-3`}>
+                    <div className="flex items-start gap-2 mb-2">
+                      <span className={`text-[9px] font-bold rounded-full w-4 h-4 flex items-center justify-center flex-shrink-0 ${c.badge}`}>{i + 1}</span>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-bold text-white leading-tight">{t.title}</p>
+                        <p className="text-[9px] text-slate-500">{t.ar}</p>
+                      </div>
+                      <span className={`text-xs font-bold flex-shrink-0 ${c.conf}`}>{t.pct}%</span>
+                    </div>
+                    <div className="w-full h-1 bg-slate-800 rounded-full mb-2">
+                      <div className={`h-full ${c.bar} rounded-full`} style={{ width: `${t.pct}%` }} />
+                    </div>
+                    <p className="text-[9px] text-slate-500 mb-1">{t.meta}</p>
+                    <p className="text-[9px] text-slate-500 italic">{t.note}</p>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="px-4 py-3 border-t border-slate-800 bg-slate-950/50">
+              <p className="text-[9px] text-slate-600 text-center">Predictions update every 24h · Powered by Torbiona Fuzzy Logic Engine</p>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Effect on the 3 companies (this lens) ── */}
+        <div className="mt-4 bg-slate-900 rounded-2xl border border-slate-700 p-4">
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-xs font-bold text-white">Effect on companies · <span className="text-purple-400">الأثر على المنشآت</span></p>
+            <p className="text-[9px] text-slate-500">seen through the {L.label} lens</p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            {L.effects.map((e) => (
+              <div key={e.co} className="bg-slate-800/60 border border-slate-700 rounded-xl p-3">
+                <div className="flex items-center gap-2 mb-1.5">
+                  <Building2 size={13} className="text-slate-400" />
+                  <p className="text-[11px] font-bold text-white leading-tight">{e.co}</p>
+                </div>
+                <span className={`inline-block text-[9px] font-bold border rounded-full px-2 py-0.5 mb-1.5 ${FX_TONE[e.tone]}`}>{e.tag}</span>
+                <p className="text-[10px] text-slate-400 leading-snug">{e.text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
+};
+
 export const AdminRiskPortal = () => {
   const { setCurrentView } = useApp();
   const [hubTab, setHubTab] = useState('operations');
@@ -797,7 +1231,7 @@ export const AdminRiskPortal = () => {
               <Shield size={16} className="text-[#56afb6]" />
               <h1 className="text-white font-bold text-sm md:text-base">Admin Portal</h1>
             </div>
-            <p className="text-xs text-slate-400 mt-0.5 ml-6">Mezzanine Tech · Mezzanine Finance · Mezzanine Investment</p>
+            <p className="text-xs text-slate-400 mt-0.5 ml-6">Mezzanine Tech · Mezzanine Finance · Mezzanine Investment · Mezzanine Marketing</p>
           </div>
         </div>
       </header>
@@ -841,6 +1275,18 @@ export const AdminRiskPortal = () => {
             <span className="hidden sm:inline">Mezzanine Investment</span>
             <span className="sm:hidden">Investment</span>
           </button>
+          <button
+            onClick={() => setHubTab('marketing')}
+            className={`flex-1 py-2.5 px-4 rounded-lg text-xs md:text-sm font-semibold transition-all flex items-center justify-center gap-2 ${
+              hubTab === 'marketing'
+                ? 'bg-gradient-to-r from-[#56afb6] to-teal-500 text-white shadow-md'
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            <Megaphone size={16} />
+            <span className="hidden sm:inline">Mezzanine Marketing</span>
+            <span className="sm:hidden">Marketing</span>
+          </button>
         </div>
       </div>
 
@@ -868,6 +1314,8 @@ export const AdminRiskPortal = () => {
               gradient="from-teal-500 to-teal-700"
               Icon={LayoutDashboard}
             />
+
+            <FuzzyLogicSection lens="tech" />
 
             {/* Top KPI Row */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
@@ -1302,6 +1750,127 @@ export const AdminRiskPortal = () => {
         </div>
       )}
 
+      {/* Mezzanine Marketing Identity */}
+      {hubTab === 'marketing' && (
+        <div className="px-4 pt-4 bg-slate-800">
+          <AdminIdentityBanner
+            company="Mezzanine Marketing"
+            companyAr="ميزانين للتسويق"
+            role="Market Intelligence Administrator — powered by Fuzzy Logic AI"
+            description="Monitors the marketplace end-to-end — what's selling, what's slowing, where orders concentrate, and which products carry risk — then uploads demand and risk signals to Mezzanine Capital to shape credit policy."
+            manages={[
+              'Category demand & search trends',
+              'Order volume & concentration',
+              'Product return / dispute risk',
+              'Seasonality & price volatility',
+              'Signal upload to Mezzanine Capital',
+            ]}
+            gradient="from-pink-500 to-rose-600"
+            Icon={Megaphone}
+          />
+        </div>
+      )}
+
+      {/* Marketing KPI Cards */}
+      {hubTab === 'marketing' && (
+        <div className="px-4 py-4 bg-slate-800 border-b border-slate-700">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div className="bg-slate-900/50 rounded-xl p-3 border border-slate-700">
+              <div className="flex items-center gap-2 mb-1">
+                <Activity size={14} className="text-slate-400" />
+                <p className="text-xs text-slate-400 uppercase font-semibold">Categories Tracked</p>
+              </div>
+              <p className="text-2xl font-bold text-white">36</p>
+            </div>
+            <div className="bg-emerald-500/10 rounded-xl p-3 border border-emerald-500/30">
+              <div className="flex items-center gap-2 mb-1">
+                <TrendingUp size={14} className="text-emerald-400" />
+                <p className="text-xs text-emerald-400 uppercase font-semibold">Rising Categories</p>
+              </div>
+              <p className="text-2xl font-bold text-emerald-400">7 <span className="text-sm">(+ demand)</span></p>
+            </div>
+            <div className="bg-amber-500/10 rounded-xl p-3 border border-amber-500/30">
+              <div className="flex items-center gap-2 mb-1">
+                <AlertTriangle size={14} className="text-amber-400" />
+                <p className="text-xs text-amber-400 uppercase font-semibold">High-Risk Products</p>
+              </div>
+              <p className="text-2xl font-bold text-amber-400">4</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Marketing — Fuzzy Logic (market-intelligence lens) */}
+      {hubTab === 'marketing' && <FuzzyLogicSection lens="marketing" />}
+
+      {/* Marketing — Market Moves Monitor */}
+      {hubTab === 'marketing' && (
+        <div className="flex-1 overflow-y-auto p-4 md:p-6 bg-[#f7f4e8]">
+          <div className="max-w-7xl mx-auto space-y-6">
+            <div>
+              <h2 className="text-xl md:text-2xl font-bold text-slate-900 mb-1">Market Moves Monitor · مراقبة حركة السوق</h2>
+              <p className="text-sm text-slate-600">What's in high demand, what's slowing, where orders concentrate, and which products carry risk — uploaded to Mezzanine Capital.</p>
+            </div>
+
+            <div className="bg-slate-900 rounded-2xl border border-slate-700 overflow-hidden">
+              <div className="px-4 py-3 border-b border-slate-700 flex items-center gap-2">
+                <Megaphone size={14} className="text-pink-400" />
+                <p className="text-xs font-bold text-white">Market Moves → uploaded to Mezzanine Capital</p>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-left">
+                  <thead>
+                    <tr className="text-[9px] uppercase text-slate-500 border-b border-slate-800">
+                      <th className="px-3 py-2 font-semibold">Category</th>
+                      <th className="px-3 py-2 font-semibold">Demand</th>
+                      <th className="px-3 py-2 font-semibold">Orders 30d</th>
+                      <th className="px-3 py-2 font-semibold">Search</th>
+                      <th className="px-3 py-2 font-semibold">Returns</th>
+                      <th className="px-3 py-2 font-semibold">Risk</th>
+                      <th className="px-3 py-2 font-semibold">Signal to Capital</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {MARKET_MOVES.map((m) => (
+                      <tr key={m.cat} className="border-b border-slate-800/60 last:border-0">
+                        <td className="px-3 py-2">
+                          <p className="text-[11px] font-bold text-white leading-tight">{m.cat}</p>
+                          <p className="text-[9px] text-slate-500">{m.ar}</p>
+                        </td>
+                        <td className={`px-3 py-2 text-[11px] font-bold whitespace-nowrap ${m.dir === 'up' ? 'text-emerald-400' : m.dir === 'down' ? 'text-red-400' : 'text-slate-400'}`}>{m.trend}</td>
+                        <td className="px-3 py-2 text-[11px] text-slate-300">{m.orders}</td>
+                        <td className="px-3 py-2 text-[10px] text-slate-400">{m.search}</td>
+                        <td className="px-3 py-2 text-[11px] text-slate-300">{m.ret}</td>
+                        <td className="px-3 py-2">
+                          <span className={`text-[9px] font-bold rounded-full px-2 py-0.5 border ${m.risk === 'Low' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-800/50' : m.risk === 'Medium' ? 'bg-amber-500/10 text-amber-400 border-amber-800/50' : 'bg-red-500/10 text-red-400 border-red-800/50'}`}>{m.risk}</span>
+                        </td>
+                        <td className="px-3 py-2 text-[10px] text-[#56afb6] font-medium whitespace-nowrap">{m.signal}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-6 text-white">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-xl bg-pink-500/20 border border-pink-500/30 flex items-center justify-center flex-shrink-0">
+                  <Megaphone size={20} className="text-pink-300" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold mb-2">How Mezzanine Marketing feeds Capital</h3>
+                  <p className="text-sm text-slate-300 leading-relaxed">
+                    Marketing turns raw marketplace activity into a demand-and-risk map: rising categories with low returns become green signals that let
+                    Mezzanine Capital widen credit appetite; volatile, high-return products become red signals that tighten tenor and cap exposure.
+                    Capital then hands the updated standard and policy to Tech, Finance and Investment.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {hubTab === 'investment-portfolios' && (
         <div className="px-4 py-4 bg-slate-800 border-b border-slate-700">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -1330,293 +1899,9 @@ export const AdminRiskPortal = () => {
         </div>
       )}
 
-      {/* ── Fuzzy Logic Panel ── */}
-      {hubTab === 'credit-risk' && (
-        <div className="bg-slate-950 border-b border-slate-700 px-4 py-5">
-          <div className="max-w-7xl mx-auto">
-
-            {/* Header */}
-            <div className="flex items-center gap-3 mb-5">
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-purple-500 to-violet-700 flex items-center justify-center shadow-lg">
-                <Zap size={15} className="text-white" />
-              </div>
-              <div>
-                <p className="text-sm font-bold text-white">Fuzzy Logic · <span className="text-purple-400">مساحة ضبابية يستهدفها الذكاء</span></p>
-                <p className="text-[10px] text-slate-500">AI learns from approved sectors and predicts the next credit targets using pattern similarity</p>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-
-              {/* ── Column 1: Sectors that got credit & succeeded ── */}
-              <div className="bg-slate-900 rounded-2xl border border-slate-700 overflow-hidden">
-                <div className="px-4 py-3 border-b border-slate-700 flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-emerald-400" />
-                  <p className="text-xs font-bold text-emerald-400 uppercase tracking-wide">Confirmed Zone · المنطقة المؤكدة</p>
-                </div>
-                <div className="p-4 space-y-3">
-                  {[
-                    { sector: 'Construction', ar: 'الإنشاءات', companies: 45, ecl: 1.1, success: 96, volume: '22.4M', color: 'emerald' },
-                    { sector: 'Trading',      ar: 'التجارة',   companies: 22, ecl: 1.4, success: 91, volume: '9.8M',  color: 'emerald' },
-                    { sector: 'Manufacturing',ar: 'التصنيع',   companies: 12, ecl: 2.1, success: 82, volume: '6.1M',  color: 'teal'    },
-                    { sector: 'Logistics',    ar: 'اللوجستيات',companies:  8, ecl: 2.4, success: 78, volume: '3.2M',  color: 'teal'    },
-                  ].map((s) => {
-                    const bar = { emerald: 'bg-emerald-500', teal: 'bg-teal-400' }[s.color];
-                    const text = { emerald: 'text-emerald-400', teal: 'text-teal-400' }[s.color];
-                    const border = { emerald: 'border-emerald-800', teal: 'border-teal-800' }[s.color];
-                    return (
-                      <div key={s.sector} className={`rounded-xl border ${border} bg-slate-800/60 p-3`}>
-                        <div className="flex items-center justify-between mb-2">
-                          <div>
-                            <p className="text-xs font-bold text-white">{s.sector}</p>
-                            <p className="text-[9px] text-slate-500">{s.ar}</p>
-                          </div>
-                          <span className={`text-[10px] font-bold ${text}`}>{s.success}% success</span>
-                        </div>
-                        <div className="w-full h-1.5 bg-slate-700 rounded-full mb-2">
-                          <div className={`h-full ${bar} rounded-full`} style={{ width: `${s.success}%` }} />
-                        </div>
-                        <div className="flex items-center gap-3 text-[9px] text-slate-500">
-                          <span>{s.companies} cos.</span>
-                          <span>ECL {s.ecl}%</span>
-                          <span className="ml-auto font-semibold text-slate-300">{s.volume} SAR</span>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* ── Column 2: Fuzzy Zone Visual — ENHANCED ── */}
-              <div className="bg-slate-900 rounded-2xl border border-purple-900/60 overflow-hidden flex flex-col">
-                <div className="px-4 py-3 border-b border-purple-900/60 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
-                    <p className="text-xs font-bold text-purple-400 uppercase tracking-wide">Fuzzy Zone · مساحة ضبابية</p>
-                  </div>
-                  <span className="text-[9px] text-slate-600 italic">AI radial targeting map</span>
-                </div>
-
-                <div className="flex-1 flex flex-col p-3 gap-3">
-                  {/* SVG radial map */}
-                  <div className="flex items-center justify-center">
-                    <svg viewBox="0 0 300 280" className="w-full max-w-[280px]">
-                      <defs>
-                        {/* Fuzzy blur filter */}
-                        <filter id="fz-blur" x="-30%" y="-30%" width="160%" height="160%">
-                          <feGaussianBlur stdDeviation="3.5" result="blur" />
-                          <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                        </filter>
-                        {/* Glow for confirmed dots */}
-                        <filter id="fz-glow">
-                          <feGaussianBlur stdDeviation="2.5" result="glow" />
-                          <feMerge><feMergeNode in="glow" /><feMergeNode in="SourceGraphic" /></feMerge>
-                        </filter>
-                        {/* Radial gradients */}
-                        <radialGradient id="fz-inner" cx="50%" cy="50%" r="50%">
-                          <stop offset="0%"   stopColor="#10b981" stopOpacity="0.25" />
-                          <stop offset="100%" stopColor="#10b981" stopOpacity="0.06" />
-                        </radialGradient>
-                        <radialGradient id="fz-fuzzy" cx="50%" cy="50%" r="50%">
-                          <stop offset="0%"   stopColor="#a855f7" stopOpacity="0.20" />
-                          <stop offset="100%" stopColor="#7c3aed" stopOpacity="0.04" />
-                        </radialGradient>
-                        <radialGradient id="fz-outer" cx="50%" cy="50%" r="50%">
-                          <stop offset="0%"   stopColor="#1e293b" stopOpacity="0.6" />
-                          <stop offset="100%" stopColor="#0f172a" stopOpacity="0.9" />
-                        </radialGradient>
-                        <marker id="fz-arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
-                          <path d="M0,0 L0,6 L6,3 z" fill="#a855f7" opacity="0.55" />
-                        </marker>
-                      </defs>
-
-                      {/* ── Outer unknown ring ── */}
-                      <circle cx="150" cy="138" r="128" fill="url(#fz-outer)" stroke="#1e293b" strokeWidth="1" />
-                      <text x="150" y="15"  textAnchor="middle" fill="#334155" fontSize="7.5" fontWeight="600" letterSpacing="2">UNKNOWN · مجهول</text>
-
-                      {/* Unknown scatter dots */}
-                      {[[55,40],[250,35],[268,140],[240,235],[60,235],[22,130],[150,20]].map(([x,y],i) => (
-                        <circle key={i} cx={x} cy={y} r="3" fill="#334155" opacity="0.5" />
-                      ))}
-
-                      {/* ── Fuzzy zone ring (blurred) ── */}
-                      <circle cx="150" cy="138" r="98" fill="url(#fz-fuzzy)" filter="url(#fz-blur)" />
-                      <circle cx="150" cy="138" r="98" fill="none" stroke="#7c3aed" strokeWidth="1.5" strokeDasharray="6 4" opacity="0.6" />
-                      {/* Outer fuzzy label */}
-                      <text x="150" y="247" textAnchor="middle" fill="#7c3aed" fontSize="7" fontWeight="700" letterSpacing="1" opacity="0.8">FUZZY ZONE · ضبابي</text>
-
-                      {/* ── Confirmed inner zone ── */}
-                      <circle cx="150" cy="138" r="62" fill="url(#fz-inner)" stroke="#10b981" strokeWidth="1.2" opacity="0.9" />
-                      <text x="150" y="193" textAnchor="middle" fill="#10b981" fontSize="6.5" fontWeight="700" letterSpacing="1" opacity="0.7">CONFIRMED · مؤكد</text>
-
-                      {/* ── AI brain at center ── */}
-                      <circle cx="150" cy="138" r="20" fill="#1e1b4b" stroke="#7c3aed" strokeWidth="1.5" />
-                      <circle cx="150" cy="138" r="20" fill="none" stroke="#a855f7" strokeWidth="0.5" opacity="0.4">
-                        <animate attributeName="r" values="20;24;20" dur="3s" repeatCount="indefinite" />
-                        <animate attributeName="opacity" values="0.4;0.1;0.4" dur="3s" repeatCount="indefinite" />
-                      </circle>
-                      <text x="150" y="135" textAnchor="middle" fill="#c084fc" fontSize="8"  fontWeight="800">AI</text>
-                      <text x="150" y="145" textAnchor="middle" fill="#7c3aed" fontSize="6.5" fontWeight="600">ذكاء</text>
-
-                      {/* ── Confirmed sector dots (inner ring) ── */}
-                      {/* Construction */}
-                      <g filter="url(#fz-glow)">
-                        <circle cx="150" cy="85" r="7" fill="#10b981" />
-                      </g>
-                      <line x1="150" y1="118" x2="150" y2="93"  stroke="#10b981" strokeWidth="0.8" strokeDasharray="3 2" opacity="0.4" />
-                      <text x="150" y="76" textAnchor="middle" fill="#6ee7b7" fontSize="7" fontWeight="700">Construction</text>
-
-                      {/* Trading */}
-                      <g filter="url(#fz-glow)">
-                        <circle cx="203" cy="155" r="7" fill="#10b981" />
-                      </g>
-                      <line x1="170" y1="143" x2="197" y2="152" stroke="#10b981" strokeWidth="0.8" strokeDasharray="3 2" opacity="0.4" />
-                      <text x="218" y="158" textAnchor="start" fill="#6ee7b7" fontSize="7" fontWeight="700">Trading</text>
-
-                      {/* Manufacturing */}
-                      <g filter="url(#fz-glow)">
-                        <circle cx="110" cy="168" r="6" fill="#2dd4bf" />
-                      </g>
-                      <line x1="133" y1="152" x2="115" y2="163" stroke="#2dd4bf" strokeWidth="0.8" strokeDasharray="3 2" opacity="0.4" />
-                      <text x="65" y="172" textAnchor="middle" fill="#5eead4" fontSize="6.5" fontWeight="700">Manufact.</text>
-
-                      {/* Logistics — on boundary (amber, entering fuzzy) */}
-                      <g filter="url(#fz-glow)">
-                        <circle cx="185" cy="96" r="6" fill="#f59e0b" />
-                        <circle cx="185" cy="96" r="10" fill="none" stroke="#f59e0b" strokeWidth="0.8" opacity="0.3">
-                          <animate attributeName="r" values="7;12;7" dur="2.5s" repeatCount="indefinite" />
-                          <animate attributeName="opacity" values="0.3;0;0.3" dur="2.5s" repeatCount="indefinite" />
-                        </circle>
-                      </g>
-                      <text x="197" y="94" textAnchor="start" fill="#fbbf24" fontSize="6.5" fontWeight="700">Logistics</text>
-
-                      {/* ── AI prediction arrows from center ── */}
-                      <line x1="155" y1="119" x2="160" y2="78"  stroke="#a855f7" strokeWidth="1" strokeDasharray="4 3" opacity="0.45" markerEnd="url(#fz-arrow)" />
-                      <line x1="164" y1="128" x2="205" y2="95"  stroke="#a855f7" strokeWidth="1" strokeDasharray="4 3" opacity="0.45" markerEnd="url(#fz-arrow)" />
-                      <line x1="138" y1="130" x2="100" y2="106" stroke="#a855f7" strokeWidth="1" strokeDasharray="4 3" opacity="0.45" markerEnd="url(#fz-arrow)" />
-
-                      {/* ── Fuzzy zone target dots (pulsing purple) ── */}
-                      {/* Target A — Build. Materials */}
-                      <circle cx="160" cy="62" r="5.5" fill="#a855f7" opacity="0.85">
-                        <animate attributeName="r"       values="5.5;8;5.5" dur="2s"   repeatCount="indefinite" />
-                        <animate attributeName="opacity" values="0.85;0.3;0.85" dur="2s" repeatCount="indefinite" />
-                      </circle>
-                      <text x="175" y="57" textAnchor="start" fill="#c084fc" fontSize="6.5" fontWeight="700">Bldg. Materials</text>
-                      <text x="175" y="66" textAnchor="start" fill="#7c3aed" fontSize="6">مواد البناء</text>
-
-                      {/* Target B — Logistics Freight */}
-                      <circle cx="215" cy="88" r="5" fill="#a855f7" opacity="0.8">
-                        <animate attributeName="r"       values="5;7.5;5"   dur="2.8s" repeatCount="indefinite" />
-                        <animate attributeName="opacity" values="0.8;0.25;0.8" dur="2.8s" repeatCount="indefinite" />
-                      </circle>
-                      <text x="228" y="83" textAnchor="start" fill="#c084fc" fontSize="6.5" fontWeight="700">Logistics+</text>
-
-                      {/* Target C — Engineering */}
-                      <circle cx="98" cy="93" r="4.5" fill="#a855f7" opacity="0.75">
-                        <animate attributeName="r"       values="4.5;7;4.5"   dur="3.2s" repeatCount="indefinite" />
-                        <animate attributeName="opacity" values="0.75;0.2;0.75" dur="3.2s" repeatCount="indefinite" />
-                      </circle>
-                      <text x="50" y="91" textAnchor="middle" fill="#c084fc" fontSize="6.5" fontWeight="700">Engineering</text>
-                      <text x="50" y="100" textAnchor="middle" fill="#7c3aed" fontSize="6">هندسة</text>
-                    </svg>
-                  </div>
-
-                  {/* Stats strip */}
-                  <div className="grid grid-cols-3 gap-2">
-                    <div className="bg-emerald-950/40 border border-emerald-900/40 rounded-xl p-2 text-center">
-                      <p className="text-[9px] text-emerald-600 uppercase font-semibold mb-0.5">Confirmed</p>
-                      <p className="text-sm font-bold text-emerald-400">4</p>
-                      <p className="text-[8px] text-slate-600">sectors</p>
-                    </div>
-                    <div className="bg-purple-950/40 border border-purple-900/40 rounded-xl p-2 text-center">
-                      <p className="text-[9px] text-purple-500 uppercase font-semibold mb-0.5">Fuzzy</p>
-                      <p className="text-sm font-bold text-purple-400">3</p>
-                      <p className="text-[8px] text-slate-600">AI targets</p>
-                    </div>
-                    <div className="bg-slate-800/40 border border-slate-700/40 rounded-xl p-2 text-center">
-                      <p className="text-[9px] text-slate-600 uppercase font-semibold mb-0.5">Unknown</p>
-                      <p className="text-sm font-bold text-slate-500">∞</p>
-                      <p className="text-[8px] text-slate-600">unexplored</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* ── Column 3: AI Next Prediction ── */}
-              <div className="bg-slate-900 rounded-2xl border border-amber-900/50 overflow-hidden flex flex-col">
-                <div className="px-4 py-3 border-b border-amber-900/50 flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
-                  <p className="text-xs font-bold text-amber-400 uppercase tracking-wide">AI Next Targets · التوقعات القادمة</p>
-                </div>
-
-                <div className="p-4 space-y-3 flex-1">
-                  {/* Reasoning */}
-                  <div className="bg-purple-950/60 border border-purple-800/40 rounded-xl px-3 py-2.5">
-                    <p className="text-[9px] text-purple-400 font-semibold uppercase mb-1">AI Reasoning</p>
-                    <p className="text-[10px] text-slate-300 leading-relaxed">
-                      Pattern detected: <span className="text-emerald-400 font-semibold">Construction</span> companies with ECL &lt; 2% and &gt;3 platform POs have a 96% success rate. AI is scanning for companies with <span className="text-purple-300 font-semibold">similar profiles</span> across adjacent sectors.
-                    </p>
-                  </div>
-
-                  {/* Predicted targets */}
-                  {[
-                    {
-                      rank: 1, sector: 'Construction (Expansion)', ar: 'إنشاءات — توسع',
-                      confidence: 94, ecl: '< 1.8%', companies: 18,
-                      reason: 'Same sector, similar ECL profile to approved batch',
-                      color: 'amber',
-                    },
-                    {
-                      rank: 2, sector: 'Building Materials', ar: 'مواد البناء',
-                      confidence: 81, ecl: '< 2.5%', companies: 11,
-                      reason: 'Directly supplies approved Construction companies',
-                      color: 'purple',
-                    },
-                    {
-                      rank: 3, sector: 'Logistics (Freight)', ar: 'لوجستيات — شحن',
-                      confidence: 73, ecl: '< 3%', companies: 7,
-                      reason: 'Serves same supply chain as top-performing sectors',
-                      color: 'slate',
-                    },
-                  ].map((t) => {
-                    const ring   = { amber: 'ring-amber-700/40 bg-amber-950/40',   purple: 'ring-purple-800/40 bg-purple-950/40', slate: 'ring-slate-700/40 bg-slate-800/60' }[t.color];
-                    const badge  = { amber: 'bg-amber-500 text-white',              purple: 'bg-purple-500 text-white',            slate: 'bg-slate-600 text-white'           }[t.color];
-                    const conf   = { amber: 'text-amber-400',                       purple: 'text-purple-400',                     slate: 'text-slate-400'                    }[t.color];
-                    const bar    = { amber: 'bg-amber-500',                         purple: 'bg-purple-500',                       slate: 'bg-slate-500'                      }[t.color];
-                    return (
-                      <div key={t.rank} className={`rounded-xl ring-1 ${ring} p-3`}>
-                        <div className="flex items-start gap-2 mb-2">
-                          <span className={`text-[9px] font-bold rounded-full w-4 h-4 flex items-center justify-center flex-shrink-0 ${badge}`}>{t.rank}</span>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-xs font-bold text-white leading-tight">{t.sector}</p>
-                            <p className="text-[9px] text-slate-500">{t.ar}</p>
-                          </div>
-                          <span className={`text-xs font-bold flex-shrink-0 ${conf}`}>{t.confidence}%</span>
-                        </div>
-                        <div className="w-full h-1 bg-slate-800 rounded-full mb-2">
-                          <div className={`h-full ${bar} rounded-full`} style={{ width: `${t.confidence}%` }} />
-                        </div>
-                        <div className="flex items-center gap-3 text-[9px] text-slate-500 mb-1">
-                          <span>ECL {t.ecl}</span>
-                          <span>·</span>
-                          <span>{t.companies} companies in scope</span>
-                        </div>
-                        <p className="text-[9px] text-slate-500 italic">{t.reason}</p>
-                      </div>
-                    );
-                  })}
-                </div>
-
-                {/* Footer */}
-                <div className="px-4 py-3 border-t border-slate-800 bg-slate-950/50">
-                  <p className="text-[9px] text-slate-600 text-center">Predictions update every 24h · Powered by Torbiona Fuzzy Logic Engine</p>
-                </div>
-              </div>
-
-            </div>
-          </div>
-        </div>
-      )}
+      {/* ── Fuzzy Logic — per-company lenses ── */}
+      {hubTab === 'investment-portfolios' && <FuzzyLogicSection lens="investment" />}
+      {hubTab === 'credit-risk' && <FuzzyLogicSection lens="finance" />}
 
       {/* ── Credit Portfolio ── */}
       {hubTab === 'credit-risk' && (
