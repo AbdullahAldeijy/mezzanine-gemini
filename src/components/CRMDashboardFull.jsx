@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { LayoutDashboard, Package, FileText, BarChart3, TrendingUp, Search, Bell, Plus, Download, Star, AlertTriangle, DollarSign, Users, Clock, Edit, Trash2, X, Megaphone, Building2, CheckSquare, Briefcase, ArrowUp, Check, Twitter, Linkedin, Facebook, Upload, Award, MoreHorizontal, ShieldCheck, Shield, Zap, FileCheck, CreditCard, CheckCircle2 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
+import { useTranslation } from '../i18n/useTranslation';
 import { CompanyScoreSummary, CompanyProfileTabs } from './SetupWizard';
 import { ContractsPortalContent } from './ContractsPortal';
 import { DataIntegrationsContent } from './DataIntegrations';
@@ -122,6 +123,7 @@ const AccessControlContent = ({
   onAddTask,
   onMarkTaskComplete,
 }) => {
+  const { t } = useTranslation();
 
   const handlePermissionChange = (moduleId, action, value) => {
     if (selectedRole) {
@@ -194,7 +196,7 @@ const AccessControlContent = ({
           }`}
         >
           <CheckSquare size={16} />
-          Tasks & Goals
+          {t('crm.tasksGoals')}
         </button>
         <button
           onClick={() => setAccessTab('roles')}
@@ -205,7 +207,7 @@ const AccessControlContent = ({
           }`}
         >
           <Shield size={16} />
-          Role Groups
+          {t('crm.roleGroups')}
         </button>
         <button
           onClick={() => setAccessTab('members')}
@@ -216,7 +218,7 @@ const AccessControlContent = ({
           }`}
         >
           <Users size={16} />
-          Team Members
+          {t('crm.teamMembers')}
         </button>
         <button
           onClick={() => setAccessTab('departments')}
@@ -227,7 +229,7 @@ const AccessControlContent = ({
           }`}
         >
           <Building2 size={16} />
-          Departments
+          {t('crm.departments')}
         </button>
       </div>
 
@@ -235,10 +237,10 @@ const AccessControlContent = ({
       {accessTab === 'tasks' && (
         <div>
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-            <h3 className="text-lg font-bold text-slate-900">Tasks & Goals</h3>
+            <h3 className="text-lg font-bold text-slate-900">{t('crm.tasksGoals')}</h3>
             <button onClick={onAddTask} className="w-full md:w-auto px-6 py-3 bg-teal-500 text-white rounded-xl font-medium hover:bg-teal-600 flex items-center justify-center gap-2">
               <Plus size={20} />
-              Add New Task
+              {t('crm.addNewTask')}
             </button>
           </div>
 
@@ -599,6 +601,7 @@ const AccessControlContent = ({
 
 export const CRMDashboardFull = () => {
   const { setCurrentView } = useApp();
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [showProductModal, setShowProductModal] = useState(false);
   const [showMoreMenu, setShowMoreMenu] = useState(false);
@@ -715,20 +718,20 @@ export const CRMDashboardFull = () => {
   ];
 
   const allTabs = [
-    { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard Overview' },
-    { id: 'products', icon: Package, label: 'My Products' },
-    { id: 'orders', icon: FileText, label: 'Purchase Orders' },
-    { id: 'analytics', icon: DollarSign, label: 'Financing Eligibility' },
-    { id: 'torbiona', icon: CreditCard, label: 'Fund Disbursements' },
-    { id: 'suppliers', icon: Users, label: 'Supplier Performance' },
-    { id: 'market', icon: TrendingUp, label: 'Market Analytics' },
-    { id: 'advertising', icon: Megaphone, label: 'Advertising Packages' },
-    { id: 'departments', icon: Building2, label: 'Department Management' },
-    { id: 'tasks', icon: CheckSquare, label: 'Workspace & Team' },
-    { id: 'company', icon: Briefcase, label: 'Company Page Editor' },
-    { id: 'data-integrations', icon: Zap, label: 'Data & Integrations' },
-    { id: 'access-control', icon: ShieldCheck, label: 'Team & Access' },
-    { id: 'contracts-portal', icon: FileCheck, label: 'Digital Contracts' },
+    { id: 'dashboard', icon: LayoutDashboard, labelKey: 'crm.dashboardOverview' },
+    { id: 'products', icon: Package, labelKey: 'nav.myProducts' },
+    { id: 'orders', icon: FileText, labelKey: 'nav.purchaseOrders' },
+    { id: 'analytics', icon: DollarSign, labelKey: 'nav.financingRFQs' },
+    { id: 'torbiona', icon: CreditCard, labelKey: 'nav.payments' },
+    { id: 'suppliers', icon: Users, labelKey: 'nav.supplierPerformance' },
+    { id: 'market', icon: TrendingUp, labelKey: 'nav.marketAnalytics' },
+    { id: 'advertising', icon: Megaphone, labelKey: 'nav.advertisingPackages' },
+    { id: 'departments', icon: Building2, labelKey: 'nav.manageDepartments' },
+    { id: 'tasks', icon: CheckSquare, labelKey: 'nav.tasksGoals' },
+    { id: 'company', icon: Briefcase, labelKey: 'nav.companyPage' },
+    { id: 'data-integrations', icon: Zap, labelKey: 'nav.dataIntegrations' },
+    { id: 'access-control', icon: ShieldCheck, labelKey: 'nav.teamAccess' },
+    { id: 'contracts-portal', icon: FileCheck, labelKey: 'nav.digitalContracts' },
   ];
 
   const handleNavClick = (item) => {
@@ -751,13 +754,13 @@ export const CRMDashboardFull = () => {
       {/* Desktop Sidebar */}
       <div className="hidden md:block w-64 bg-white/90 backdrop-blur shadow-sm fixed left-0 top-0 h-screen overflow-y-auto">
         <div className="p-6 border-b border-gray-200">
-          <h1 
+          <h1
             onClick={() => setCurrentView('b2b-platform')}
             className="text-2xl font-bold text-teal-500 cursor-pointer hover:opacity-80 transition-opacity"
           >
-            Mezzanine
+            {t('brand')}
           </h1>
-          <p className="text-xs text-slate-500 mt-1">Admin - BuildTech</p>
+          <p className="text-xs text-slate-500 mt-1">{t('brandAdmin')}</p>
         </div>
         <nav className="p-4">
           {allTabs.map((item) => {
@@ -771,7 +774,7 @@ export const CRMDashboardFull = () => {
                 }`}
               >
                 <Icon size={20} />
-                <span className="text-sm font-medium">{item.label}</span>
+                <span className="text-sm font-medium">{t(item.labelKey)}</span>
               </div>
             );
           })}
@@ -781,14 +784,16 @@ export const CRMDashboardFull = () => {
       {/* Main Content */}
       <div className="md:ml-64 flex-1 w-full">
         {/* Mobile Top Header */}
-        <div className="md:hidden bg-white shadow-sm sticky top-0 z-40 px-4 py-3 border-b">
-          <h1 
-            onClick={() => setCurrentView('b2b-platform')}
-            className="text-xl font-bold text-teal-500 cursor-pointer"
-          >
-            Mezzanine
-          </h1>
-          <p className="text-xs text-slate-500">Admin - BuildTech</p>
+        <div className="md:hidden bg-white shadow-sm sticky top-0 z-40 px-4 py-3 border-b flex items-center justify-between">
+          <div>
+            <h1
+              onClick={() => setCurrentView('b2b-platform')}
+              className="text-xl font-bold text-teal-500 cursor-pointer"
+            >
+              {t('brand')}
+            </h1>
+            <p className="text-xs text-slate-500">{t('brandAdmin')}</p>
+          </div>
         </div>
 
         {/* Desktop Top Header */}
@@ -799,7 +804,7 @@ export const CRMDashboardFull = () => {
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={18} />
                 <input
                   type="text"
-                  placeholder="Search..."
+                  placeholder={t('crm.search')}
                   className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none text-sm"
                 />
               </div>
@@ -811,7 +816,7 @@ export const CRMDashboardFull = () => {
               </button>
               {showNotifications && (
                 <div className="absolute right-0 top-12 w-72 max-w-[calc(100vw-1rem)] bg-white rounded-2xl shadow-xl border border-gray-100 z-50 overflow-hidden">
-                  <div className="p-3 border-b border-gray-100 font-bold text-sm text-slate-900">Notifications</div>
+                  <div className="p-3 border-b border-gray-100 font-bold text-sm text-slate-900">{t('crm.notifications')}</div>
                   {notifications.map((n, idx) => (
                     <div key={idx} className="p-3 border-b border-gray-50 last:border-0 hover:bg-gray-50">
                       <p className="text-sm text-slate-800">{n.text}</p>
@@ -825,7 +830,7 @@ export const CRMDashboardFull = () => {
                 className="hidden md:flex px-4 py-2 bg-teal-500 text-white rounded-xl text-sm font-medium hover:bg-teal-600 items-center gap-2"
               >
                 <Plus size={16} />
-                Quick Actions
+                {t('crm.quickActions')}
               </button>
             </div>
           </div>
@@ -836,15 +841,15 @@ export const CRMDashboardFull = () => {
           {/* Dashboard Overview */}
           {activeTab === 'dashboard' && (
             <div>
-              <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-6 md:mb-8">Dashboard Overview</h2>
+              <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-6 md:mb-8">{t('crm.dashboardOverview')}</h2>
               
               {/* KPI Cards */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8">
                 {[
-                  { label: 'Total Revenue', value: '$892K', trend: '+15%', icon: DollarSign, color: 'teal' },
-                  { label: 'Active Purchase Orders', value: '12', trend: '+3', icon: FileText, color: 'blue' },
-                  { label: 'Total Products', value: '45', trend: '+8', icon: Package, color: 'purple' },
-                  { label: 'Low Stock Alerts', value: '2', trend: 'Critical', icon: AlertTriangle, color: 'red' },
+                  { label: t('crm.totalRevenueStat'), value: '$892K', trend: '+15%', icon: DollarSign, color: 'teal' },
+                  { label: t('crm.activePurchaseOrders'), value: '12', trend: '+3', icon: FileText, color: 'blue' },
+                  { label: t('crm.totalProducts'), value: '45', trend: '+8', icon: Package, color: 'purple' },
+                  { label: t('crm.lowStockAlerts'), value: '2', trend: 'Critical', icon: AlertTriangle, color: 'red' },
                 ].map((kpi, idx) => {
                   const Icon = kpi.icon;
                   return (
@@ -863,9 +868,9 @@ export const CRMDashboardFull = () => {
               {/* Quick Actions */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 mb-6 md:mb-8">
                 {[
-                  { label: 'Add New Product', onClick: () => { setActiveTab('products'); setShowProductModal(true); } },
-                  { label: 'Add Employee', onClick: () => { setActiveTab('departments'); setTeamAccessTab('departments'); } },
-                  { label: 'Browse Marketplace', onClick: () => setCurrentView('b2b-platform') },
+                  { label: t('crm.addNewProduct'), onClick: () => { setActiveTab('products'); setShowProductModal(true); } },
+                  { label: t('crm.addEmployee'), onClick: () => { setActiveTab('departments'); setTeamAccessTab('departments'); } },
+                  { label: t('crm.browseMarketplace'), onClick: () => setCurrentView('b2b-platform') },
                 ].map((action) => (
                   <button key={action.label} onClick={action.onClick} className="bg-white/90 backdrop-blur rounded-2xl shadow-sm p-6 hover:shadow-md transition-all text-left">
                     <Plus className="text-teal-500 mb-3" size={24} />

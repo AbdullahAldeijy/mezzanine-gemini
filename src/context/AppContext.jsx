@@ -1,14 +1,21 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 
 const AppContext = createContext();
 
 export const useApp = () => useContext(AppContext);
 
 export const AppProvider = ({ children }) => {
+  const [language, setLanguage] = useState('en');
   const [currentView, setCurrentView] = useState('b2b-platform');
   const [authTab, setAuthTab] = useState('register');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [setupStep, setSetupStep] = useState(1);
+
+  useEffect(() => {
+    const isAr = language === 'ar';
+    document.documentElement.dir = isAr ? 'rtl' : 'ltr';
+    document.documentElement.lang = language;
+  }, [language]);
   const [showCheckout, setShowCheckout] = useState(false);
   const [showTorbiona, setShowTorbiona] = useState(false);
   const [showFinancingRequest, setShowFinancingRequest] = useState(false);
@@ -78,6 +85,7 @@ export const AppProvider = ({ children }) => {
 
   return (
     <AppContext.Provider value={{
+      language, setLanguage,
       currentView, setCurrentView,
       authTab, setAuthTab,
       isLoggedIn, login, logout,

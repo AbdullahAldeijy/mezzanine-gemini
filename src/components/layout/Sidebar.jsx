@@ -1,21 +1,24 @@
 import { X, LayoutDashboard, Package, FileText, FileSignature, BarChart3, TrendingUp, ShoppingBag, Megaphone, Building2, CheckSquare, Briefcase, ShieldCheck, Database } from 'lucide-react';
+import { useTranslation } from '../../i18n/useTranslation';
 
-export const Sidebar = ({ activeItem = 'Marketplace', onNavigate, isOpen, onClose }) => {
+export const Sidebar = ({ activeItem = 'marketplace', onNavigate, isOpen, onClose }) => {
+  const { t, isRTL } = useTranslation();
+
   const menuItems = [
-    { icon: LayoutDashboard, label: 'Dashboard', view: 'dashboard' },
-    { icon: Package, label: 'My Products', view: 'products' },
-    { icon: FileText, label: 'Purchase Orders', view: 'orders' },
-    { icon: FileSignature, label: 'Digital Contracts', view: 'contracts-portal' },
-    { icon: BarChart3, label: 'Supplier Performance', view: 'performance' },
-    { icon: TrendingUp, label: 'Analytics', view: 'analytics' },
-    { icon: ShoppingBag, label: 'Marketplace', view: 'marketplace' },
-    { icon: TrendingUp, label: 'Market Analytics', view: 'market-analytics' },
-    { icon: Megaphone, label: 'Advertising Packages', view: 'advertising' },
-    { icon: Building2, label: 'Manage Departments', view: 'departments' },
-    { icon: CheckSquare, label: 'Tasks & Goals', view: 'tasks' },
-    { icon: Briefcase, label: 'Company Page', view: 'company-page' },
-    { icon: ShieldCheck, label: 'Team & Access', view: 'access-control' },
-    { icon: Database, label: 'Data & Integrations', view: 'data-integrations' },
+    { icon: LayoutDashboard, key: 'nav.dashboard', view: 'dashboard' },
+    { icon: Package, key: 'nav.myProducts', view: 'products' },
+    { icon: FileText, key: 'nav.purchaseOrders', view: 'orders' },
+    { icon: FileSignature, key: 'nav.digitalContracts', view: 'contracts-portal' },
+    { icon: BarChart3, key: 'nav.supplierPerformance', view: 'performance' },
+    { icon: TrendingUp, key: 'nav.analytics', view: 'analytics' },
+    { icon: ShoppingBag, key: 'nav.marketplace', view: 'marketplace' },
+    { icon: TrendingUp, key: 'nav.marketAnalytics', view: 'market-analytics' },
+    { icon: Megaphone, key: 'nav.advertisingPackages', view: 'advertising' },
+    { icon: Building2, key: 'nav.manageDepartments', view: 'departments' },
+    { icon: CheckSquare, key: 'nav.tasksGoals', view: 'tasks' },
+    { icon: Briefcase, key: 'nav.companyPage', view: 'company-page' },
+    { icon: ShieldCheck, key: 'nav.teamAccess', view: 'access-control' },
+    { icon: Database, key: 'nav.dataIntegrations', view: 'data-integrations' },
   ];
 
   const handleNav = (view) => {
@@ -23,9 +26,12 @@ export const Sidebar = ({ activeItem = 'Marketplace', onNavigate, isOpen, onClos
     onClose && onClose();
   };
 
+  const slideClass = isRTL
+    ? isOpen ? 'translate-x-0' : 'translate-x-full'
+    : isOpen ? 'translate-x-0' : '-translate-x-full';
+
   return (
     <>
-      {/* Mobile backdrop */}
       {isOpen && (
         <div
           className="md:hidden fixed inset-0 bg-black/50 z-40"
@@ -33,12 +39,12 @@ export const Sidebar = ({ activeItem = 'Marketplace', onNavigate, isOpen, onClos
         />
       )}
 
-      <div className={`w-64 bg-white h-screen shadow-lg fixed left-0 top-0 overflow-y-auto z-50 transition-transform duration-300
-        ${isOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0`}>
+      <div className={`w-64 bg-white h-screen shadow-lg fixed top-0 overflow-y-auto z-50 transition-transform duration-300
+        ${isRTL ? 'right-0' : 'left-0'} ${slideClass} md:translate-x-0`}>
         <div className="p-6 border-b border-gray-200 flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-teal">Mezzanine</h1>
-            <p className="text-xs text-slategray mt-1">B2B Construction Platform</p>
+            <h1 className="text-2xl font-bold text-teal">{t('brand')}</h1>
+            <p className="text-xs text-slategray mt-1">{t('brandSub')}</p>
           </div>
           <button
             onClick={onClose}
@@ -50,7 +56,7 @@ export const Sidebar = ({ activeItem = 'Marketplace', onNavigate, isOpen, onClos
         <nav className="p-4">
           {menuItems.map((item, idx) => {
             const Icon = item.icon;
-            const isActive = item.label === activeItem;
+            const isActive = item.view === activeItem;
             return (
               <div
                 key={idx}
@@ -60,7 +66,7 @@ export const Sidebar = ({ activeItem = 'Marketplace', onNavigate, isOpen, onClos
                 }`}
               >
                 <Icon size={20} />
-                <span className="text-sm font-medium">{item.label}</span>
+                <span className="text-sm font-medium">{t(item.key)}</span>
               </div>
             );
           })}

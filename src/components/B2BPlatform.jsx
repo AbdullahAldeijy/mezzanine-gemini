@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { Search, User, LayoutDashboard, LogIn, LogOut, FileText, Building2, Star, ArrowRight, X, Menu, Lock, TrendingUp, Send, MapPin, Calendar, Package, CreditCard } from 'lucide-react';
+import { useTranslation } from '../i18n/useTranslation';
 
 export const B2BPlatform = () => {
   const { setCurrentView, openCheckout, isLoggedIn, logout, userData } = useApp();
+  const { t } = useTranslation();
   const [showRFQModal, setShowRFQModal] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -66,11 +68,11 @@ export const B2BPlatform = () => {
       <nav className="bg-white shadow-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 md:px-6 py-3 md:py-4">
           <div className="flex items-center justify-between gap-2 md:gap-6">
-            <h1 
+            <h1
               onClick={() => setCurrentView('b2b-platform')}
               className="text-xl md:text-2xl font-bold bg-gradient-to-r from-teal-400 to-teal-600 bg-clip-text text-transparent cursor-pointer hover:opacity-80 transition-opacity whitespace-nowrap"
             >
-              Mezzanine
+              {t('brand')}
             </h1>
             
             {/* Desktop Search */}
@@ -79,7 +81,7 @@ export const B2BPlatform = () => {
                 <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
                 <input
                   type="text"
-                  placeholder="Search products, suppliers, materials..."
+                  placeholder={t('b2b.searchPlaceholder')}
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
                   className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none"
@@ -94,7 +96,7 @@ export const B2BPlatform = () => {
                 className="px-6 py-2 bg-gradient-to-r from-teal-400 to-teal-600 text-white rounded-xl font-medium shadow-md hover:shadow-lg transition-all flex items-center gap-2 whitespace-nowrap"
               >
                 <FileText size={18} />
-                Submit RFQ
+                {t('b2b.submitRFQ')}
               </button>
               {isLoggedIn ? (
                 <button

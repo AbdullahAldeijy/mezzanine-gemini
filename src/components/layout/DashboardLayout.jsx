@@ -2,9 +2,11 @@ import { useState } from 'react';
 import { Menu } from 'lucide-react';
 import { Sidebar } from './Sidebar';
 import { useApp } from '../../context/AppContext';
+import { useTranslation } from '../../i18n/useTranslation';
 
 export const DashboardLayout = ({ children, activeItem }) => {
   const { setCurrentView } = useApp();
+  const { t, isRTL } = useTranslation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -16,7 +18,7 @@ export const DashboardLayout = ({ children, activeItem }) => {
         onClose={() => setSidebarOpen(false)}
       />
 
-      <div className="md:ml-64 flex-1 w-full min-w-0">
+      <div className={`flex-1 w-full min-w-0 ${isRTL ? 'md:mr-64' : 'md:ml-64'}`}>
         {/* Mobile top bar */}
         <div className="md:hidden sticky top-0 z-30 bg-white shadow-sm px-4 py-3 flex items-center gap-3">
           <button
@@ -25,7 +27,7 @@ export const DashboardLayout = ({ children, activeItem }) => {
           >
             <Menu size={22} />
           </button>
-          <h1 className="text-xl font-bold text-teal">Mezzanine</h1>
+          <h1 className="text-xl font-bold text-teal flex-1">{t('brand')}</h1>
         </div>
 
         <div className="p-4 md:p-8">

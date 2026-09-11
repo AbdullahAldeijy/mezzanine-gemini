@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { Shield, Smartphone, CheckCircle, Building2, Calendar, FileCheck } from 'lucide-react';
+import { useTranslation } from '../i18n/useTranslation';
 
 export const KYBVerification = () => {
   const { setCurrentView } = useApp();
+  const { t } = useTranslation();
   const [verificationStatus, setVerificationStatus] = useState('idle');
   const [nationalId, setNationalId] = useState('');
   const [crNumber, setCrNumber] = useState('');
@@ -11,14 +13,12 @@ export const KYBVerification = () => {
 
   const handleInitiateVerification = (e) => {
     e.preventDefault();
-    // Generate random Nafath number
     const randomNum = Math.floor(Math.random() * 90) + 10;
     setNafathNumber(randomNum.toString());
     setVerificationStatus('nafath-prompt');
   };
 
   const handleSimulateApproval = () => {
-    // Simulate API delay
     setTimeout(() => {
       setVerificationStatus('success');
     }, 1500);
@@ -27,7 +27,7 @@ export const KYBVerification = () => {
   return (
     <div className="min-h-screen bg-[#f7f4e8] flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        {/* Step 1: Idle - Initiate Verification */}
+        {/* Step 1: Idle */}
         {verificationStatus === 'idle' && (
           <div className="bg-white/80 backdrop-blur-md rounded-2xl shadow-xl p-6 md:p-8 border border-white/60">
             <div className="flex items-center justify-center mb-6">
@@ -37,22 +37,22 @@ export const KYBVerification = () => {
             </div>
 
             <h1 className="text-2xl md:text-3xl font-bold text-slate-900 text-center mb-2">
-              Business Identity Verification
+              {t('kyb.title')}
             </h1>
             <p className="text-sm text-slate-600 text-center mb-6">
-              Secure KYB verification powered by Nafath & Wathiq
+              {t('kyb.subtitle')}
             </p>
 
             <form onSubmit={handleInitiateVerification} className="space-y-4">
               <div>
                 <label className="block text-sm font-semibold text-slate-700 mb-2">
-                  National ID / Iqama Number
+                  {t('kyb.nationalId')}
                 </label>
                 <input
                   type="text"
                   value={nationalId}
                   onChange={(e) => setNationalId(e.target.value)}
-                  placeholder="10-digit ID"
+                  placeholder={t('kyb.nationalIdPlaceholder')}
                   maxLength={10}
                   required
                   className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-slate-900 focus:border-[#56afb6] focus:ring-2 focus:ring-[#56afb6]/20 outline-none transition-all"
@@ -61,13 +61,13 @@ export const KYBVerification = () => {
 
               <div>
                 <label className="block text-sm font-semibold text-slate-700 mb-2">
-                  Commercial Registration (CR) Number
+                  {t('kyb.crNumber')}
                 </label>
                 <input
                   type="text"
                   value={crNumber}
                   onChange={(e) => setCrNumber(e.target.value)}
-                  placeholder="e.g., 1010123456"
+                  placeholder={t('kyb.crPlaceholder')}
                   required
                   className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-slate-900 focus:border-[#56afb6] focus:ring-2 focus:ring-[#56afb6]/20 outline-none transition-all"
                 />
@@ -79,7 +79,7 @@ export const KYBVerification = () => {
                   className="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-xl font-bold text-base shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2"
                 >
                   <Shield size={20} />
-                  Authenticate via Nafath
+                  {t('kyb.submit')}
                 </button>
               </div>
             </form>
@@ -87,13 +87,13 @@ export const KYBVerification = () => {
             <div className="mt-6 pt-6 border-t border-slate-200">
               <div className="flex items-center gap-2 text-xs text-slate-500">
                 <Shield size={14} className="text-emerald-500" />
-                <span>Secured by Saudi National Single Sign-On (Nafath)</span>
+                <span>{t('kyb.securedBy')}</span>
               </div>
             </div>
           </div>
         )}
 
-        {/* Step 2: Nafath Prompt - Waiting for Approval */}
+        {/* Step 2: Nafath Prompt */}
         {verificationStatus === 'nafath-prompt' && (
           <div className="bg-white/80 backdrop-blur-md rounded-2xl shadow-xl p-6 md:p-8 border border-white/60">
             <div className="flex items-center justify-center mb-6">
@@ -103,10 +103,10 @@ export const KYBVerification = () => {
             </div>
 
             <h2 className="text-xl md:text-2xl font-bold text-slate-900 text-center mb-2">
-              Waiting for Nafath Approval
+              {t('kyb.waitingTitle')}
             </h2>
             <p className="text-sm text-slate-600 text-center mb-8">
-              Please open the Nafath app on your smartphone and select the following number:
+              {t('kyb.waitingSubtitle')}
             </p>
 
             <div className="flex items-center justify-center mb-8">
@@ -117,23 +117,22 @@ export const KYBVerification = () => {
 
             <div className="bg-slate-50 rounded-xl p-4 mb-6">
               <p className="text-xs text-slate-600 text-center">
-                This request will expire in <span className="font-bold text-slate-900">2:00</span> minutes
+                {t('kyb.expiresIn')} <span className="font-bold text-slate-900">2:00</span> {t('kyb.minutes')}
               </p>
             </div>
 
-            {/* Demo Simulation Button */}
             <div className="flex justify-center">
               <button
                 onClick={handleSimulateApproval}
                 className="text-xs text-slate-400 hover:text-[#56afb6] underline transition-all"
               >
-                [Demo: Simulate User Approval]
+                {t('kyb.simulate')}
               </button>
             </div>
           </div>
         )}
 
-        {/* Step 3: Success - Data Fetched */}
+        {/* Step 3: Success */}
         {verificationStatus === 'success' && (
           <div className="bg-white/80 backdrop-blur-md rounded-2xl shadow-xl p-6 md:p-8 border border-white/60">
             <div className="flex items-center justify-center mb-6">
@@ -143,20 +142,19 @@ export const KYBVerification = () => {
             </div>
 
             <h2 className="text-2xl md:text-3xl font-bold text-slate-900 text-center mb-2">
-              Identity Verified Successfully
+              {t('kyb.successTitle')}
             </h2>
             <p className="text-sm text-slate-600 text-center mb-8">
-              Your business information has been securely retrieved from the Ministry of Commerce
+              {t('kyb.successSubtitle')}
             </p>
 
-            {/* Fetched Data Card */}
             <div className="bg-gradient-to-br from-slate-50 to-white rounded-2xl p-5 border border-slate-200 mb-6">
               <div className="flex items-center gap-3 mb-4 pb-4 border-b border-slate-200">
                 <div className="w-12 h-12 rounded-xl bg-[#56afb6]/20 flex items-center justify-center">
                   <Building2 size={24} className="text-[#56afb6]" />
                 </div>
                 <div>
-                  <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold">Company Name</p>
+                  <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold">{t('kyb.companyName')}</p>
                   <p className="text-base font-bold text-slate-900">BuildTech Construction Ltd.</p>
                 </div>
               </div>
@@ -165,7 +163,7 @@ export const KYBVerification = () => {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <FileCheck size={16} className="text-slate-400" />
-                    <span className="text-sm text-slate-600">CR Number</span>
+                    <span className="text-sm text-slate-600">{t('kyb.crLabel')}</span>
                   </div>
                   <span className="text-sm font-semibold text-slate-900">1010123456</span>
                 </div>
@@ -173,37 +171,35 @@ export const KYBVerification = () => {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div className="w-4 h-4 rounded-full bg-emerald-500"></div>
-                    <span className="text-sm text-slate-600">Status</span>
+                    <span className="text-sm text-slate-600">{t('kyb.status')}</span>
                   </div>
-                  <span className="text-sm font-semibold text-emerald-600">Active & Compliant</span>
+                  <span className="text-sm font-semibold text-emerald-600">{t('kyb.activeCompliant')}</span>
                 </div>
 
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Calendar size={16} className="text-slate-400" />
-                    <span className="text-sm text-slate-600">Established</span>
+                    <span className="text-sm text-slate-600">{t('kyb.established')}</span>
                   </div>
                   <span className="text-sm font-semibold text-slate-900">2015</span>
                 </div>
               </div>
             </div>
 
-            {/* Data Source Badge */}
             <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3 mb-6">
               <div className="flex items-center gap-2 justify-center">
                 <Shield size={14} className="text-emerald-600" />
                 <span className="text-xs font-semibold text-emerald-700">
-                  Data verified via Wathiq API (Ministry of Commerce)
+                  {t('kyb.verifiedVia')}
                 </span>
               </div>
             </div>
 
-            {/* Continue Button */}
             <button
               onClick={() => setCurrentView('b2b-platform')}
               className="w-full py-3.5 bg-gradient-to-r from-[#56afb6] to-teal-500 text-white rounded-xl font-bold text-base shadow-lg hover:shadow-xl transition-all"
             >
-              Continue to Mezzanine Dashboard
+              {t('kyb.backToPlatform')}
             </button>
           </div>
         )}

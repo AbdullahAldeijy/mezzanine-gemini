@@ -1,4 +1,6 @@
 import { AppProvider, useApp } from './context/AppContext';
+import { useTranslation } from './i18n/useTranslation';
+import { LanguageSwitcher } from './components/LanguageSwitcher';
 import { Auth } from './components/Auth';
 import { SetupWizard } from './components/SetupWizard';
 import { B2BPlatform } from './components/B2BPlatform';
@@ -26,10 +28,14 @@ const HIDE_PANEL_VIEWS = ['auth', 'setup', 'joint-operation', 'credit-control'];
 
 const AppContent = () => {
   const { currentView, showCheckout, showFinancingRequest, showTorbiona } = useApp();
+  const { isRTL } = useTranslation();
   const showPanel = !HIDE_PANEL_VIEWS.includes(currentView);
 
   return (
     <>
+      <div className={`fixed top-4 ${isRTL ? 'left-4' : 'right-4'} z-[60]`}>
+        <LanguageSwitcher />
+      </div>
       {showPanel && <CompetitivePanel />}
 
       {currentView === 'auth' && <Auth />}

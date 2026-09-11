@@ -875,6 +875,37 @@ const FuzzyCapitalBand = ({ lens }) => (
   </div>
 );
 
+const HOLDING_POLICIES_FOR = {
+  finance: [
+    { label: 'Target Sector', value: 'Building Materials — low-risk adjacency to Construction book' },
+    { label: 'Approval Condition', value: 'ECL < 2.5% + 2+ active customers confirmed' },
+    { label: 'Fast-track STP', value: 'Suppliers to existing Construction clients — auto-approve band' },
+    { label: 'Credit Range', value: '50,000 – 600,000 SAR | Reserve ratio: 5%' },
+    { label: 'Alert Threshold', value: 'Auto-suspend if ECL > 3% or 2 missed ERP syncs' },
+  ],
+  marketing: [
+    { label: 'Campaign Focus', value: 'Building Materials suppliers — Riyadh & Jeddah priority' },
+    { label: 'Lead Qualification', value: 'Platform engagement ≥ 80% + verified ERP sync' },
+    { label: 'Lead Target', value: '15 new qualified leads by Q2 2025' },
+    { label: 'Prioritise', value: 'Companies supplying directly to approved Construction clients' },
+    { label: 'Reporting', value: 'Weekly pipeline report back to Capital' },
+  ],
+  tech: [
+    { label: 'Auto-KYB', value: 'Enable auto-KYB flow for Building Materials sector — 11 eligible' },
+    { label: 'ERP Monitoring', value: 'Daily reconciliation for all onboarded Building Materials companies' },
+    { label: 'ECL Alert', value: 'Flag any company exceeding ECL 3% for immediate review' },
+    { label: 'Scorecard', value: 'Auto-populate credit scorecard from platform PO data' },
+    { label: 'Onboarding', value: 'Track completion for 11 platform-identified eligible companies' },
+  ],
+  investment: [
+    { label: 'Issue Now', value: 'Construction Sukuk Series II — 18 cos. · ECL < 1.8% · 8.5% profit rate' },
+    { label: 'Build Pool', value: 'Building Materials pool — await 4 more collection cycles before issuing' },
+    { label: 'Hold', value: 'Logistics pool — do not securitize until ECL drops below 2%' },
+    { label: 'Buffer', value: '5% reserve from each pool against ECL deterioration' },
+    { label: 'Reporting', value: 'Monthly pool-readiness report to Capital' },
+  ],
+};
+
 const FuzzyLogicSection = ({ lens }) => {
   const L = FUZZY_LENSES[lens];
   const LensIcon = L.Icon;
@@ -1107,6 +1138,47 @@ const FuzzyLogicSection = ({ lens }) => {
             </div>
           </div>
         </div>
+
+        {/* ── Policies received from Mezzanine Holding (shown for subsidiary lenses) ── */}
+        {lens !== 'capital' && HOLDING_POLICIES_FOR[lens] && (
+          <div className="mt-4 rounded-2xl border border-purple-800/40 overflow-hidden"
+            style={{ background: 'linear-gradient(135deg, rgba(88,28,135,0.15) 0%, rgba(15,23,42,0.95) 100%)' }}>
+            <div className="px-4 py-3 border-b border-purple-800/30 flex items-center gap-3">
+              <div className="w-7 h-7 rounded-lg bg-purple-500/20 border border-purple-500/40 flex items-center justify-center flex-shrink-0">
+                <Shield size={13} className="text-purple-300" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-bold text-white">
+                  Policy Directive Received from Mezzanine Holding
+                  <span className="text-purple-400"> · السياسات الواردة من القابضة</span>
+                </p>
+                <p className="text-[9px] text-slate-500 mt-0.5">
+                  {L.label} is operating under these Capital directives this cycle — issued via Torbiona Fuzzy Logic Engine
+                </p>
+              </div>
+              <div className="flex items-center gap-1.5 bg-purple-500/10 border border-purple-500/30 rounded-full px-2.5 py-1 flex-shrink-0">
+                <div className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse" />
+                <span className="text-[8px] font-bold text-purple-300 uppercase tracking-wide">Active · فعّال</span>
+              </div>
+            </div>
+            <div className="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+              {HOLDING_POLICIES_FOR[lens].map((item, i) => (
+                <div key={i} className="flex items-start gap-2 bg-slate-800/50 border border-purple-900/30 rounded-xl px-3 py-2.5">
+                  <CheckCircle2 size={10} className="text-purple-400 flex-shrink-0 mt-0.5" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[8px] font-bold text-purple-300 uppercase tracking-wide leading-none mb-0.5">{item.label}</p>
+                    <p className="text-[9px] text-slate-300 leading-snug">{item.value}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="px-4 py-2 border-t border-purple-900/30 bg-purple-950/20">
+              <p className="text-[8px] text-purple-600 text-center">
+                Mezzanine Capital → {L.label} · السياسات تصدر عن القابضة للشركات التابعة عبر محرك المنطق الضبابي
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* ── Effect on the 3 companies (this lens) ── */}
         <div className="mt-4 bg-slate-900 rounded-2xl border border-slate-700 p-4">
